@@ -1,0 +1,177 @@
+/* Base Styles */
+body {
+  font-family: "Plus Jakarta Sans", sans-serif;
+  font-weight: 400;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  margin: 0;
+  padding: 0;
+  color: #333;
+}
+
+.container {
+  flex-grow: 1;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* Navbar */
+.navbar {
+  height: 5rem;
+  background-color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 2rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.fa-airbnb {
+  color: crimson;
+  font-size: 2.8rem;
+  transition: transform 0.2s ease;
+}
+
+.fa-airbnb:hover {
+  transform: scale(1.2);
+}
+
+.nav-link {
+  color: #333;
+  text-decoration: none;
+  margin-left: 1.5rem;
+  font-size: 1.1rem;
+  transition: color 0.3s ease;
+}
+
+.nav-link:hover {
+  color: crimson;
+}
+
+/* Footer Info */
+.f-info {
+  text-align: center;
+  background-color: gray;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;  
+}
+
+.f-info-links a {
+  text-decoration: none;
+  color: #333;
+  font-weight: 500;
+  margin: 0 1rem;
+  transition: color 0.3s ease;
+}
+
+.f-info-links a:hover {
+  color: crimson;
+}
+
+.f-info-socials i {
+  margin-top: 1rem;
+  font-size: 1.5rem;
+  margin-right: 1.2rem;
+  transition: color 0.3s ease;
+}
+
+.f-info-socials i:hover {
+  color: crimson;
+}
+
+/* Card Styles */ 
+.listing-card {
+  border: none;
+  margin-bottom: 2.5rem;
+  border-radius: 1rem;
+  overflow: hidden;
+  transition: box-shadow 0.3s ease, transform 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 12px 25px rgba(0, 0, 0, 0.15);
+}
+
+.card-img-top {
+  border-radius: 1rem;
+  width: 100%;
+  height: 250px;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+  margin-top: 1rem;
+}
+
+.card-body {
+  padding: 1rem 0;
+  text-align: center;
+}
+
+.card-text p {
+  font-weight: 400;
+  font-size: 1rem;
+  margin: 0.5rem 0;
+}
+
+.listing-links {
+  text-decoration: none;
+  color: #333;
+  font-size: 1.1rem;
+  font-weight: 500;
+  transition: color 0.3s ease;
+}
+
+.listing-links:hover {
+  color: crimson;
+}
+
+/* Card Overlay */
+.card-img-overlay {
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+.card-img-overlay:hover {
+  opacity: 0.5;
+  background-color: rgba(255, 255, 255, 0.8);
+}
+
+.show-img {
+  height: 40vh;
+  border-radius: 1rem;
+  object-fit: cover;
+}
+
+/* Buttons */
+.btns {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  font-weight: 500;
+  text-decoration: none;
+  
+  gap: 0.2rem;
+  margin-top: 1rem;
+}
+
+.btns button {
+  padding: 0.43rem 2.5rem;
+  border: none;
+  align-items: center;
+  border-radius: 0.5rem;
+  background-color: black;
+  color: white;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+.btns button:hover {
+  background-color: #ff4b4b;
+}
+
+.show-card {
+  padding-left: 0;
+  padding-right: 0;
+}
