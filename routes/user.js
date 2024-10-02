@@ -1,12 +1,13 @@
 const express = require("express");
 const router = express.Router();
 const User = require("../models/user.js");
+const WrapAsync = require("../utilis/WrapAsync.js");
 
 router.get("/signup", (req, res) => {
   res.render("users/signup.ejs");
 });
 
-router.post("/signup", async (req, res) => {
+router.post("/signup", WrapAsync(async (req, res) => {
   try {
     let { username, email, password } = req.body;
     const newUser = new User({ email , username });
@@ -18,6 +19,6 @@ router.post("/signup", async (req, res) => {
     req.flash("error", error.message); // Handling any potential errors
     res.redirect("/signup"); // Redirect back to signup page on failure
   }
-});
+}));
 
 module.exports = router;
