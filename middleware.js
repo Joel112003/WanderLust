@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+
 const Listing = require("./models/listing");
 module.exports.isLoggedIn = (req, res, next) => {
   if (!req.isAuthenticated()) {
@@ -25,7 +25,7 @@ module.exports.isOwner = async (req, res, next) => {
   }
   next();
 };
-=======
+
 module.exports.isLoggedIn = (req, res, next) => {
   if (!req.isAuthenticated()) {
     req.session.redirectUrl = req.originalUrl;
@@ -41,4 +41,3 @@ module.exports.saveRedirectUrl = (req, res, next) => {
   }
   next();
 };
->>>>>>> c7f7a88a0621694f831fc84ae827af0e4e7f14fa
