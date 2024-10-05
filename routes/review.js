@@ -3,7 +3,7 @@ const router = express.Router({ mergeParams: true });
 const wrapAsync = require("../utilis/WrapAsync.js");
 const expressError = require("../utilis/expressError.js");
 const { reviewSchema } = require("../schema.js");
-const Review = require("../models/listing.js");
+const Review = require("../models/review.js");
 const Listing = require("../models/listing.js");
 
 const validateReview = (req, res, next) => {

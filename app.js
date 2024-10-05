@@ -45,7 +45,7 @@ const sessionOption = {
 };
 
 app.get("/", (req, res) => {
-  res.redirect("/app.js");
+  res.redirect("/listings");
 });
 
 app.use(session(sessionOption));
@@ -60,6 +60,7 @@ passport.deserializeUser(User.deserializeUser());
 app.use((req, res, next) => {
   res.locals.success = req.flash("success");
   res.locals.error = req.flash("error");
+  res.locals.currUser = req.user;
   next();
 });
 
