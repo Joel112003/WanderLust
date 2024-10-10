@@ -28,11 +28,11 @@ module.exports.renderLoginForm = (req, res) => {
 };
 
 module.exports.login = async (req, res) => {
-  req.flash("success", "Welcome to Wanderlust!!");
-  let redirectUrl = res.locals.redirectUrl || "listings";
-  res.redirect(redirectUrl);
-};
-
+    req.flash("success", "Welcome to Wanderlust!!"); // Flash a welcome message
+    let redirectUrl = res.locals.redirectUrl || "/listings"; // Check for redirect URL or default to /listings
+    res.redirect(redirectUrl); // Redirect to the specified URL
+  };
+  
 module.exports.logout = (req, res, next) => {
   req.logout((err) => {
     if (err) {

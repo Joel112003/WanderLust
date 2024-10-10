@@ -9,7 +9,7 @@
   <!-- Card with Image and Listing Details -->
   <div class="card col-6 offset-2 show-card .listing-card">
     <img
-      src="<%= listing.image %>"
+      src="<%= listing.image.url %>"
       class="card-img-top show-img"
       alt="listing_image"
     />
@@ -39,27 +39,31 @@
     </form>
   </div>
 
- <hr class="mt-4">
+  <hr class="mt-4" />
+  <% if (currUser) { %>
   <!-- Leave a Review Section -->
   <div class="col-8 offset-2 mb-3">
     <h3>Leave a Review</h3>
     <form
-      action="/listings/<%= listing.id %>/reviews"
+      action="/listings/<%= listing._id %>/reviews"
       method="post"
       novalidate
       class="needs-validation"
     >
-      <div class="mb-3 mt-3">
-        <label for="rating" class="form-label">Rating</label>
-        <input
-          type="range"
-          min="1"
-          max="5"
-          id="rating"
-          name="review[rating]"
-          class="form-range"
-        />
+      <div class="rating" id="rating">
+        <input type="radio" name="review[rating]" id="star5" value="5" />
+        <label for="star5" class="star">★</label>
+        <input type="radio" name="review[rating]" id="star4" value="4" />
+        <label for="star4" class="star">★</label>
+        <input type="radio" name="review[rating]" id="star3" value="3" />
+        <label for="star3" class="star">★</label>
+        <input type="radio" name="review[rating]" id="star2" value="2" />
+        <label for="star2" class="star">★</label>
+        <input type="radio" name="review[rating]" id="star1" value="1" />
+        <label for="star1" class="star">★</label>
       </div>
+      <div class="rating-result" id="rating-result">Your rating:</div>
+
       <div class="mb-3 mt-3">
         <label for="Comment" class="form-label">Comment</label>
         <textarea
@@ -74,7 +78,7 @@
       </div>
       <button class="btn btn-dark">Submit</button>
     </form>
-    <hr />
+    <% } %>
     <!-- Review Section -->
     <p><b>All Reviews</b></p>
     <div class="row">
