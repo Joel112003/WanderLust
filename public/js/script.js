@@ -32,3 +32,6 @@ document.querySelectorAll(".rating input").forEach((input) => {
     result.style.color = "black"; // Change color on rating
   });
 });
+
+
+

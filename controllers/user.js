@@ -33,12 +33,15 @@ module.exports.login = async (req, res) => {
     res.redirect(redirectUrl); // Redirect to the specified URL
   };
   
-module.exports.logout = (req, res, next) => {
-  req.logout((err) => {
-    if (err) {
-      next(err);
-    }
-    req.flash("success", "You are Logged Out!");
-    res.redirect("/listings");
-  });
+  module.exports.logout = (req, res, next) => {
+    console.log("Logging out...");
+    req.logOut((err) => {
+        if (err) {
+            console.error("Logout error:", err);
+            return next(err); // Call next with the error
+        }
+        req.flash("success", "You are logged out!");
+        res.redirect("/listings");
+    });
 };
+

@@ -1,7 +1,6 @@
 if (process.env.NODE_ENV != "production") {
   require("dotenv").config();
 }
-console.log(process.env);
 const express = require("express");
 const app = express();
 const mongoose = require("mongoose");
@@ -36,6 +35,8 @@ app.use(express.json());
 app.use(methodOverride("_method"));
 app.engine("ejs", ejsMate);
 app.use(express.static(path.join(__dirname, "/public")));
+app.use('/docs', express.static(path.join(__dirname, 'docs')));
+
 
 const sessionOption = {
   secret: "thisshouldbeabettersecret",
@@ -51,6 +52,9 @@ const sessionOption = {
 app.get("/", (req, res) => {
   res.redirect("/listings");
 });
+
+
+  
 
 app.use(session(sessionOption));
 app.use(flash());
