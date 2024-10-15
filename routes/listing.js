@@ -21,6 +21,16 @@ const validateListing = (req, res, next) => {
   }
 };
 
+// Privacy Policy (Moved before dynamic :id routes)
+router.get("/privacy", (req, res) => {
+  res.render("Privacy/privacy");
+});
+
+// Terms and Conditions (Moved before dynamic :id routes)
+router.get("/terms", (req, res) => {
+  res.render("Privacy/terms");
+});
+
 // Index Route
 router
   .route("/")
@@ -56,9 +66,5 @@ router.get(
   wrapAsync(listingController.editListings)
 ); // Render edit form for a specific listing
 
-router.get("/privacy", (req, res) => {
-  res.render("privacy"); // Update the path if your structure is different
-
-});
 
 module.exports = router;

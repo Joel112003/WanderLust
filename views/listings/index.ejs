@@ -1,6 +1,52 @@
 <% layout("/layouts/boilerplate") %>
+<div class="filters ">
+  <div class="filter">
+    <div><i class="fa-solid fa-fire"></i></div>
+    <p>Trending</p>
+  </div>
+  <div class="filter">
+    <div><i class="fa-solid fa-home-lg-alt"></i></div>
+    <p>Mansion</p>
+  </div>
+  <div class="filter">
+    <div><i class="fa-solid fa-tractor"></i></div>
+    <p>Farm</p>
+  </div>
+  <div class="filter">
+    <div><i class="fa-solid fa-water"></i></div>
+    <p>Lake</p>
+  </div>
+  <div class="filter">
+    <div><i class="fa-solid fa-umbrella-beach"></i></div>
+    <p>Beach</p>
+  </div>
+  <div class="filter">
+    <div><i class="fa-solid fa-tree"></i></div>
+    <p>Cabin</p>
+  </div>
+  <div class="filter">
+    <div><i class="fa-solid fa-building"></i></div>
+    <p>Apartment</p>
+  </div>
+  <div class="filter">
+    <div><i class="fa-solid fa-skiing"></i></div>
+    <p>Ski Resort</p>
+  </div>
+  <div class="filter">
+    <div><i class="fa-solid fa-campground"></i></div>
+    <p>Camping</p>
+  </div>
+  <div class="filter">
+    <div><i class="fa-solid fa-island-tropical"></i></div>
+    <p>Island</p>
+  </div>
+  <div class="filter">
+    <div><i class="fa-solid fa-crown"></i></div>
+    <p>Luxury</p>
+  </div>
+</div>
 
-<div class="row mt-4 row-cols-lg-3 row-cols-md-2 row-cols-sm-1 ">
+<div class="row mt-4 row-cols-lg-3 row-cols-md-2 row-cols-sm-1">
   <% for(listing of allListings) { %>
   <a href="/listings/<%= listing._id %>" class="listing-links">
     <div class="card .listing-card">
@@ -21,4 +67,3 @@
   </a>
   <% } %>
 </div>
-

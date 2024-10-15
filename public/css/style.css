@@ -39,14 +39,9 @@ body {
 
 .navbar-brand p {
   margin: 0; /* Remove the default margin from the <p> tag */
-  color: red; /* Make the 'WanderLust' text red */
+  color: crimson; /* Make the 'WanderLust' text red */
   font-size: 21px; /* Adjust the size of the text if needed */
 }
-
-.navbar-brand:hover p {
-  color: darkred; /* Optional: Change the text color on hover */
-}
-
 
 .fa-airbnb {
   color: crimson;
@@ -76,7 +71,7 @@ body {
   background-color: gray;
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;  
+  gap: 1.5rem;
 }
 
 .f-info-links a {
@@ -117,8 +112,7 @@ body {
   color: black; /* Set to desired color for icons */
 }
 
-
-/* Card Styles */ 
+/* Card Styles */
 .listing-card {
   border: none;
   margin-bottom: 2.5rem;
@@ -188,7 +182,7 @@ body {
   flex-wrap: wrap;
   font-weight: 500;
   text-decoration: none;
-  
+
   gap: 0.2rem;
   margin-top: 1rem;
 }
@@ -217,4 +211,23 @@ body {
 #map {
   width: 100%;
   height: 400px;
+}
+/* Filters */
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem;
+}
+
+.filter{
+  text-align: center;
+  margin-top: 1.5rem;
+  opacity: 0.7;
+}
+.filter:hover{
+  opacity: 1;
+  cursor: pointer;  
+}
+.filter i{
+  font-size: 0.8rem;
 }
