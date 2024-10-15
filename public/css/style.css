@@ -26,6 +26,27 @@ body {
   padding: 0 2rem;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
 }
+.navbar-brand {
+  display: flex;
+  align-items: center;
+  text-decoration: none; /* Remove underline if present */
+}
+
+.navbar-brand i {
+  margin-right: 8px; /* Space between the icon and the text */
+  font-size: 34px; /* Increase the size of the icon */
+}
+
+.navbar-brand p {
+  margin: 0; /* Remove the default margin from the <p> tag */
+  color: red; /* Make the 'WanderLust' text red */
+  font-size: 21px; /* Adjust the size of the text if needed */
+}
+
+.navbar-brand:hover p {
+  color: darkred; /* Optional: Change the text color on hover */
+}
+
 
 .fa-airbnb {
   color: crimson;
@@ -60,26 +81,42 @@ body {
 
 .f-info-links a {
   text-decoration: none;
-  color: #333;
+  color: #333; /* Text color for Privacy and Terms links */
   font-weight: 500;
   margin: 0 1rem;
   transition: color 0.3s ease;
 }
 
 .f-info-links a:hover {
-  color: crimson;
+  color: crimson; /* Hover color for links */
+}
+
+.f-info-socials {
+  display: flex; /* Use flexbox for alignment of icons */
+  justify-content: center; /* Center icons horizontally */
+}
+
+.f-info-socials a {
+  color: inherit; /* Inherit color from parent to avoid blue link color */
+  margin-top: 1rem; /* Add top margin for spacing */
+  transition: color 0.3s ease; /* Smooth color transition */
 }
 
 .f-info-socials i {
-  margin-top: 1rem;
-  font-size: 1.5rem;
-  margin-right: 1.2rem;
-  transition: color 0.3s ease;
+  font-size: 1.5rem; /* Icon size */
+  margin-right: 1.2rem; /* Space between icons */
 }
 
-.f-info-socials i:hover {
-  color: crimson;
+/* Optional: hover effect for icons */
+.f-info-socials a:hover i {
+  color: crimson; /* Change icon color on hover */
 }
+
+/* You can specify a color for icons if desired */
+.f-info-socials a i {
+  color: black; /* Set to desired color for icons */
+}
+
 
 /* Card Styles */ 
 .listing-card {
