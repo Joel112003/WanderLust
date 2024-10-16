@@ -75,6 +75,17 @@
         <div class="invalid-feedback">Enter the Country</div>
       </div>
 
+      <div class="mb-3">
+        <label for="category" class="form-label">Category</label>
+        <input
+          name="listing[category]"
+          value="<%= listing.category %>"
+          type="text"
+          class="form-control"
+          required
+        />
+        <div class="invalid-feedback">Enter the Category</div>
+
       <button class="btn btn-dark mb-3">Submit</button>
     </form>
   </div>

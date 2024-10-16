@@ -217,6 +217,7 @@ body {
   display: flex;
   flex-wrap: wrap;
   gap: 2rem;
+  align-items: center;
 }
 
 .filter{
@@ -230,4 +231,24 @@ body {
 }
 .filter i{
   font-size: 0.8rem;
+}
+
+.tax-info{
+  display: none;
+}
+
+.tax-toggle{
+  border: 1px solid black;
+  border-radius: 1rem;
+  height: 3.5rem;
+  padding: 1rem;
+  margin-left: 7.5rem;
+  margin-top: 1rem;
+  display: flex;
+  align-items: center;
+  opacity: 0.8;
+}
+.tax-toggle:hover{
+  opacity: 1;
+
 }
