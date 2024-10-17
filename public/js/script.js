@@ -35,3 +35,4 @@ document.querySelectorAll(".rating input").forEach((input) => {
 
 
 
+

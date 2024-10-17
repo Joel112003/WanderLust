@@ -2,89 +2,63 @@
 <div class="row">
   <div class="col-8 offset-2">
     <h3>Edit your Listings</h3>
-    <form
-      method="POST"
-      action="/listings/<%= listing._id %>?_method=PUT"
-      novalidate
-      class="needs-validation"
-      enctype="multipart/form-data"
-    >
+    <form method="POST" action="/listings/<%= listing._id %>?_method=PUT" novalidate class="needs-validation" enctype="multipart/form-data">
       <div class="mb-3">
         <label for="title" class="form-label">Title</label>
-        <input
-          name="listing[title]"
-          value="<%= listing.title %>"
-          type="text"
-          class="form-control"
-          required
-        />
+        <input id="title" name="listing[title]" value="<%= listing.title %>" type="text" class="form-control" required />
         <div class="invalid-feedback">Enter the Title</div>
       </div>
+
       <div class="mb-3">
         <label for="description" class="form-label">Description</label>
-        <textarea name="listing[description]" class="form-control" required>
-          <%=listing.description %></textarea
-        >
+        <textarea id="description" name="listing[description]" class="form-control" required><%= listing.description %></textarea>
         <div class="invalid-feedback">Enter the Description</div>
       </div>
 
       <div class="mb-3">
-        <label for="image" class="form-label"> Upload New Image Url</label>
-        <input
-          name="listing[image]"
-          type="file"
-          class="form-control"
-        />
+        <label for="image" class="form-label">Upload New Image</label>
+        <input id="image" name="listing[image]" type="file" class="form-control" />
         <div class="invalid-feedback">Enter the Image/URL</div>
       </div>
 
       <div class="row">
         <div class="mb-3 col-md-4">
           <label for="price" class="form-label">Price</label>
-          <input
-            name="listing[price]"
-            value="<%= listing.price %>"
-            type="number"
-            class="form-control"
-            required
-          />
+          <input id="price" name="listing[price]" value="<%= listing.price %>" type="number" class="form-control" required />
           <div class="invalid-feedback">Enter the Price</div>
         </div>
         <div class="mb-3 col-md-8">
           <label for="location" class="form-label">Location</label>
-          <input
-            name="listing[location]"
-            value="<%= listing.location %>"
-            type="text"
-            class="form-control"
-            required
-          />
+          <input id="location" name="listing[location]" value="<%= listing.location %>" type="text" class="form-control" required />
           <div class="invalid-feedback">Enter the Location</div>
         </div>
       </div>
 
-      <div class="mb-3">
-        <label for="country" class="form-label">Country</label>
-        <input
-          name="listing[country]"
-          value="<%= listing.country %>"
-          type="text"
-          class="form-control"
-          required
-        />
-        <div class="invalid-feedback">Enter the Country</div>
+      <div class="row">
+        <div class="mb-3 col-md-6">
+          <label for="category" class="form-label">Category</label>
+          <select id="category" name="listing[category]" class="form-control" required>
+            <option value="" disabled selected>Select a category</option>
+            <option value="Mansion" <%= listing.category === 'Mansion' ? 'selected' : '' %>>Mansion</option>
+            <option value="Farm" <%= listing.category === 'Farm' ? 'selected' : '' %>>Farm</option>
+            <option value="Lake" <%= listing.category === 'Lake' ? 'selected' : '' %>>Lake</option>
+            <option value="Beach" <%= listing.category === 'Beach' ? 'selected' : '' %>>Beach</option>
+            <option value="Cabin" <%= listing.category === 'Cabin' ? 'selected' : '' %>>Cabin</option>
+            <option value="Apartment" <%= listing.category === 'Apartment' ? 'selected' : '' %>>Apartment</option>
+            <option value="Ski Resort" <%= listing.category === 'Ski Resort' ? 'selected' : '' %>>Ski Resort</option>
+            <option value="Camping" <%= listing.category === 'Camping' ? 'selected' : '' %>>Camping</option> 
+            <option value="Cottage" <%= listing.category === 'Cottage' ? 'selected' : '' %>>Cottage</option> 
+            <option value="Luxury" <%= listing.category === 'Luxury' ? 'selected' : '' %>>Luxury</option> 
+          </select>
+          <div class="invalid-feedback">Please select a category</div>
+        </div>
+      
+        <div class="mb-3 col-md-6">
+          <label for="country" class="form-label">Country</label>
+          <input id="country" name="listing[country]" value="<%= listing.country %>" type="text" class="form-control" required />
+          <div class="invalid-feedback">Enter the Country</div>
+        </div>
       </div>
-
-      <div class="mb-3">
-        <label for="category" class="form-label">Category</label>
-        <input
-          name="listing[category]"
-          value="<%= listing.category %>"
-          type="text"
-          class="form-control"
-          required
-        />
-        <div class="invalid-feedback">Enter the Category</div>
 
       <button class="btn btn-dark mb-3">Submit</button>
     </form>

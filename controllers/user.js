@@ -28,20 +28,18 @@ module.exports.renderLoginForm = (req, res) => {
 };
 
 module.exports.login = async (req, res) => {
-    req.flash("success", "Welcome to Wanderlust!!"); // Flash a welcome message
-    let redirectUrl = res.locals.redirectUrl || "/listings"; // Check for redirect URL or default to /listings
-    res.redirect(redirectUrl); // Redirect to the specified URL
-  };
-  
-  module.exports.logout = (req, res, next) => {
-    console.log("Logging out...");
-    req.logOut((err) => {
-        if (err) {
-            console.error("Logout error:", err);
-            return next(err); // Call next with the error
-        }
-        req.flash("success", "You are logged out!");
-        res.redirect("/listings");
-    });
+  req.flash("success", "Welcome to Wanderlust!!"); // Flash a welcome message
+  let redirectUrl = res.locals.redirectUrl || "/listings"; // Check for redirect URL or default to /listings
+  res.redirect(redirectUrl); // Redirect to the specified URL
 };
 
+module.exports.logout = (req, res, next) => {
+  req.logOut((err) => {
+    if (err) {
+      console.error("Logout error:", err);
+      return next(err); // Call next with the error
+    }
+    req.flash("success", "You are logged out!");
+    res.redirect("/listings");
+  });
+};

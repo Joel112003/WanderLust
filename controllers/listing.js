@@ -17,7 +17,8 @@ module.exports.showListing = async (req, res) => {
   const listing = await Listing.findById(id)
     .populate({ path: "reviews", populate: { path: "author" } }) // Populating reviews and their authors for the listing.
     .populate("owner"); // Populating the owner data for the listing.
-  if (!listing) { // If the listing does not exist:
+  if (!listing) {
+    // If the listing does not exist:
     req.flash("error", "Cannot find listing"); // Show an error message to the user.
     res.redirect("/listings"); // Redirect the user to the listings page.
   }
@@ -46,10 +47,17 @@ module.exports.createListings = async (req, res, next) => {
 module.exports.editListings = async (req, res) => {
   const { id } = req.params; // Extracting the 'id' parameter from the request URL.
   const listing = await Listing.findById(id); // Fetching the listing to edit from the database.
-  if (!listing) { // If the listing does not exist:
+  if (!listing) {
+    // If the listing does not exist:
     req.flash("error", "Cannot find listing"); // Show an error message to the user.
-    res.redirect("/listings"); // Redirect the user to the listings page.
+    return res.redirect("/listings"); // Redirect the user to the listings page.
   }
+
+  // Check if category is missing and set a default value
+  if (!listing.category) {
+    listing.category = "General"; // Set the default category
+  }
+
   res.render("listings/edit", { listing }); // Rendering the 'edit' template, passing the listing data.
 };
 
@@ -58,7 +66,8 @@ module.exports.updateListings = async (req, res) => {
   let listing = await Listing.findByIdAndUpdate(id, { ...req.body.listing }); // Updating the listing in the database with new data.
   let url = req.file.path; // Getting the file path of the uploaded image.
   let filename = req.file.filename; // Getting the filename of the uploaded image.
-  if (typeof req.file !== "undefined") { // If there is a new image file:
+  if (typeof req.file !== "undefined") {
+    // If there is a new image file:
     listing.image = { url, filename }; // Update the image data for the listing.
     await listing.save(); // Save the updated listing.
   }

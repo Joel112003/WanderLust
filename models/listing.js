@@ -49,7 +49,7 @@ const listingSchema = new Schema({
       "Apartment",
       "Ski Resort",
       "Camping",
-      "Island",
+      "Cottage",
       "Luxury",
     ],
     required: true,

@@ -1,11 +1,11 @@
 <% layout("/layouts/boilerplate") %>
 <div class="filters">
   <div class="filter">
-    <div><i class="fa-solid fa-fire"></i></div>
+    <div> <i class="fa-solid fa-fire"></i></div>
     <p>Trending</p>
   </div>
   <div class="filter">
-    <div><i class="fa-solid fa-home-lg-alt"></i></div>
+    <div> <i class="fa-solid fa-home-lg-alt"></i></div>
     <p>Mansion</p>
   </div>
   <div class="filter">
@@ -38,7 +38,7 @@
   </div>
   <div class="filter">
     <div><i class="fa-solid fa-island-tropical"></i></div>
-    <p>Island</p>
+    <p>Cottage</p>
   </div>
   <div class="filter">
     <div><i class="fa-solid fa-crown"></i></div>
@@ -60,7 +60,7 @@
   </div>
 
   <div class="row  row-cols-lg-3 row-cols-md-2 row-cols-sm-1">
-    <% for(listing of allListings) { %>
+    <% for( let listing of allListings) { %>
     <a href="/listings/<%= listing._id %>" class="listing-links">
       <div class="card .listing-card">
         <img
