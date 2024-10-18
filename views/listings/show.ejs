@@ -37,17 +37,18 @@
   </div>
 
   <!-- Edit and Delete Buttons -->
+<% if (currUser && listing.author.equals(currUser._id)) { %>
   <div class="btns">
     <a
       href="/listings/<%= listing._id %>/edit"
       class="btn btn-dark col-1 offset-2"
-      >Edit</a
-    >
+    >Edit</a>
     <br /><br />
-    <form action="/listings/<%= listing._id%>/?_method=DELETE" method="POST">
+    <form action="/listings/<%= listing._id %>/?_method=DELETE" method="POST">
       <button class="btn btn-dark offset-4">Delete</button>
     </form>
   </div>
+<% } %>
 
   <hr class="mt-4" />
   <% if (currUser) { %>
