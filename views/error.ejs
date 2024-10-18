@@ -1,7 +1,12 @@
 <% layout("/layouts/boilerplate.ejs") %>
-<div class="row mt-3">
-<div class="alert alert-danger col-6 offset-3" role="alert">
-  <h4 class="alert-heading">
-    <%= message %>
-  </h4>
-</div>
+<div class="d-flex flex-column min-vh-100">
+  <!-- Main content of the page -->
+  <div class="flex-grow-1">
+    <div class="row mt-3">
+      <div class="alert alert-danger col-6 offset-3" role="alert">
+        <h4 class="alert-heading">
+          <%= message %>
+        </h4>
+      </div>
+    </div>
+  </div>

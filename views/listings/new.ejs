@@ -78,6 +78,24 @@
         />
         <div class="invalid-feedback">Enter the Location</div>
       </div>
+
+      <div class="mb-3">
+        <label for="category" class="form-label">Category</label>
+        <select id="category" name="listing[category]" class="form-control" required>
+          <option value="" disabled selected>Select a category</option>
+          <option value="Mansion">Mansion</option>
+          <option value="Farm">Farm</option>
+          <option value="Lake">Lake</option>
+          <option value="Beach">Beach</option>
+          <option value="Apartment">Apartment</option>
+          <option value="Ski Resort">Ski Resort</option>
+          <option value="Camping">Camping</option>
+          <option value="Cottage">Cottage</option>
+          <option value="Luxury">Luxury</option>
+        </select>
+        <div class="invalid-feedback">Please select a category</div>
+      </div>
+
       <button class="btn btn-dark mb-3">Add</button>
       <br />
     </form>

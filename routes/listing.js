@@ -31,7 +31,6 @@ router.get("/terms", (req, res) => {
   res.render("Privacy/terms");
 });
 
-
 // Index Route
 router
   .route("/")
@@ -66,23 +65,5 @@ router.get(
   isOwner,
   wrapAsync(listingController.editListings)
 ); // Render edit form for a specific listing
-
-
-// Search
-router.get("/listings", wrapAsync(async (req, res) => {
-  const { search } = req.query;
-  let listings;
-  
-  if (search) {
-    listings = await Listing.find({ 
-      location: new RegExp(search, 'i') // Case-insensitive search
-    });
-  } else {
-    listings = await Listing.find({});
-  }
-
-  res.render("listings/index", { listings, search });
-}));
-
 
 module.exports = router;

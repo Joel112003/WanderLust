@@ -232,23 +232,39 @@ body {
 .filter i{
   font-size: 0.8rem;
 }
+.filter .fa-solid{
+  color: black;
+}
+
+.filter a{
+  text-decoration: none;
+  color: black;
+}
 
 .tax-info{
   display: none;
 }
 
-.tax-toggle{
+.tax-toggle {
   border: 1px solid black;
   border-radius: 1rem;
-  height: 3.5rem;
-  padding: 1rem;
-  margin-left: 6.5rem;
-  margin-top: 1rem;
+  height: 3.5rem; /* Keep this if you like the height */
+  padding: 0.5rem 1rem; /* Adjust padding for better alignment */
   display: flex;
   align-items: center;
+  margin-top: 1rem; /* Keep this for spacing above */
+  margin-left: 17rem;
   opacity: 0.8;
+  cursor: pointer; /* Change cursor to pointer for better UX */
+  transition: opacity 0.3s ease; /* Add transition for smooth hover effect */
 }
-.tax-toggle:hover{
-  opacity: 1;
 
+.tax-toggle:hover {
+  opacity: 1;
 }
+
+.tax-toggle input[type="checkbox"] {
+  margin-left: 0.5rem; /* Space between label and checkbox */
+  cursor: pointer; /* Change cursor for the checkbox */
+}
+

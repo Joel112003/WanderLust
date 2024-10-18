@@ -1,13 +1,23 @@
 <% if(success && success.length)  { %>
-<div class="alert alert-success alert-dismissible fade show col-6 offset-3" role="alert">
-    <%= success %>
-    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-</div>
-<% } %>
-
-<% if(error && error.length)  { %>
-<div class="alert alert-danger alert-dismissible fade show col-6 offset-3" role="alert">
-    <%= error %>
-    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-</div>
-<% } %>
+    <div class="alert alert-success alert-dismissible fade show col-6 offset-3" role="alert">
+        <%= success %>
+    </div>
+    <% } %>
+    
+    <% if(error && error.length)  { %>
+    <div class="alert alert-danger alert-dismissible fade show col-6 offset-3" role="alert">
+        <%= error %>
+    </div>
+    <% } %>
+    
+    <script>
+      // Automatically close alerts after 5 seconds (5000 milliseconds)
+      setTimeout(function () {
+        const alerts = document.querySelectorAll('.alert');
+        alerts.forEach(alert => {
+          // Bootstrap's method to hide and remove alerts
+          bootstrap.Alert.getOrCreateInstance(alert).close();
+        });
+      }, 1000); // Adjust the time duration as needed
+    </script>
+    

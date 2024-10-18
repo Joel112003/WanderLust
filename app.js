@@ -2,7 +2,7 @@ if (process.env.NODE_ENV != "production") {
   require("dotenv").config();
 }
 const express = require("express");
-const app = express();  
+const app = express();
 const mongoose = require("mongoose");
 const path = require("path");
 const methodOverride = require("method-override");
@@ -12,6 +12,7 @@ const listingsRoutes = require("./routes/listing.js");
 const reviewsRoutes = require("./routes/review.js");
 const usersRoutes = require("./routes/user.js");
 const session = require("express-session");
+const MongoStore = require("connect-mongo");
 const flash = require("connect-flash");
 const passport = require("passport");
 const LocalStrategy = require("passport-local");
@@ -38,8 +39,21 @@ app.engine("ejs", ejsMate);
 app.use(express.static(path.join(__dirname, "/public")));
 app.use("/docs", express.static(path.join(__dirname, "docs")));
 
+const store = MongoStore.create({
+  mongoUrl: dbUrl,
+  crypto: {
+    secret: process.env.SECRET,
+  },
+  touchAfter: 24 * 3600,
+});
+
+store.on("error", () => {
+  console.log("SESSION STORE ERROR", err);
+});
+
 const sessionOption = {
-  secret: "thisshouldbeabettersecret",
+  store,
+  secret: process.env.SECRET,
   resave: false,
   saveUninitialized: true,
   cookie: {
@@ -81,7 +95,6 @@ app.use((err, req, res, next) => {
   const { statusCode = 500, message = "Something went wrong!" } = err;
   res.status(statusCode).render("error.ejs", { message });
 });
-
 app.listen(8000, () => {
   console.log("Server is running on port 8000");
 });
