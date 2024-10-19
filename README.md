@@ -23,6 +23,7 @@ Follow these steps to set up WanderLust on your local machine:
 
 1.Clone the repository:
 https://github.com/Joel112003/WanderLust.git
+
 cd wanderlust
 
 2.Install the dependencies:
