@@ -1,4 +1,4 @@
-                                                                                        WanderLust
+                                                                          WanderLust
 WanderLust is a full-stack web application designed for travel enthusiasts. It enables users to browse and book holiday rentals, cabins, beach houses, and more. The application features an interactive map, a responsive design, and user authentication for a seamless and secure experience.
 
 
