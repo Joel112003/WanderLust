@@ -1,4 +1,4 @@
-                                                                          WanderLust
+                                                              WanderLust
 WanderLust is a full-stack web application designed for travel enthusiasts. It enables users to browse and book holiday rentals, cabins, beach houses, and more. The application features an interactive map, a responsive design, and user authentication for a seamless and secure experience.
 
 
@@ -20,8 +20,9 @@ Custom Error Handling: Ensures smooth user experience with meaningful error mess
 
 Installation
 Follow these steps to set up WanderLust on your local machine:
+
 1.Clone the repository:
-git clone https://github.com/your-username/wanderlust.git
+https://github.com/Joel112003/WanderLust.git
 cd wanderlust
 
 2.Install the dependencies:
