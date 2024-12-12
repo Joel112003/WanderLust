@@ -54,12 +54,15 @@
       <div class="navbar-nav ms-auto">
         <a class="nav-link" href="/listings/new">WanderLust Your Home</a>
 
-        <% if(!currUser) { %>
-        <a class="nav-link" href="/login">Login</a>
-        <a class="nav-link" href="/signup">Signup</a>
-        <% } %> <% if(currUser) { %>
-        <a class="nav-link" href="/logout">Logout</a>
+        <% if (!currUser) { %>
+          <a class="nav-link" href="/login">Login</a>
+          <a class="nav-link" href="/signup">Signup</a>
         <% } %>
+        <% if (currUser) { %>
+          <a class="nav-link" href="/profile"><%= currUser.username %>'s Profile</a>
+          <a class="nav-link" href="/logout">Logout</a>
+        <% } %>
+        
       </div>
     </div>
   </div>

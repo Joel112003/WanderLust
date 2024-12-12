@@ -184,7 +184,6 @@ body {
   text-decoration: none;
   gap: 0.2rem;
   margin-top: 1rem;
-
 }
 
 .btns button {
@@ -220,29 +219,28 @@ body {
   align-items: center;
 }
 
-.filter{
-
+.filter {
   text-align: center;
   margin-top: 1.5rem;
   opacity: 0.7;
 }
-.filter:hover{
+.filter:hover {
   opacity: 1;
-  cursor: pointer;  
+  cursor: pointer;
 }
-.filter i{
+.filter i {
   font-size: 0.8rem;
 }
-.filter .fa-solid{
+.filter .fa-solid {
   color: black;
 }
 
-.filter a{
+.filter a {
   text-decoration: none;
   color: black;
 }
 
-.tax-info{
+.tax-info {
   display: none;
 }
 
@@ -254,7 +252,6 @@ body {
   display: flex;
   align-items: center;
   margin-top: 1rem; /* Keep this for spacing above */
-
   opacity: 0.8;
   cursor: pointer; /* Change cursor to pointer for better UX */
   transition: opacity 0.3s ease; /* Add transition for smooth hover effect */
@@ -269,3 +266,135 @@ body {
   cursor: pointer; /* Change cursor for the checkbox */
 }
 
+/* Media query for mobile devices */
+@media (max-width: 768px) {
+  /* Filter container */
+  .filters {
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.5rem;
+    background-color: #fff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .filters .filter-item {
+    text-align: center;
+    padding: 0.5rem;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+
+  .filters .filter-item:hover {
+    background-color: #f1f1f1;
+  }
+
+  /* Optional: If you want filter item text to wrap */
+  .filters .filter-item {
+    white-space: nowrap;
+  }
+
+  /* For category title in mobile */
+  .filters .filter-item span {
+    display: block;
+    font-size: 12px;
+    font-weight: bold;
+  }
+
+  /* For category filter container to be scrollable */
+  .filters {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Display total after Taxes toggle below the filters */
+  .tax-toggle {
+    border: 1px solid black;
+    border-radius: 2rem;
+    height: 4rem;
+    padding: 0.5rem 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-top: 1rem;
+    background-color: #f9f9f9;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.tax-toggle:hover {
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.tax-toggle label {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.tax-toggle b {
+    font-size: 1rem;
+    margin: 0;
+}
+
+.tax-toggle p {
+    font-size: 0.9rem;
+    color: gray;
+    margin: 0;
+}
+
+.tax-toggle input[type="checkbox"] {
+    appearance: none;
+    width: 2.5rem;
+    height: 1.5rem;
+    margin-top: .6rem;
+    left: 1rem;
+    background-color: #ccc;
+    border-radius: 2rem;
+    position: relative;
+    cursor: pointer;
+    outline: none;
+    transition: background-color 0.3s ease;
+}
+
+.tax-toggle input[type="checkbox"]:checked {
+    background-color: #030303;
+}
+
+.tax-toggle input[type="checkbox"]::before {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 5%;
+    transform: translate(0, -50%);
+    width: 1.3rem;
+    height: 1.3rem;
+   
+    border-radius: 50%;
+    transition: transform 0.3s ease;
+}
+
+.tax-toggle input[type="checkbox"]:checked::before {
+    transform: translate(100%, -50%);
+}
+
+.tax-toggle input[type="checkbox"]:checked::after {
+    display: none; /* Hide the pseudo-element when checked */
+}
+
+/* Optionally, you can adjust the positioning of the '::after' pseudo-element when unchecked */
+.tax-toggle input[type="checkbox"]::after {
+    position: absolute;
+    top: 50%;
+    right: 15%;
+    transform: translate(0, -50%);
+    color: white;
+    font-size: 1rem;
+}
+}

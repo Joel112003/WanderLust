@@ -66,4 +66,10 @@ router.get(
   wrapAsync(listingController.editListings)
 ); // Render edit form for a specific listing
 
+router.get('/api/listings', async (req, res) => {
+  const listings = await Listing.find({});
+  res.json(listings);
+});
+
+
 module.exports = router;

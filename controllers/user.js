@@ -4,7 +4,7 @@ module.exports.renderSignupForm = (req, res) => {
   res.render("users/signup.ejs");
 };
 
-module.exports.signup = async (req, res) => {
+module.exports.signup = async (req, res, next) => {  // Added next as parameter
   try {
     let { username, email, password } = req.body;
     const newUser = new User({ email, username });
@@ -12,14 +12,14 @@ module.exports.signup = async (req, res) => {
     console.log(registeredUser);
     req.login(registeredUser, (err) => {
       if (err) {
-        return next(err);
+        return next(err);  // Error handling with next
       }
       req.flash("success", "Welcome to WanderLust");
       res.redirect("/listings");
     });
   } catch (error) {
-    req.flash("error", error.message); // Handling any potential errors
-    res.redirect("/signup"); // Redirect back to signup page on failure
+    req.flash("error", error.message); // Handle error message correctly
+    res.redirect("/signup"); // Redirect back to signup page
   }
 };
 
@@ -34,12 +34,7 @@ module.exports.login = async (req, res) => {
 };
 
 module.exports.logout = (req, res, next) => {
-  req.logOut((err) => {
-    if (err) {
-      console.error("Logout error:", err);
-      return next(err); // Call next with the error
-    }
-    req.flash("success", "You are logged out!");
-    res.redirect("/listings");
-  });
+  req.logout();  // Correct logout without callback
+  req.flash("success", "You are logged out!");
+  res.redirect("/listings");
 };
