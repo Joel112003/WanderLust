@@ -1,12 +1,10 @@
+
 mapboxgl.accessToken = mapToken;
 const map = new mapboxgl.Map({
   container: "map", // container ID
   center: coordinates, // starting position [lng, lat]
   zoom: 9, // starting zoom
 });
-
-console.log(coordinates);
-
 const marker = new mapboxgl.Marker({ color: "red" }) // Removed extra space in color
   .setLngLat(coordinates)
   .setPopup(new mapboxgl.Popup({ offset: 25 }).setHTML("<p>Exact Location Provided After Booking!</p>"))
