@@ -1,0 +1,10 @@
+/* Base styles for Wanderlust application */
+@import url("../src/utilis/css/ProfileMenu.css");
+@import url("../src/utilis/css/Listing.css");
+@import url("../src/utilis/css/ListingDetail.css");
+@import url("../src/utilis/css/ListingDetails.css");
+@import url("../src/utilis/css/Review.css");
+@import url("../src/utilis/css/Map.css");
+@import url("../src/utilis/css/Navbar.css");
+@import url("../src/utilis/css/CreateListing.css");
+

@@ -1,0 +1,334 @@
+/* Navbar Container */
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 20px;
+  background-color: white;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  background-color: rgba(255, 255, 255, 0.95);
+}
+
+/* Brand Logo */
+.navbar-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 1.5rem;
+  color: #ff385c;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+}
+
+.navbar-logo i {
+  transform-origin: center;
+  animation: logoSpin 0.6s ease-out;
+}
+
+@keyframes logoSpin {
+  0% { transform: rotate(-180deg); opacity: 0; }
+  100% { transform: rotate(0deg); opacity: 1; }
+}
+
+.navbar-logo:hover {
+  transform: scale(1.05);
+}
+
+.brand-text {
+  text-decoration: none;
+  color: #ff385c;
+  font-weight: bold;
+  transition: color 0.3s ease;
+  margin-left: 100px;
+}
+
+.brand-text:hover {
+  color: #e31c5f;
+}
+
+/* Search Bar */
+.navbar-search {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 10px 20px;
+  background-color: white;
+  border-radius: 30px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+.navbar-search.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.navbar-search.hidden {
+  opacity: 0;
+  transform: translateY(-100%);
+}
+
+.search-field {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.search-field label {
+  font-size: 0.9rem;
+  color: #666;
+  font-weight: 500;
+}
+
+.search-field input {
+  border: none;
+  outline: none;
+  padding: 5px;
+  font-size: 1rem;
+  background: transparent;
+  transition: all 0.3s ease;
+}
+
+.search-field input:focus {
+  border-bottom: 2px solid #ff385c;
+}
+
+.search-button {
+  background-color: #ff385c;
+  border: none;
+  border-radius: 50%;
+  padding: 12px;
+  color: white;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.search-button:hover {
+  background-color: #e31c5f;
+  transform: scale(1.1);
+}
+
+/* Airbnb-inspired User Menu */
+.navbar-user {
+  position: relative;
+  z-index: 1000;
+}
+
+.user-menu {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  cursor: pointer;
+  padding: 12px 12px 12px 24px;
+  border-radius: 28px;
+  background: #ffffff;
+  border: 1px solid #dddddd;
+  transition: box-shadow 0.2s cubic-bezier(0.2,0,0,1),
+             transform 0.1s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.user-menu::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle, rgba(255,56,92,0.1) 0%, rgba(255,255,255,0) 70%);
+  transform: translate(-50%, -50%) scale(0);
+  transition: transform 0.4s ease;
+}
+
+.user-menu:hover::before {
+  transform: translate(-50%, -50%) scale(2);
+}
+
+.user-menu:hover {
+  box-shadow: 0 2px 4px rgba(0,0,0,0.08);
+}
+
+.user-menu:active {
+  transform: scale(0.98);
+}
+
+.user-icon {
+  background-color: #f0f0f0;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border: 1px solid rgba(0,0,0,0.10);
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.user-icon:hover {
+  transform: scale(1.1);
+}
+
+.user-icon img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Dropdown Menu - Airbnb Style */
+.dropdown-menu {
+  position: absolute;
+  top: calc(100% + 5px);
+  right: 0;
+  width: 240px;
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 12px 28px rgba(0,0,0,0.12),
+             0 8px 20px rgba(0,0,0,0.08);
+  opacity: 0;
+  transform: translateY(-8px);
+  visibility: hidden;
+  transition: all 0.2s cubic-bezier(0.08,0.52,0.52,1);
+  z-index: 1000;
+  animation: dropdownFade 0.2s ease-out;
+  transform-origin: top right;
+}
+
+@keyframes dropdownFade {
+  from {
+    opacity: 0;
+    transform: scale(0.95) translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.dropdown-menu.show {
+  opacity: 1;
+  transform: translateY(0);
+  visibility: visible;
+}
+
+.dropdown-item {
+  display: flex;
+  align-items: center;
+  padding: 12px 16px;
+  color: #222222;
+  font-size: 14px;
+  line-height: 18px;
+  font-weight: 400;
+  transition: background-color 0.1s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.dropdown-item::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background-color: #ff385c;
+  transform: scaleX(0);
+  transition: transform 0.3s ease;
+  transform-origin: right;
+}
+
+.dropdown-item:hover::after {
+  transform: scaleX(1);
+  transform-origin: left;
+}
+
+.dropdown-item:hover {
+  background-color: #f7f7f7;
+}
+
+.dropdown-item:first-child {
+  padding-top: 16px;
+  border-radius: 12px 12px 0 0;
+}
+
+.dropdown-item:last-of-type {
+  padding-bottom: 16px;
+}
+
+/* Menu Divider */
+.dropdown-divider {
+  height: 1px;
+  background: #dddddd;
+  margin: 4px 0;
+}
+
+.logout-button {
+  color: #222222;
+  font-weight: 500;
+  padding: 16px;
+  border-top: 1px solid #ebebeb;
+}
+
+.logout-button:hover {
+  background-color: #fff1f1;
+  color: #e60000;
+}
+
+/* Focus States */
+.dropdown-item:focus-visible,
+.logout-button:focus-visible {
+  outline: 2px solid #000000;
+  outline-offset: -2px;
+}
+
+/* Mobile Optimization */
+@media (max-width: 768px) {
+  .dropdown-menu {
+    position: fixed;
+    top: auto;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    border-radius: 12px 12px 0 0;
+    box-shadow: 0 -8px 28px rgba(0,0,0,0.12);
+    width: 200px;
+  }
+  
+  .user-menu {
+    border: none;
+    padding: 0;
+    background: transparent;
+  }
+  
+  .user-menu:hover {
+    box-shadow: none;
+  }
+  
+  .navbar {
+    padding: 8px 12px;
+  }
+}
+
+/* Animation Optimizations */
+@media (prefers-reduced-motion: reduce) {
+  .navbar-logo i,
+  .dropdown-menu,
+  .dropdown-item::after,
+  .user-menu::before,
+  .user-icon {
+    animation: none;
+    transition: none;
+  }
+}

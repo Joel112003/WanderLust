@@ -1,0 +1,125 @@
+/* General Styles */
+body {
+  font-family: 'Arial', sans-serif;
+  background-color: #f8f9fa; /* Light background for contrast */
+  margin: 0;
+  padding: 0;
+}
+
+/* Container for Listing Detail */
+.container-fluid {
+  padding: 2rem;
+}
+
+/* Card Styles */
+.card {
+  border: none;
+  border-radius: 12px;
+  overflow: hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease; /* Smooth transition */
+}
+
+.card:hover {
+  transform: translateY(-5px); /* Lift effect on hover */
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15); /* Shadow effect */
+}
+
+/* Image Styles */
+.card-img-top {
+  transition: transform 0.5s ease; /* Smooth zoom effect */
+}
+
+.card:hover .card-img-top {
+  transform: scale(1.05); /* Zoom effect on hover */
+}
+
+/* Title Styles */
+.card-title {
+  font-size: 1.5rem;
+  color: #343a40; /* Darker text for better readability */
+  font-weight: bold;
+  transition: color 0.3s ease; /* Smooth color transition */
+}
+
+.card-title:hover {
+  color: #ff4b4b; /* Change color on hover */
+}
+
+/* Booking Card Styles */
+.booking-card {
+  background-color: #ffffff; /* White background for booking card */
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease; /* Smooth transition */
+}
+
+.booking-card:hover {
+  transform: scale(1.02); /* Slightly enlarge on hover */
+}
+
+/* Button Styles */
+.btn {
+  border-radius: 8px;
+  transition: background-color 0.3s ease, transform 0.3s ease; /* Smooth transition */
+}
+
+.btn:hover {
+  background-color: #e63939; /* Darker red on hover */
+  transform: translateY(-2px); /* Lift effect on hover */
+}
+
+/* Form Styles */
+.form-label {
+  font-weight: 600;
+  color: #495057; /* Darker label color */
+}
+
+.form-control {
+  border-radius: 8px;
+  border: 1px solid #ced4da; /* Light border */
+  transition: border-color 0.3s ease, box-shadow 0.3s ease; /* Smooth transition */
+}
+
+.form-control:focus {
+  border-color: #ff4b4b; /* Red border on focus */
+  box-shadow: 0 0 5px rgba(255, 75, 75, 0.5); /* Red glow on focus */
+  outline: none; /* Remove default outline */
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+  .container-fluid {
+      padding: 1rem; /* Reduce padding on smaller screens */
+  }
+
+  .card-title {
+      font-size: 1.25rem; /* Smaller title on mobile */
+  }
+
+  .btn {
+      font-size: 0.9rem; /* Smaller button text on mobile */
+  }
+}
+
+/* Animation for Loading Spinner */
+.spinner-border {
+  width: 3rem;
+  height: 3rem;
+  border-width: 0.25em; /* Thinner spinner */
+}
+
+/* Alert Styles */
+.alert {
+  border-radius: 8px; /* Rounded corners for alerts */
+  transition: opacity 0.3s ease; /* Smooth fade effect */
+}
+
+.alert-danger {
+  background-color: #f8d7da; /* Light red background */
+  color: #721c24; /* Dark red text */
+}
+
+.alert-warning {
+  background-color: #fff3cd; /* Light yellow background */
+  color: #856404; /* Dark yellow text */
+}

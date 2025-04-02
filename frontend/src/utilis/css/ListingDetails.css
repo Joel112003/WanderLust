@@ -1,0 +1,161 @@
+
+/* Keyframe Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes datePickerPop {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}
+
+/* Global Container */
+.container-fluid {
+  padding: var(--spacing-xl);
+}
+.container{
+  margin-top: 100px;
+}
+/* Card Base Styles */
+.card {
+  border: none !important;
+  box-shadow: none !important;
+  background-color: var(--color-transparent);
+  transition: transform var(--transition-smooth);
+}
+
+.card:hover {
+  transform: translateY(-5px);
+}
+
+/* Listing Detail Card */
+.listing-detail-card {
+  animation: fadeIn 0.5s var(--transition-timing);
+}
+
+/* Pulse Button */
+.pulse-button {
+  animation: pulse 2s infinite;
+}
+
+/* Booking Card */
+.booking-card {
+  border: 1px solid var(--color-border-light) !important;
+  border-radius: var(--radius-md);
+  background-color: var(--color-white);
+  padding: var(--spacing-md);
+  box-shadow: var(--shadow-subtle);
+  margin-bottom: var(--spacing-lg);
+  margin-top: 500px;
+  animation: fadeIn 0.5s var(--transition-timing);
+}
+
+.booking-card .card-body {
+  padding: 0;
+}
+
+/* Form Controls */
+.booking-card .form-control,
+.booking-card .form-select {
+  border: 1px solid var(--color-border-medium);
+  border-radius: var(--radius-sm);
+  padding: var(--spacing-xs);
+  width: 100%;
+  margin-bottom: var(--spacing-sm);
+}
+
+/* Date Picker */
+.form-control[type="date"] {
+  padding: var(--spacing-xs);
+  border: 1px solid var(--color-border-input);
+  border-radius: var(--radius-md);
+  transition: border-color var(--transition-smooth), 
+              box-shadow var(--transition-smooth);
+}
+
+.button{
+  color:red;
+}
+
+.form-control[type="date"]:hover,
+.form-control[type="date"]:focus {
+  border-color: var(--color-primary);
+}
+
+.form-control[type="date"]:focus {
+  box-shadow: var(--shadow-focus);
+  outline: none;
+  animation: datePickerPop var(--transition-smooth);
+}
+
+/* Buttons */
+.btn-primary {
+  background-color: var(--color-primary);
+  transition: background-color var(--transition-smooth), 
+              transform var(--transition-smooth);
+}
+
+.btn-primary:hover {
+  background-color: var(--color-primary-hover);
+  transform: scale(1.05);
+}
+
+.booking-card .btn {
+  width: 100%;
+  padding: var(--spacing-sm);
+  border-radius: var(--radius-sm);
+  background-color: var(--color-primary);
+  color: var(--color-white);
+  border: none;
+  transition: background-color var(--transition-smooth), 
+              transform var(--transition-smooth);
+}
+
+.booking-card .btn:hover {
+  background-color: var(--color-primary-hover);
+  transform: scale(1.02);
+}
+
+/* Map */
+#map {
+  height: 400px;
+  width: 100%;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+
+/* Spinner */
+.spinner-border {
+  width: 3rem;
+  height: 3rem;
+}
+
+/* Alert */
+.alert {
+  animation: fadeIn 0.5s var(--transition-timing);
+}

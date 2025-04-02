@@ -1,0 +1,22 @@
+.view-stats {
+  display: flex;
+  align-items: center;
+  padding: 8px 12px;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  margin-left: 16px;
+  font-size: 0.9rem;
+  color: #666;
+}
+
+.view-stats span {
+  margin-left: 4px;
+  font-weight: 500;
+}
+
+.listing-detail-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.5rem;
+}
