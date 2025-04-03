@@ -87,7 +87,6 @@ const Login = () => {
       );
 
       if (data.success) {
-        // Call AuthContext.login to store user data and token
         login(data.user, data.token);
         handleSuccess("Login successful!");
         navigate("/listings");
@@ -110,7 +109,7 @@ const Login = () => {
     }
   };
 
-  // Enhanced animation variants
+  // Animation variants
   const pageTransition = {
     type: "spring",
     stiffness: 100,
@@ -251,31 +250,190 @@ const Login = () => {
     }
   };
 
+  // Inline styles
+  const styles = {
+    pageContainer: {
+      minHeight: "100vh",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      background: "linear-gradient(135deg, #e0e7ff 0%, #e0f2fe 50%, #ede9fe 100%)",
+      backgroundSize: "200% 200%"
+    },
+    formContainer: {
+      backgroundColor: "white",
+      padding: "32px",
+      borderRadius: "12px",
+      boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)",
+      width: "100%",
+      maxWidth: "448px",
+      border: "1px solid #c7d2fe",
+      position: "relative",
+      overflow: "hidden"
+    },
+    decorativeElement1: {
+      position: "absolute",
+      top: 0,
+      right: 0,
+      width: "128px",
+      height: "128px",
+      background: "linear-gradient(135deg, #c7d2fe 0%, #a5b4fc 100%)",
+      borderRadius: "0 0 0 100%",
+      opacity: 0.6,
+      zIndex: -10
+    },
+    decorativeElement2: {
+      position: "absolute",
+      bottom: 0,
+      left: 0,
+      width: "96px",
+      height: "96px",
+      background: "linear-gradient(135deg, #93c5fd 0%, #60a5fa 100%)",
+      borderRadius: "0 100% 0 0",
+      opacity: 0.6,
+      zIndex: -10
+    },
+    title: {
+      fontSize: "36px",
+      fontWeight: 800,
+      textAlign: "center",
+      background: "linear-gradient(90deg, #4f46e5 0%, #2563eb 100%)",
+      WebkitBackgroundClip: "text",
+      backgroundClip: "text",
+      color: "transparent",
+      marginBottom: "24px"
+    },
+    errorBox: {
+      backgroundColor: "#fee2e2",
+      borderLeft: "4px solid #ef4444",
+      color: "#b91c1c",
+      padding: "12px 16px",
+      borderRadius: "8px",
+      marginBottom: "24px",
+      boxShadow: "0 1px 3px rgba(0, 0, 0, 0.1)"
+    },
+    formGroup: {
+      marginBottom: "24px",
+      position: "relative"
+    },
+    label: {
+      display: "block",
+      fontSize: "14px",
+      fontWeight: 500,
+      color: "#374151",
+      marginBottom: "4px"
+    },
+    input: {
+      marginTop: "4px",
+      display: "block",
+      width: "100%",
+      padding: "12px 16px",
+      border: "1px solid #d1d5db",
+      borderRadius: "8px",
+      boxShadow: "0 1px 2px rgba(0, 0, 0, 0.05)",
+      outline: "none",
+      transition: "all 0.3s ease",
+      fontSize: "16px"
+    },
+    inputFocus: {
+      borderColor: "#818cf8",
+      boxShadow: "0 0 0 3px rgba(129, 140, 248, 0.3)",
+      ring: "2px solid #818cf8"
+    },
+    passwordToggle: {
+      position: "absolute",
+      top: "50%",
+      right: "12px",
+      transform: "translateY(-50%)",
+      backgroundColor: "transparent",
+      border: "none",
+      cursor: "pointer",
+      color: "#4b5563",
+      padding: "8px"
+    },
+    submitButton: {
+      width: "100%",
+      background: "linear-gradient(90deg, #4f46e5 0%, #2563eb 100%)",
+      color: "white",
+      padding: "12px 16px",
+      borderRadius: "8px",
+      boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
+      transition: "all 0.3s ease",
+      border: "none",
+      fontSize: "16px",
+      fontWeight: 500,
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      position: "relative",
+      overflow: "hidden"
+    },
+    submitButtonHover: {
+      boxShadow: "0 10px 15px rgba(0, 0, 0, 0.1)"
+    },
+    spinner: {
+      width: "24px",
+      height: "24px",
+      border: "2px solid white",
+      borderTopColor: "transparent",
+      borderRadius: "50%",
+      animation: "spin 1s linear infinite"
+    },
+    linkText: {
+      marginTop: "12px",
+      textAlign: "center",
+      color: "#4b5563",
+      fontSize: "14px"
+    },
+    link: {
+      color: "#4f46e5",
+      fontWeight: 500,
+      textDecoration: "none",
+      transition: "all 0.3s ease",
+      position: "relative",
+      display: "inline-block"
+    },
+    linkHover: {
+      color: "#4338ca",
+      textDecoration: "underline"
+    },
+    linkUnderline: {
+      backgroundImage: "linear-gradient(90deg, #4338ca 0%, #6366f1 100%)",
+      backgroundRepeat: "no-repeat",
+      backgroundPosition: "0 100%",
+      backgroundSize: "0% 2px",
+      transition: "background-size 0.3s ease, color 0.3s ease"
+    },
+    linkUnderlineHover: {
+      backgroundSize: "100% 2px",
+      color: "#4338ca"
+    }
+  };
+
   return (
     <motion.div 
       initial="hidden"
       animate="visible"
       exit="exit"
       variants={bgVariants}
-      className="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-50 via-blue-50 to-purple-50"
-      style={{ backgroundSize: "200% 200%" }}
+      style={styles.pageContainer}
     >
       <motion.div 
         variants={containerVariants}
-        className="bg-white p-8 rounded-xl shadow-2xl w-full max-w-md border border-indigo-100 relative overflow-hidden"
+        style={styles.formContainer}
         initial="hidden"
         animate="visible"
         exit="exit"
       >
         {/* Decorative elements */}
         <motion.div 
-          className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-indigo-200 to-indigo-100 rounded-bl-full opacity-60 -z-10"
+          style={styles.decorativeElement1}
           initial={{ x: 20, y: -20, opacity: 0 }}
           animate={{ x: 0, y: 0, opacity: 0.6 }}
           transition={{ delay: 0.5, duration: 0.8 }}
         />
         <motion.div 
-          className="absolute bottom-0 left-0 w-24 h-24 bg-gradient-to-tr from-blue-200 to-blue-100 rounded-tr-full opacity-60 -z-10"
+          style={styles.decorativeElement2}
           initial={{ x: -20, y: 20, opacity: 0 }}
           animate={{ x: 0, y: 0, opacity: 0.6 }}
           transition={{ delay: 0.7, duration: 0.8 }}
@@ -283,7 +441,7 @@ const Login = () => {
         
         <motion.div
           variants={logoVariants}
-          className="flex justify-center mb-6"
+          style={{ display: "flex", justifyContent: "center", marginBottom: "24px" }}
           initial="hidden"
           animate="visible"
         >
@@ -291,7 +449,7 @@ const Login = () => {
             variants={floatAnimation}
             initial="initial"
             animate="animate"
-            className="text-4xl font-extrabold text-center text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-blue-600"
+            style={styles.title}
           >
             Welcome Back!
           </motion.div>
@@ -303,7 +461,7 @@ const Login = () => {
             initial="hidden"
             animate="visible"
             exit="exit"
-            className="bg-red-100 border-l-4 border-red-500 text-red-700 px-4 py-3 rounded-lg mb-6 shadow-sm"
+            style={styles.errorBox}
           >
             <motion.div 
               animate={{ x: [0, -5, 5, -5, 5, 0] }}
@@ -316,13 +474,13 @@ const Login = () => {
         
         <motion.form 
           onSubmit={handleSubmit} 
-          className="space-y-6"
+          style={{ marginTop: "24px" }}
         >
           <motion.div 
             variants={itemVariants}
-            className="relative"
+            style={styles.formGroup}
           >
-            <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+            <label style={styles.label}>Email</label>
             <motion.div
               initial="initial"
               whileFocus="focus"
@@ -334,18 +492,17 @@ const Login = () => {
                 value={email}
                 placeholder="Enter your email"
                 onChange={handleOnChange}
-                className="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition duration-300"
+                style={styles.input}
                 required
                 disabled={loading}
               />
             </motion.div>
-            {/* Animated indicator icon */}
             {email && (
               <motion.div
                 initial={{ opacity: 0, scale: 0 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ type: "spring", stiffness: 500, damping: 15 }}
-                className="absolute right-3 top-10 text-green-500"
+                style={{ position: "absolute", right: "12px", top: "40px", color: "#10b981" }}
               >
                 ✓
               </motion.div>
@@ -354,14 +511,14 @@ const Login = () => {
           
           <motion.div 
             variants={itemVariants}
-            className="relative"
+            style={styles.formGroup}
           >
-            <label className="block text-sm font-medium text-gray-700 mb-1">Password</label>
+            <label style={styles.label}>Password</label>
             <motion.div
               initial="initial"
               whileFocus="focus"
               variants={inputFocusVariants}
-              className="relative"
+              style={{ position: "relative" }}
             >
               <input
                 type={showPassword ? "text" : "password"}
@@ -369,7 +526,7 @@ const Login = () => {
                 value={password}
                 placeholder="Enter your password"
                 onChange={handleOnChange}
-                className="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition duration-300"
+                style={styles.input}
                 required
                 disabled={loading}
               />
@@ -381,7 +538,7 @@ const Login = () => {
                 initial="initial"
                 whileHover="hover"
                 whileTap="tap"
-                className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-600 cursor-pointer hover:text-indigo-600 transition-all duration-200"
+                style={styles.passwordToggle}
                 aria-label={showPassword ? "Hide password" : "Show password"}
               >
                 {showPassword ? "🙈" : "👁️"}
@@ -399,7 +556,7 @@ const Login = () => {
             <motion.button
               type="submit"
               disabled={loading}
-              className="w-full bg-gradient-to-r from-indigo-600 to-blue-600 text-white py-3 px-4 rounded-lg shadow-md transition duration-300 flex items-center justify-center relative overflow-hidden"
+              style={styles.submitButton}
             >
               {loading ? (
                 <motion.div
@@ -411,12 +568,12 @@ const Login = () => {
                     rotate: { duration: 1, repeat: Infinity, ease: "linear" },
                     scale: { duration: 1.5, repeat: Infinity, ease: "easeInOut" }
                   }}
-                  className="h-6 w-6 border-2 border-white border-t-transparent rounded-full"
+                  style={styles.spinner}
                 />
               ) : (
                 <>
                   <motion.span 
-                    className="font-medium relative z-10"
+                    style={{ position: "relative", zIndex: 10 }}
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     transition={{ delay: 0.2 }}
@@ -424,7 +581,12 @@ const Login = () => {
                     Login
                   </motion.span>
                   <motion.div 
-                    className="absolute inset-0 bg-gradient-to-r from-blue-600 to-indigo-600 opacity-0"
+                    style={{
+                      position: "absolute",
+                      inset: 0,
+                      background: "linear-gradient(90deg, #2563eb 0%, #4f46e5 100%)",
+                      opacity: 0
+                    }}
                     whileHover={{ opacity: 1 }}
                     transition={{ duration: 0.6 }}
                   />
@@ -436,16 +598,16 @@ const Login = () => {
         
         <motion.p 
           variants={itemVariants}
-          className="mt-3 text-center text-gray-600"
+          style={styles.linkText}
         >
           Don't have an account?{" "}
           <motion.span 
             whileHover={{ scale: 1.05 }}
-            className="inline-block"
+            style={{ display: "inline-block" }}
           >
             <Link
               to="/auth/signup"
-              className="text-indigo-600 hover:text-indigo-800 font-medium transition duration-300 hover:underline"
+              style={styles.link}
             >
               <motion.span
                 initial={{ backgroundSize: "0% 2px" }}
@@ -453,12 +615,7 @@ const Login = () => {
                   backgroundSize: "100% 2px",
                   color: "#4338ca" 
                 }}
-                style={{ 
-                  backgroundImage: "linear-gradient(to right, #4338ca, #6366f1)",
-                  backgroundRepeat: "no-repeat",
-                  backgroundPosition: "0 100%",
-                  transition: "background-size 0.3s, color 0.3s"
-                }}
+                style={styles.linkUnderline}
               >
                 Sign Up
               </motion.span>

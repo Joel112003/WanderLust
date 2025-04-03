@@ -14,12 +14,14 @@ import "./utilis/css/Map.css";
 import "./utilis/css/Navbar.css";
 import "./utilis/css/CreateListing.css";
 import "./utilis/css/ProfileMenu.css";
+import { Analytics } from "@vercel/analytics/react"
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <BrowserRouter>
     <AuthProvider>
       <App /> {/* Wrap your App component with BrowserRouter and AuthProvider */}
+      <Analytics/>
     </AuthProvider>
   </BrowserRouter>
 );

@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import {
   MapPin,
   Users,
@@ -289,21 +289,23 @@ const HeroSearch = () => {
   };
 
   const handleGuestChange = (category, operation, e) => {
+    e.preventDefault();
     e.stopPropagation();
-    setGuestCategories((prev) => {
+    
+    setGuestCategories(prev => {
       const currentValue = prev[category];
-      const maxLimit = guestCategoryDetails.find(
-        (cat) => cat.key === category
-      ).maxLimit;
-
-      if (operation === "increase" && currentValue >= maxLimit) return prev;
-
+      const maxLimit = guestCategoryDetails.find(cat => cat.key === category).maxLimit;
+      
+      let newValue = currentValue;
+      if (operation === "increase" && currentValue < maxLimit) {
+        newValue = currentValue + 1;
+      } else if (operation === "decrease" && currentValue > 0) {
+        newValue = currentValue - 1;
+      }
+      
       return {
         ...prev,
-        [category]:
-          operation === "increase"
-            ? currentValue + 1
-            : Math.max(0, currentValue - 1),
+        [category]: newValue
       };
     });
   };
@@ -736,9 +738,8 @@ const HeroSearch = () => {
                       </div>
                       <div className="flex items-center space-x-3">
                         <motion.button
-                          onClick={(e) =>
-                            handleGuestChange(category.key, "decrease", e)
-                          }
+                          type="button"
+                          onClick={(e) => handleGuestChange(category.key, "decrease", e)}
                           disabled={guestCategories[category.key] === 0}
                           className={`w-8 h-8 flex items-center justify-center rounded-full border transition-colors ${
                             guestCategories[category.key] === 0
@@ -754,9 +755,8 @@ const HeroSearch = () => {
                           {guestCategories[category.key]}
                         </span>
                         <motion.button
-                          onClick={(e) =>
-                            handleGuestChange(category.key, "increase", e)
-                          }
+                          type="button"
+                          onClick={(e) => handleGuestChange(category.key, "increase", e)}
                           disabled={
                             guestCategories[category.key] >=
                             category.maxLimit
@@ -774,6 +774,14 @@ const HeroSearch = () => {
                       </div>
                     </div>
                   ))}
+                  <div className="flex justify-end pt-4 border-t border-gray-100">
+                    <button 
+                      onClick={() => setActiveField(null)}
+                      className="px-4 py-2 bg-red-500 text-white text-sm rounded-lg hover:bg-red-600 transition-colors"
+                    >
+                      Apply
+                    </button>
+                  </div>
                 </div>
               </div>
             </motion.div>,
