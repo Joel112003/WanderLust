@@ -1,5 +1,5 @@
 require("dotenv").config(); // Load env variables immediately
-require('./config/secretGenerator'); // Then ensure secrets exist
+require("./config/secretGenerator"); // Then ensure secrets exist
 
 const express = require("express");
 const mongoose = require("mongoose");
@@ -15,19 +15,45 @@ const Booking = require("./models/Booking");
 const app = express();
 
 // CORS configuration
-app.use(cors({
-  origin: ['http://localhost:5000', process.env.FRONTEND_URL],
-  credentials: true,
-  allowedHeaders: ['Content-Type', 'Authorization'],
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  exposedHeaders: ['Content-Length', 'Content-Type']
-}));
+const allowedOrigins = [
+  "http://localhost:3000", // Default React port
+  "https://wander-lust-mauve.vercel.app", // Your Vercel URL (no underscores)
+  process.env.FRONTEND_URL, // Fallback
+].filter(Boolean); // Removes undefined values
+
+app.use(
+  cors({
+    origin: (origin, callback) => {
+      // Allow requests with no origin (like mobile apps or Postman)
+      if (!origin) return callback(null, true);
+
+      if (
+        allowedOrigins.some(
+          (allowedOrigin) =>
+            origin.startsWith(allowedOrigin) ||
+            origin.includes(allowedOrigin.replace(/https?:\/\//, ""))
+        )
+      ) {
+        return callback(null, true);
+      }
+
+      const error = new Error(`Origin ${origin} not allowed by CORS`);
+      error.status = 403;
+      return callback(error);
+    },
+    credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With"],
+    exposedHeaders: ["Content-Length", "X-Total-Count"], // Useful for pagination
+    maxAge: 86400, // Cache preflight requests for 24 hours
+  })
+);
 
 // MongoDB connection
 mongoose
-  .connect(process.env.ATLAS_DB, { 
+  .connect(process.env.ATLAS_DB, {
     useNewUrlParser: true,
-    useUnifiedTopology: true
+    useUnifiedTopology: true,
   })
   .then(() => console.log("✅ MongoDB connected"))
   .catch((err) => {
@@ -43,50 +69,58 @@ app.use(cookieParser());
 // app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // Serve static files from the dist directory
-app.use('/dist', express.static(path.join(__dirname, 'dist'), {
-  setHeaders: (res, path) => {
-    if (path.endsWith('.css')) {
-      res.setHeader('Content-Type', 'text/css');
-    }
-  }
-}));
+app.use(
+  "/dist",
+  express.static(path.join(__dirname, "dist"), {
+    setHeaders: (res, path) => {
+      if (path.endsWith(".css")) {
+        res.setHeader("Content-Type", "text/css");
+      }
+    },
+  })
+);
 
 // Serve frontend static files (for CSS and other assets)
-app.use('/src', express.static(path.join(__dirname, '..', 'frontend', 'src'), {
-  setHeaders: (res, path) => {
-    if (path.endsWith('.css')) {
-      res.setHeader('Content-Type', 'text/css');
-    }
-  }
-}));
+app.use(
+  "/src",
+  express.static(path.join(__dirname, "..", "frontend", "src"), {
+    setHeaders: (res, path) => {
+      if (path.endsWith(".css")) {
+        res.setHeader("Content-Type", "text/css");
+      }
+    },
+  })
+);
 
 // Serve frontend public directory
-app.use(express.static(path.join(__dirname, '..', 'frontend', 'public'), {
-  setHeaders: (res, path) => {
-    if (path.endsWith('.css')) {
-      res.setHeader('Content-Type', 'text/css');
-    }
-  }
-}));
+app.use(
+  express.static(path.join(__dirname, "..", "frontend", "public"), {
+    setHeaders: (res, path) => {
+      if (path.endsWith(".css")) {
+        res.setHeader("Content-Type", "text/css");
+      }
+    },
+  })
+);
 
 // Session configuration
 app.use(
   session({
-    secret: process.env.JWT_SECRET?.toString() || 'fallback-secret-key',
+    secret: process.env.JWT_SECRET?.toString() || "fallback-secret-key",
     resave: false,
     saveUninitialized: false,
     store: MongoStore.create({
       mongoUrl: process.env.ATLAS_DB,
       touchAfter: 24 * 3600, // 24 hours
       crypto: {
-        secret: false // Disable encryption for session data
-      }
+        secret: false, // Disable encryption for session data
+      },
     }),
     cookie: {
-      secure: process.env.NODE_ENV === 'production',
+      secure: process.env.NODE_ENV === "production",
       httpOnly: true,
-      maxAge: 1000 * 60 * 60 * 24 * 7 // 7 days
-    }
+      maxAge: 1000 * 60 * 60 * 24 * 7, // 7 days
+    },
   })
 );
 
@@ -110,8 +144,8 @@ app.use("/notifications", notificationRoutes);
 // Global Error Handler
 app.use((err, req, res, next) => {
   console.error("❌ SERVER ERROR:", err);
-  res.status(err.status || 500).json({ 
-    error: err.message || "Something went wrong!" 
+  res.status(err.status || 500).json({
+    error: err.message || "Something went wrong!",
   });
 });
 
