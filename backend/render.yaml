@@ -3,7 +3,7 @@ services:
     name: wanderlust
     runtime: node
     buildCommand: npm run build
-    startCommand: nodemon app.js
+    startCommand: node app.js
     envVars:
       - key: ATLAS_DB
          sync: false  
