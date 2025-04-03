@@ -541,7 +541,7 @@ const Login = () => {
                 style={styles.passwordToggle}
                 aria-label={showPassword ? "Hide password" : "Show password"}
               >
-                {showPassword ? "🙈" : "👁️"}
+                {showPassword ? "" : ""}
               </motion.button>
             </motion.div>
           </motion.div>
