@@ -1,6 +1,10 @@
 require("dotenv").config(); // Load env variables immediately
 require("./config/secretGenerator"); // Then ensure secrets exist
 
+console.log("[ENV] FRONTEND_URL:", process.env.FRONTEND_URL);
+console.log("[ENV] NODE_ENV:", process.env.NODE_ENV);
+
+
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
@@ -16,36 +20,32 @@ const app = express();
 
 // CORS configuration
 const allowedOrigins = [
-  "http://localhost:3000", // Default React port
-  "https://wander-lust-mauve.vercel.app", // Your Vercel URL (no underscores)
-  process.env.FRONTEND_URL, // Fallback
-].filter(Boolean); // Removes undefined values
+  "https://wander-lust-mauve-rho.vercel.app", // Your Vercel frontend
+  "http://localhost:3000", // Local development
+  process.env.FRONTEND_URL, // Environment variable fallback
+].filter(Boolean); // Removes any undefined values
 
 app.use(
   cors({
-    origin: (origin, callback) => {
-      // Allow requests with no origin (like mobile apps or Postman)
+    origin: function (origin, callback) {
+      // Allow requests with no origin (e.g., mobile apps, Postman)
       if (!origin) return callback(null, true);
 
-      if (
-        allowedOrigins.some(
-          (allowedOrigin) =>
-            origin.startsWith(allowedOrigin) ||
-            origin.includes(allowedOrigin.replace(/https?:\/\//, ""))
-        )
-      ) {
-        return callback(null, true);
-      }
+      // Case-insensitive comparison for origins
+      const originHost = new URL(origin).hostname.replace("www.", "");
+      const isAllowed = allowedOrigins.some((allowed) => {
+        const allowedHost = new URL(allowed).hostname.replace("www.", "");
+        return originHost === allowedHost;
+      });
 
-      const error = new Error(`Origin ${origin} not allowed by CORS`);
-      error.status = 403;
-      return callback(error);
+      isAllowed
+        ? callback(null, true)
+        : callback(new Error(`Origin ${origin} blocked by CORS`), false);
     },
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With"],
-    exposedHeaders: ["Content-Length", "X-Total-Count"], // Useful for pagination
-    maxAge: 86400, // Cache preflight requests for 24 hours
+    allowedHeaders: ["Content-Type", "Authorization"],
+    maxAge: 600, // Cache preflight requests for 10 minutes
   })
 );
 
