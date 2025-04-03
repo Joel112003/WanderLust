@@ -1,0 +1,16 @@
+services:
+  - type: web
+    name: wanderlust
+    runtime: node
+    buildCommand: npm run build
+    startCommand: nodemon app.js
+    envVars:
+      - key: ATLAS_DB
+         sync: false  
+        fromDatabase:
+          name: wanderlust
+          property: connectionString
+      - key: JWT_SECRET
+        generateValue: true
+      - key: NODE_ENV
+        value: production
