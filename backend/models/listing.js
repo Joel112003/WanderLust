@@ -26,7 +26,7 @@ const listingSchema = new Schema({
   price: { type: Number, required: true, min: 0 },
   location: { type: String, required: true },
   country: { type: String, required: true },
-  reviews: [{ type: Schema.Types.ObjectId, ref: "Review" }],
+  reviews: [{ type: mongoose.Schema.Types.ObjectId, ref: "Review" }],
   owner: { type: Schema.Types.ObjectId, ref: "User" },
   views: { type: Number, default: 0 },
   uniqueViews: [{ type: String }], // Store unique viewer IPs

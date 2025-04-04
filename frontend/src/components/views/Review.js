@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import axios from "axios";
 import "../../utilis/css/ListingDetails.css";
 import "../../utilis/css/Review.css";
@@ -17,27 +17,10 @@ const Review = ({ listingId }) => {
   const [overallRating, setOverallRating] = useState(4.84);
 
   // Get token from localStorage
-  const getToken = () => localStorage.getItem("token");
-
-  // Fetch user details if token exists
-  useEffect(() => {
-    const token = getToken();
-    if (token) {
-      fetchUserDetails(token);
-    }
-  }, []);
-
-  // Fetch reviews whenever listingId changes
-  useEffect(() => {
-    if (listingId) {
-      fetchReviews();
-    }
-  }, [listingId]);
-
-  
+  const getToken = useCallback(() => localStorage.getItem("token"), []);
 
   // Fetch user details from backend
-  const fetchUserDetails = async (token) => {
+  const fetchUserDetails = useCallback(async (token) => {
     try {
       const response = await axios.get(profileEndpoint, {
         headers: { Authorization: `Bearer ${token}` },
@@ -47,32 +30,61 @@ const Review = ({ listingId }) => {
     } catch (error) {
       console.error("Failed to fetch user details:", error);
     }
-  };
+  }, []);
 
   // Fetch reviews for the listing
-  const fetchReviews = async () => {
-    try {
-      setLoading(true);
-      const response = await axios.get(
-        `${API_URL}/api/listings/${listingId}/reviews`
-      );
-      const reviewsData = response.data.reviews || response.data;
-      setReviews(reviewsData);
-
-      // Calculate overall rating
-      if (reviewsData.length > 0) {
-        const avgRating =
-          reviewsData.reduce((sum, review) => sum + review.rating, 0) /
-          reviewsData.length;
-        setOverallRating(avgRating);
+const fetchReviews = async () => {
+  try {
+    setLoading(true);
+    const response = await axios.get(
+      `${API_URL}/listings/${listingId}/reviews`,
+      {
+        params: {
+          page: 1,
+          limit: 10
+        }
       }
-    } catch (error) {
-      setError("Failed to load reviews");
-      console.error("Review fetch error:", error);
-    } finally {
-      setLoading(false);
+    );
+    
+    if (response.data.success) {
+      setReviews(response.data.reviews);
+      // Calculate average rating if needed
+      if (response.data.reviews.length > 0) {
+        const avg = response.data.reviews.reduce(
+          (sum, r) => sum + r.rating, 0
+        ) / response.data.reviews.length;
+        setOverallRating(avg);
+      }
     }
-  };
+  } catch (error) {
+    if (error.response) {
+      // Handle different error statuses
+      if (error.response.status === 404) {
+        setError("This listing has no reviews yet");
+        setReviews([]);
+      } else {
+        setError(error.response.data.message || "Error loading reviews");
+      }
+    } else {
+      setError("Network error - could not connect to server");
+    }
+  } finally {
+    setLoading(false);
+  }
+};
+
+  // Fetch user details if token exists
+  useEffect(() => {
+    const token = getToken();
+    if (token) {
+      fetchUserDetails(token);
+    }
+  }, [getToken, fetchUserDetails]);
+
+  // Fetch reviews whenever listingId changes
+  useEffect(() => {
+    fetchReviews();
+  }, [fetchReviews]);
 
   // Submit a new review
   const handleSubmitReview = async (e) => {
@@ -89,7 +101,7 @@ const Review = ({ listingId }) => {
     try {
       setLoading(true);
       const response = await axios.post(
-        `${API_URL}/api/listings/${listingId}/reviews`,
+        `${API_URL}/listings/${listingId}/reviews`,
         { rating, comment },
         {
           headers: {
@@ -120,6 +132,7 @@ const Review = ({ listingId }) => {
           err.response?.data?.message ||
           "Failed to submit review."
       );
+      console.error("Submit review error:", err);
     } finally {
       setLoading(false);
     }
@@ -135,7 +148,7 @@ const Review = ({ listingId }) => {
     try {
       setDeleteLoading(true);
       await axios.delete(
-        `${API_URL}/api/listings/${listingId}/reviews/${reviewId}`,
+        `${API_URL}/listings/${listingId}/reviews/${reviewId}`,
         {
           headers: { Authorization: `Bearer ${token}` },
         }
@@ -143,18 +156,19 @@ const Review = ({ listingId }) => {
       const updatedReviews = reviews.filter((r) => r._id !== reviewId);
       setReviews(updatedReviews);
 
-      // Recalculate overall rating
       if (updatedReviews.length > 0) {
         const avgRating =
           updatedReviews.reduce((sum, review) => sum + review.rating, 0) /
           updatedReviews.length;
         setOverallRating(avgRating);
       } else {
-        // Reset to default rating if no reviews left
         setOverallRating(0);
       }
     } catch (err) {
-      setError(err.response?.data?.message || "Failed to delete review.");
+      setError(
+        err.response?.data?.message || 
+        "Failed to delete review. Please try again later."
+      );
       console.error("Delete review error:", err);
     } finally {
       setDeleteLoading(false);

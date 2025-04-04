@@ -5,7 +5,7 @@ import { AuthProvider } from "./AuthContext"; // Correct import path
 import App from "./App";
 import "./index.css";
 import "react-toastify/dist/ReactToastify.css";
-// Import all CSS files
+
 import { Analytics } from "@vercel/analytics/react"
 
 const root = ReactDOM.createRoot(document.getElementById("root"));

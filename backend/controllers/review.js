@@ -23,59 +23,55 @@ const validateReviewInput = (data) => {
 };
 
 // 🚀 Get All Reviews
+
 module.exports.getAllReviews = async (req, res) => {
   try {
     const { listingId } = req.params;
-    const { page = 1, limit = 10 } = req.query;
+    
+    // Validate listing ID format
     if (!mongoose.Types.ObjectId.isValid(listingId)) {
-      return res
-        .status(400)
-        .json({ success: false, message: "Invalid listing ID" });
+      return res.status(400).json({ 
+        success: false, 
+        message: "Invalid listing ID format" 
+      });
     }
+
+    // Check if listing exists
     const listing = await Listing.findById(listingId);
     if (!listing) {
-      return res
-        .status(404)
-        .json({ success: false, message: "Listing not found" });
-    }
-    const skip = (Number(page) - 1) * Number(limit);
-    // Find reviews that are in the listing.reviews array and populate the author (username and _id)
-    const reviews = await Review.find({ _id: { $in: listing.reviews } })
-      .sort({ createdAt: -1 })
-      .skip(skip)
-      .limit(Number(limit))
-      .populate({
-        path: "author",
-        select: "username",
-        options: { strictPopulate: false },
+      return res.status(404).json({ 
+        success: false, 
+        message: "Listing not found" 
       });
+    }
 
-    const totalReviews = await Review.countDocuments({
-      _id: { $in: listing.reviews },
-    });
-    const formattedReviews = reviews.map((review) => ({
-      ...review.toObject(),
-      username: review.author
-        ? review.author.username
-        : review.authorName || "Anonymous",
-    }));
+    // Get reviews with pagination
+    const { page = 1, limit = 10 } = req.query;
+    const reviews = await Review.find({ listing: listingId })
+      .sort({ createdAt: -1 })
+      .skip((page - 1) * limit)
+      .limit(limit)
+      .populate("author", "username");
+
+    const totalReviews = await Review.countDocuments({ listing: listingId });
 
     res.status(200).json({
       success: true,
-      totalReviews,
-      totalPages: Math.ceil(totalReviews / limit),
-      currentPage: Number(page),
-      reviews: formattedReviews,
+      reviews,
+      pagination: {
+        total: totalReviews,
+        pages: Math.ceil(totalReviews / limit),
+        page: Number(page),
+        limit: Number(limit)
+      }
     });
+
   } catch (error) {
-    console.error("Get Reviews Error:", error);
-    res
-      .status(500)
-      .json({
-        success: false,
-        message: "Failed to fetch reviews",
-        error: error.message,
-      });
+    console.error("Error fetching reviews:", error);
+    res.status(500).json({ 
+      success: false, 
+      message: "Server error fetching reviews" 
+    });
   }
 };
 
@@ -108,12 +104,10 @@ module.exports.addReview = async (req, res) => {
       listing: listingId,
     });
     if (existingReview) {
-      return res
-        .status(400)
-        .json({
-          success: false,
-          message: "You have already reviewed this listing",
-        });
+      return res.status(400).json({
+        success: false,
+        message: "You have already reviewed this listing",
+      });
     }
     const newReview = new Review({
       comment: req.body.comment,
@@ -127,22 +121,18 @@ module.exports.addReview = async (req, res) => {
     await listing.save();
     // Populate author field so _id and username are available
     await newReview.populate("author", "username");
-    res
-      .status(201)
-      .json({
-        success: true,
-        message: "Review added successfully",
-        review: newReview,
-      });
+    res.status(201).json({
+      success: true,
+      message: "Review added successfully",
+      review: newReview,
+    });
   } catch (error) {
     console.error("Add Review Error:", error);
-    res
-      .status(500)
-      .json({
-        success: false,
-        message: "Failed to add review",
-        error: error.message,
-      });
+    res.status(500).json({
+      success: false,
+      message: "Failed to add review",
+      error: error.message,
+    });
   }
 };
 
@@ -169,12 +159,10 @@ module.exports.deleteReview = async (req, res) => {
     }
     // Ensure the logged-in user is the review author
     if (review.author.toString() !== req.user._id.toString()) {
-      return res
-        .status(403)
-        .json({
-          success: false,
-          message: "Not authorized to delete this review",
-        });
+      return res.status(403).json({
+        success: false,
+        message: "Not authorized to delete this review",
+      });
     }
     await Listing.findByIdAndUpdate(listingId, {
       $pull: { reviews: reviewId },
@@ -185,12 +173,10 @@ module.exports.deleteReview = async (req, res) => {
       .json({ success: true, message: "Review deleted successfully" });
   } catch (error) {
     console.error("Delete Review Error:", error);
-    res
-      .status(500)
-      .json({
-        success: false,
-        message: "Failed to delete review",
-        error: error.message,
-      });
+    res.status(500).json({
+      success: false,
+      message: "Failed to delete review",
+      error: error.message,
+    });
   }
 };

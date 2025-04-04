@@ -255,7 +255,7 @@ const CreateListing = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-6 py-12 bg-gradient-to-br from-blue-50 to-indigo-50 mt-10">
+    <div className="min-h-screen flex items-center justify-center px-6 py-12  mt-20">
       {showConfetti && (
         <Confetti
           width={window.innerWidth}

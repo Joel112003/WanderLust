@@ -18,6 +18,9 @@ import { useNavigate } from "react-router-dom";
 import ReactDOM from "react-dom";
 import "../../utilis/css/HeroSearch.css";
 
+// API Configuration
+const API_BASE_URL = process.env.REACT_APP_API_URL || "http://localhost:8000";
+
 const dropdownVariants = {
   hidden: {
     opacity: 0,
@@ -142,7 +145,7 @@ const HeroSearch = () => {
   };
 
   const clearDates = (e) => {
-    e.stopPropagation();
+    e?.stopPropagation();
     setCheckInDate(new Date());
     setCheckOutDate(new Date(new Date().setDate(new Date().getDate() + 1)));
     setDateSelectionPhase("none");
@@ -157,6 +160,11 @@ const HeroSearch = () => {
   };
 
   const handleDateClick = (date) => {
+    // Don't allow selection of past dates
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    if (date < today) return;
+
     if (dateSelectionPhase === "none" || dateSelectionPhase === "complete") {
       setCheckInDate(date);
       setCheckOutDate(null);
@@ -189,10 +197,12 @@ const HeroSearch = () => {
     );
     const days = [];
 
+    // Empty cells for days before the first day of the month
     for (let i = 0; i < firstDayOfMonth; i++) {
       days.push(<div key={`empty-${i}`} className="h-8 w-8"></div>);
     }
 
+    // Actual days of the month
     for (let day = 1; day <= daysInMonth; day++) {
       const date = new Date(
         checkInDate.getFullYear(),
@@ -221,7 +231,7 @@ const HeroSearch = () => {
             ${isPast ? "text-gray-300 cursor-not-allowed" : "hover:bg-red-100"}
             transition-colors`}
           style={{
-            backgroundColor: isCheckIn || isCheckOut ? "#ef4444" : isInRange ? "#fee2e2" : isToday ? "#f3f4f6" : "white",
+            backgroundColor: isCheckIn || isCheckOut ? "#ef4444" : isInRange ? "#fee2e2" : isToday ? "transparent" : "transparent",
             position: "relative"
           }}
         >
@@ -244,34 +254,27 @@ const HeroSearch = () => {
   };
 
   const nextMonth = () => {
-    if (checkInDate.getMonth() === 11) {
-      setCheckInDate(
-        new Date(checkInDate.getFullYear() + 1, 0, checkInDate.getDate())
-      );
-    } else {
-      setCheckInDate(
-        new Date(checkInDate.getFullYear(), checkInDate.getMonth() + 1, 1)
-      );
-    }
+    const newDate = new Date(checkInDate);
+    newDate.setMonth(newDate.getMonth() + 1);
+    setCheckInDate(newDate);
   };
 
   const prevMonth = () => {
-    if (checkInDate.getMonth() === 0) {
-      setCheckInDate(
-        new Date(checkInDate.getFullYear() - 1, 11, checkInDate.getDate())
-      );
-    } else {
-      setCheckInDate(
-        new Date(checkInDate.getFullYear(), checkInDate.getMonth() - 1, 1)
-      );
-    }
+    const newDate = new Date(checkInDate);
+    newDate.setMonth(newDate.getMonth() - 1);
+    setCheckInDate(newDate);
   };
 
   useEffect(() => {
     const handleClickOutside = (event) => {
-      if (activeField) {
-        const currentRef = dropdownRef;
-        if (currentRef.current && !currentRef.current.contains(event.target)) {
+      if (activeField && dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        // Check if the click was on a date in the calendar
+        const isDateClick = event.target.closest('.calendar-date');
+        
+        // Check if the click was on a guest control button
+        const isGuestControlClick = event.target.closest('.guest-control');
+        
+        if (!isDateClick && !isGuestControlClick) {
           setActiveField(null);
         }
       }
@@ -358,7 +361,7 @@ const HeroSearch = () => {
         autoClose: 1000,
       });
 
-      const response = await axios.get("/listings/search", {
+      const response = await axios.get(`${API_BASE_URL}/listings/search`, {
         params: searchCriteria,
       });
 
@@ -398,7 +401,7 @@ const HeroSearch = () => {
   };
 
   return (
-    <div className="w-full max-w-4xl mx-auto p-4 mt-15 relative z-50">
+    <div className="w-full max-w-4xl mx-auto p-4 mt-20 relative z-50">
       <ToastContainer 
         position="bottom-right"
         autoClose={3000}
@@ -585,7 +588,7 @@ const HeroSearch = () => {
               initial="hidden"
               animate="visible"
               exit="exit"
-              className="dropdown-portal"
+              className="dropdown-portal calendar-date"
               style={{ 
                 zIndex: 9999,
                 position: "absolute",
@@ -599,11 +602,11 @@ const HeroSearch = () => {
                 <div className="flex justify-between items-center mb-4">
                   <button
                     onClick={prevMonth}
-                    className="p-1 rounded-full hover:bg-gray-100"
+                    className="p-1 rounded-full hover:bg-gray-100 calendar-date"
                   >
-                    <ChevronDown className="w-5 h-5 rotate-90 text-gray-500" />
+                    <ChevronDown className="w-5 h-5 rotate-90 text-gray-500 calendar-date" />
                   </button>
-                  <h3 className="font-medium">
+                  <h3 className="font-medium calendar-date">
                     {new Date(
                       checkInDate.getFullYear(),
                       checkInDate.getMonth()
@@ -612,23 +615,23 @@ const HeroSearch = () => {
                       year: "numeric",
                     })}
                   </h3>
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-2 calendar-date">
                     <button
                       onClick={clearDates}
-                      className="text-xs text-red-500 hover:underline"
+                      className="text-xs text-red-500 hover:underline calendar-date"
                     >
                       Clear
                     </button>
                     <button
                       onClick={nextMonth}
-                      className="p-1 rounded-full hover:bg-gray-100"
+                      className="p-1 rounded-full hover:bg-gray-100 calendar-date"
                     >
-                      <ChevronDown className="w-5 h-5 -rotate-90 text-gray-500" />
+                      <ChevronDown className="w-5 h-5 -rotate-90 text-gray-500 calendar-date" />
                     </button>
                   </div>
                 </div>
                 
-                <div className="mb-2 text-center">
+                <div className="mb-2 text-center calendar-date">
                   <div className="text-sm text-gray-600">
                     {dateSelectionPhase === "none" ? "Select check-in date" : 
                      dateSelectionPhase === "start" ? "Select check-out date" : 
@@ -636,11 +639,11 @@ const HeroSearch = () => {
                   </div>
                 </div>
                 
-                <div className="grid grid-cols-7 gap-1 mt-4 mb-8" style={{ backgroundColor: "white" }}>
+                <div className="grid grid-cols-7 gap-1 mt-4 mb-8 calendar-date" style={{ backgroundColor: "white" }}>
                   {["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"].map((day) => (
                     <div
                       key={day}
-                      className="h-8 w-8 flex items-center justify-center text-xs text-gray-500 font-medium"
+                      className="h-8 w-8 flex items-center justify-center text-xs text-gray-500 font-medium calendar-date"
                       style={{ backgroundColor: "white" }}
                     >
                       {day}
@@ -649,7 +652,7 @@ const HeroSearch = () => {
                   {renderCalendar()}
                 </div>
                 
-                <div className="flex justify-between items-center pt-2 border-t border-gray-100">
+                <div className="flex justify-between items-center pt-2 border-t border-gray-100 calendar-date">
                   <div className="text-sm">
                     <span className="font-medium">Selected: </span>
                     {formatDate(checkInDate)} 
@@ -657,7 +660,7 @@ const HeroSearch = () => {
                   </div>
                   <button 
                     onClick={() => setActiveField(null)}
-                    className="px-3 py-1 bg-red-500 text-white text-sm rounded-lg hover:bg-red-600"
+                    className="px-3 py-1 bg-red-500 text-white text-sm rounded-lg hover:bg-red-600 calendar-date"
                     disabled={dateSelectionPhase !== "complete" && checkInDate && !checkOutDate}
                   >
                     Apply
@@ -722,26 +725,26 @@ const HeroSearch = () => {
                   {guestCategoryDetails.map((category) => (
                     <div
                       key={category.key}
-                      className="flex items-center justify-between bg-white"
+                      className="flex items-center justify-between bg-white guest-control"
                       style={{ backgroundColor: "white" }}
                     >
-                      <div className="flex items-center space-x-3">
-                        <span className="text-2xl">{category.icon}</span>
-                        <div>
-                          <div className="font-medium text-sm">
+                      <div className="flex items-center space-x-3 guest-control">
+                        <span className="text-2xl guest-control">{category.icon}</span>
+                        <div className="guest-control">
+                          <div className="font-medium text-sm guest-control">
                             {category.label}
                           </div>
-                          <div className="text-xs text-gray-500">
+                          <div className="text-xs text-gray-500 guest-control">
                             {category.description}
                           </div>
                         </div>
                       </div>
-                      <div className="flex items-center space-x-3">
+                      <div className="flex items-center space-x-3 guest-control">
                         <motion.button
                           type="button"
                           onClick={(e) => handleGuestChange(category.key, "decrease", e)}
                           disabled={guestCategories[category.key] === 0}
-                          className={`w-8 h-8 flex items-center justify-center rounded-full border transition-colors ${
+                          className={`w-8 h-8 flex items-center justify-center rounded-full border transition-colors guest-control ${
                             guestCategories[category.key] === 0
                               ? "bg-gray-100 text-gray-300 cursor-not-allowed"
                               : "bg-white text-gray-600 hover:bg-red-50 hover:border-red-200"
@@ -749,9 +752,9 @@ const HeroSearch = () => {
                           whileTap={{ scale: 0.9 }}
                           style={{ backgroundColor: guestCategories[category.key] === 0 ? "#f3f4f6" : "white" }}
                         >
-                          <Minus className="w-4 h-4" />
+                          <Minus className="w-4 h-4 guest-control" />
                         </motion.button>
-                        <span className="w-8 text-center">
+                        <span className="w-8 text-center guest-control">
                           {guestCategories[category.key]}
                         </span>
                         <motion.button
@@ -761,7 +764,7 @@ const HeroSearch = () => {
                             guestCategories[category.key] >=
                             category.maxLimit
                           }
-                          className={`w-8 h-8 flex items-center justify-center rounded-full border transition-colors ${
+                          className={`w-8 h-8 flex items-center justify-center rounded-full border transition-colors guest-control ${
                             guestCategories[category.key] >= category.maxLimit
                               ? "bg-gray-100 text-gray-300 cursor-not-allowed"
                               : "bg-white text-gray-600 hover:bg-red-50 hover:border-red-200"
@@ -769,15 +772,15 @@ const HeroSearch = () => {
                           whileTap={{ scale: 0.9 }}
                           style={{ backgroundColor: guestCategories[category.key] >= category.maxLimit ? "#f3f4f6" : "white" }}
                         >
-                          <Plus className="w-4 h-4" />
+                          <Plus className="w-4 h-4 guest-control" />
                         </motion.button>
                       </div>
                     </div>
                   ))}
-                  <div className="flex justify-end pt-4 border-t border-gray-100">
+                  <div className="flex justify-end pt-4 border-t border-gray-100 guest-control">
                     <button 
                       onClick={() => setActiveField(null)}
-                      className="px-4 py-2 bg-red-500 text-white text-sm rounded-lg hover:bg-red-600 transition-colors"
+                      className="px-4 py-2 bg-red-500 text-white text-sm rounded-lg hover:bg-red-600 transition-colors guest-control"
                     >
                       Apply
                     </button>

@@ -4,7 +4,6 @@ import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { AuthContext } from "../../AuthContext";
-import { motion } from "framer-motion";
 
 const API_URL = process.env.REACT_APP_API_URL || "http://localhost:8000";
 const loginEndpoint = `${API_URL}/auth/login`;
@@ -34,12 +33,6 @@ const Login = () => {
       draggable: true,
       progress: undefined,
       theme: "colored",
-      style: {
-        backgroundColor: "#EF4444",
-        borderRadius: "10px",
-        fontWeight: "500",
-        boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
-      },
     });
 
   const handleSuccess = (msg) =>
@@ -48,16 +41,10 @@ const Login = () => {
       autoClose: 2000,
       hideProgressBar: false,
       closeOnClick: true,
-      pauseOnHover: true,
+      pauseOnHover: false,
       draggable: true,
       progress: undefined,
       theme: "colored",
-      style: {
-        backgroundColor: "#4F46E5",
-        borderRadius: "10px",
-        fontWeight: "500",
-        boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
-      },
     });
 
   const handleSubmit = async (e) => {
@@ -89,7 +76,7 @@ const Login = () => {
       if (data.success) {
         login(data.user, data.token);
         handleSuccess("Login successful!");
-        navigate("/listings");
+        setTimeout(() => navigate("/listings"), 1500);
       }
     } catch (err) {
       let errorMessage = "Network error. Please try again.";
@@ -109,522 +96,100 @@ const Login = () => {
     }
   };
 
-  // Animation variants
-  const pageTransition = {
-    type: "spring",
-    stiffness: 100,
-    damping: 20
-  };
-
-  const containerVariants = {
-    hidden: { opacity: 0, scale: 0.9 },
-    visible: {
-      opacity: 1,
-      scale: 1,
-      transition: {
-        duration: 0.5,
-        delayChildren: 0.2,
-        staggerChildren: 0.1
-      }
-    },
-    exit: {
-      opacity: 0,
-      scale: 0.95,
-      transition: { duration: 0.3 }
-    }
-  };
-
-  const itemVariants = {
-    hidden: { y: 20, opacity: 0 },
-    visible: {
-      y: 0,
-      opacity: 1,
-      transition: {
-        type: "spring",
-        stiffness: 150,
-        damping: 14
-      }
-    }
-  };
-
-  const buttonVariants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: { 
-      opacity: 1, 
-      y: 0,
-      transition: {
-        type: "spring",
-        stiffness: 150,
-        damping: 14,
-        delay: 0.3
-      }
-    },
-    hover: {
-      scale: 1.03,
-      boxShadow: "0 10px 15px rgba(79, 70, 229, 0.2)",
-      transition: {
-        type: "spring",
-        stiffness: 400,
-        damping: 10
-      }
-    },
-    tap: {
-      scale: 0.97
-    }
-  };
-
-  const logoVariants = {
-    hidden: { opacity: 0, y: -20, rotate: -5 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      rotate: 0,
-      transition: {
-        type: "spring",
-        stiffness: 200,
-        damping: 20,
-        delay: 0.1
-      }
-    }
-  };
-
-  const errorVariants = {
-    hidden: { opacity: 0, x: -20 },
-    visible: { 
-      opacity: 1, 
-      x: 0,
-      transition: {
-        type: "spring",
-        stiffness: 300,
-        damping: 20
-      }
-    },
-    exit: {
-      opacity: 0,
-      x: 20,
-      transition: { duration: 0.3 }
-    }
-  };
-
-  const bgVariants = {
-    hidden: { backgroundPosition: "0% 0%" },
-    visible: { 
-      backgroundPosition: "100% 100%",
-      transition: { 
-        duration: 20, 
-        repeat: Infinity, 
-        repeatType: "reverse" 
-      }
-    }
-  };
-
-  const floatAnimation = {
-    initial: { y: 0 },
-    animate: {
-      y: [-10, 10, -10],
-      transition: {
-        duration: 6,
-        repeat: Infinity,
-        repeatType: "loop",
-        ease: "easeInOut"
-      }
-    }
-  };
-
-  const showPasswordVariants = {
-    initial: { scale: 1 },
-    hover: { scale: 1.2, rotate: 10 },
-    tap: { scale: 0.8, rotate: 0 }
-  };
-
-  const inputFocusVariants = {
-    initial: { boxShadow: "0 0 0 0 rgba(79, 70, 229, 0)" },
-    focus: {
-      scale: 1.01,
-      boxShadow: "0 0 0 3px rgba(79, 70, 229, 0.3)",
-      transition: {
-        type: "spring",
-        stiffness: 300,
-        damping: 15
-      }
-    }
-  };
-
-  // Inline styles
-  const styles = {
-    pageContainer: {
-      minHeight: "100vh",
-      display: "flex",
-      alignItems: "center",
-      justifyContent: "center",
-      background: "linear-gradient(135deg, #e0e7ff 0%, #e0f2fe 50%, #ede9fe 100%)",
-      backgroundSize: "200% 200%"
-    },
-    formContainer: {
-      backgroundColor: "white",
-      padding: "32px",
-      borderRadius: "12px",
-      boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)",
-      width: "100%",
-      maxWidth: "448px",
-      border: "1px solid #c7d2fe",
-      position: "relative",
-      overflow: "hidden"
-    },
-    decorativeElement1: {
-      position: "absolute",
-      top: 0,
-      right: 0,
-      width: "128px",
-      height: "128px",
-      background: "linear-gradient(135deg, #c7d2fe 0%, #a5b4fc 100%)",
-      borderRadius: "0 0 0 100%",
-      opacity: 0.6,
-      zIndex: -10
-    },
-    decorativeElement2: {
-      position: "absolute",
-      bottom: 0,
-      left: 0,
-      width: "96px",
-      height: "96px",
-      background: "linear-gradient(135deg, #93c5fd 0%, #60a5fa 100%)",
-      borderRadius: "0 100% 0 0",
-      opacity: 0.6,
-      zIndex: -10
-    },
-    title: {
-      fontSize: "36px",
-      fontWeight: 800,
-      textAlign: "center",
-      background: "linear-gradient(90deg, #4f46e5 0%, #2563eb 100%)",
-      WebkitBackgroundClip: "text",
-      backgroundClip: "text",
-      color: "transparent",
-      marginBottom: "24px"
-    },
-    errorBox: {
-      backgroundColor: "#fee2e2",
-      borderLeft: "4px solid #ef4444",
-      color: "#b91c1c",
-      padding: "12px 16px",
-      borderRadius: "8px",
-      marginBottom: "24px",
-      boxShadow: "0 1px 3px rgba(0, 0, 0, 0.1)"
-    },
-    formGroup: {
-      marginBottom: "24px",
-      position: "relative"
-    },
-    label: {
-      display: "block",
-      fontSize: "14px",
-      fontWeight: 500,
-      color: "#374151",
-      marginBottom: "4px"
-    },
-    input: {
-      marginTop: "4px",
-      display: "block",
-      width: "100%",
-      padding: "12px 16px",
-      border: "1px solid #d1d5db",
-      borderRadius: "8px",
-      boxShadow: "0 1px 2px rgba(0, 0, 0, 0.05)",
-      outline: "none",
-      transition: "all 0.3s ease",
-      fontSize: "16px"
-    },
-    inputFocus: {
-      borderColor: "#818cf8",
-      boxShadow: "0 0 0 3px rgba(129, 140, 248, 0.3)",
-      ring: "2px solid #818cf8"
-    },
-    passwordToggle: {
-      position: "absolute",
-      top: "50%",
-      right: "12px",
-      transform: "translateY(-50%)",
-      backgroundColor: "transparent",
-      border: "none",
-      cursor: "pointer",
-      color: "#4b5563",
-      padding: "8px"
-    },
-    submitButton: {
-      width: "100%",
-      background: "linear-gradient(90deg, #4f46e5 0%, #2563eb 100%)",
-      color: "white",
-      padding: "12px 16px",
-      borderRadius: "8px",
-      boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
-      transition: "all 0.3s ease",
-      border: "none",
-      fontSize: "16px",
-      fontWeight: 500,
-      display: "flex",
-      alignItems: "center",
-      justifyContent: "center",
-      position: "relative",
-      overflow: "hidden"
-    },
-    submitButtonHover: {
-      boxShadow: "0 10px 15px rgba(0, 0, 0, 0.1)"
-    },
-    spinner: {
-      width: "24px",
-      height: "24px",
-      border: "2px solid white",
-      borderTopColor: "transparent",
-      borderRadius: "50%",
-      animation: "spin 1s linear infinite"
-    },
-    linkText: {
-      marginTop: "12px",
-      textAlign: "center",
-      color: "#4b5563",
-      fontSize: "14px"
-    },
-    link: {
-      color: "#4f46e5",
-      fontWeight: 500,
-      textDecoration: "none",
-      transition: "all 0.3s ease",
-      position: "relative",
-      display: "inline-block"
-    },
-    linkHover: {
-      color: "#4338ca",
-      textDecoration: "underline"
-    },
-    linkUnderline: {
-      backgroundImage: "linear-gradient(90deg, #4338ca 0%, #6366f1 100%)",
-      backgroundRepeat: "no-repeat",
-      backgroundPosition: "0 100%",
-      backgroundSize: "0% 2px",
-      transition: "background-size 0.3s ease, color 0.3s ease"
-    },
-    linkUnderlineHover: {
-      backgroundSize: "100% 2px",
-      color: "#4338ca"
-    }
-  };
-
   return (
-    <motion.div 
-      initial="hidden"
-      animate="visible"
-      exit="exit"
-      variants={bgVariants}
-      style={styles.pageContainer}
-    >
-      <motion.div 
-        variants={containerVariants}
-        style={styles.formContainer}
-        initial="hidden"
-        animate="visible"
-        exit="exit"
-      >
-        {/* Decorative elements */}
-        <motion.div 
-          style={styles.decorativeElement1}
-          initial={{ x: 20, y: -20, opacity: 0 }}
-          animate={{ x: 0, y: 0, opacity: 0.6 }}
-          transition={{ delay: 0.5, duration: 0.8 }}
-        />
-        <motion.div 
-          style={styles.decorativeElement2}
-          initial={{ x: -20, y: 20, opacity: 0 }}
-          animate={{ x: 0, y: 0, opacity: 0.6 }}
-          transition={{ delay: 0.7, duration: 0.8 }}
-        />
+    <div className="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 overflow-hidden relative">
+      {/* Background animation effect */}
+      <div className="absolute w-[150%] h-[150%] -top-1/4 -left-1/4 bg-radial-gradient animate-slow-spin z-0"></div>
+      
+      <div className="w-full max-w-md bg-white/85 backdrop-blur-md rounded-2xl shadow-xl p-8 relative overflow-hidden border border-white/20 z-10 transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl">
+        {/* Decorative blobs */}
+        <div className="absolute -top-8 -right-8 w-48 h-48 rounded-full bg-gradient-to-br from-indigo-600 to-purple-500 opacity-15 z-0 animate-float1"></div>
+        <div className="absolute -bottom-8 -left-8 w-48 h-48 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 opacity-15 z-0 animate-float2"></div>
         
-        <motion.div
-          variants={logoVariants}
-          style={{ display: "flex", justifyContent: "center", marginBottom: "24px" }}
-          initial="hidden"
-          animate="visible"
-        >
-          <motion.div 
-            variants={floatAnimation}
-            initial="initial"
-            animate="animate"
-            style={styles.title}
-          >
-            Welcome Back!
-          </motion.div>
-        </motion.div>
+        <div className="text-center mb-8 animate-fade-in">
+          <h1 className="text-4xl font-bold bg-gradient-to-r from-indigo-600 to-purple-500 bg-clip-text text-transparent inline-block relative animate-shimmer">Welcome Back</h1>
+        </div>
         
         {error && (
-          <motion.div 
-            variants={errorVariants}
-            initial="hidden"
-            animate="visible"
-            exit="exit"
-            style={styles.errorBox}
-          >
-            <motion.div 
-              animate={{ x: [0, -5, 5, -5, 5, 0] }}
-              transition={{ duration: 0.5, delay: 0.2 }}
-            >
-              {error}
-            </motion.div>
-          </motion.div>
+          <div className="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 rounded mb-6 shadow-sm animate-error-shake">
+            {error}
+          </div>
         )}
         
-        <motion.form 
-          onSubmit={handleSubmit} 
-          style={{ marginTop: "24px" }}
-        >
-          <motion.div 
-            variants={itemVariants}
-            style={styles.formGroup}
-          >
-            <label style={styles.label}>Email</label>
-            <motion.div
-              initial="initial"
-              whileFocus="focus"
-              variants={inputFocusVariants}
-            >
-              <input
-                type="email"
-                name="email"
-                value={email}
-                placeholder="Enter your email"
-                onChange={handleOnChange}
-                style={styles.input}
-                required
-                disabled={loading}
-              />
-            </motion.div>
-            {email && (
-              <motion.div
-                initial={{ opacity: 0, scale: 0 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ type: "spring", stiffness: 500, damping: 15 }}
-                style={{ position: "absolute", right: "12px", top: "40px", color: "#10b981" }}
-              >
-                ✓
-              </motion.div>
-            )}
-          </motion.div>
+        <form onSubmit={handleSubmit} className="flex flex-col gap-6">
+          <div className="flex flex-col gap-2 animate-slide-up opacity-0">
+            <label className="font-medium text-gray-700 text-sm transition-colors duration-200">Email</label>
+            <input
+              type="email"
+              name="email"
+              value={email}
+              onChange={handleOnChange}
+              className="w-full py-3 px-4 border border-gray-300 rounded-md text-base transition-all duration-300 bg-white/80 hover:border-gray-400 focus:outline-none focus:border-indigo-600 focus:ring-3 focus:ring-indigo-600/20 focus:scale-102"
+              placeholder="your.email@example.com"
+              required
+              disabled={loading}
+            />
+          </div>
           
-          <motion.div 
-            variants={itemVariants}
-            style={styles.formGroup}
-          >
-            <label style={styles.label}>Password</label>
-            <motion.div
-              initial="initial"
-              whileFocus="focus"
-              variants={inputFocusVariants}
-              style={{ position: "relative" }}
-            >
+          <div className="flex flex-col gap-2 animate-slide-up-delay-1 opacity-0">
+            <label className="font-medium text-gray-700 text-sm transition-colors duration-200">Password</label>
+            <div className="relative">
               <input
                 type={showPassword ? "text" : "password"}
                 name="password"
                 value={password}
-                placeholder="Enter your password"
                 onChange={handleOnChange}
-                style={styles.input}
+                className="w-full py-3 px-4 border border-gray-300 rounded-md text-base transition-all duration-300 bg-white/80 hover:border-gray-400 focus:outline-none focus:border-indigo-600 focus:ring-3 focus:ring-indigo-600/20 focus:scale-102"
+                placeholder="Min. 8 characters"
                 required
                 disabled={loading}
               />
-              <motion.button
+              <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                disabled={loading}
-                variants={showPasswordVariants}
-                initial="initial"
-                whileHover="hover"
-                whileTap="tap"
-                style={styles.passwordToggle}
-                aria-label={showPassword ? "Hide password" : "Show password"}
+                className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 transition-all duration-200 hover:scale-110 active:scale-90"
               >
-                {showPassword ? "" : ""}
-              </motion.button>
-            </motion.div>
-          </motion.div>
+                {showPassword ? (
+                  <svg className="w-5 h-5 stroke-current stroke-2 fill-none" viewBox="0 0 24 24">
+                    <path d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" />
+                  </svg>
+                ) : (
+                  <svg className="w-5 h-5 stroke-current stroke-2 fill-none" viewBox="0 0 24 24">
+                    <path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                    <path d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                  </svg>
+                )}
+              </button>
+            </div>
+          </div>
           
-          <motion.div 
-            variants={buttonVariants}
-            initial="hidden"
-            animate="visible"
-            whileHover="hover"
-            whileTap="tap"
-          >
-            <motion.button
+          <div className="animate-slide-up-delay-2 opacity-0">
+            <button
               type="submit"
               disabled={loading}
-              style={styles.submitButton}
+              className="w-full py-3 px-4 rounded-md bg-gradient-to-r from-indigo-600 to-purple-500 text-white font-semibold text-base border-none cursor-pointer transition-all duration-300 relative overflow-hidden shadow-md hover:-translate-y-1 hover:shadow-lg hover:from-indigo-700 hover:to-purple-600 active:translate-y-0 active:shadow-sm disabled:opacity-60 disabled:cursor-not-allowed disabled:transform-none"
             >
               {loading ? (
-                <motion.div
-                  animate={{ 
-                    rotate: 360,
-                    scale: [1, 1.1, 1]
-                  }}
-                  transition={{ 
-                    rotate: { duration: 1, repeat: Infinity, ease: "linear" },
-                    scale: { duration: 1.5, repeat: Infinity, ease: "easeInOut" }
-                  }}
-                  style={styles.spinner}
-                />
+                <div className="w-6 h-6 border-2 border-white/30 border-t-white rounded-full animate-spin mx-auto"></div>
               ) : (
-                <>
-                  <motion.span 
-                    style={{ position: "relative", zIndex: 10 }}
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ delay: 0.2 }}
-                  >
-                    Login
-                  </motion.span>
-                  <motion.div 
-                    style={{
-                      position: "absolute",
-                      inset: 0,
-                      background: "linear-gradient(90deg, #2563eb 0%, #4f46e5 100%)",
-                      opacity: 0
-                    }}
-                    whileHover={{ opacity: 1 }}
-                    transition={{ duration: 0.6 }}
-                  />
-                </>
+                "Login"
               )}
-            </motion.button>
-          </motion.div>
-        </motion.form>
+              <span className="absolute top-0 left-full w-full h-full bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full animate-shine"></span>
+            </button>
+          </div>
+        </form>
         
-        <motion.p 
-          variants={itemVariants}
-          style={styles.linkText}
-        >
-          Don't have an account?{" "}
-          <motion.span 
-            whileHover={{ scale: 1.05 }}
-            style={{ display: "inline-block" }}
-          >
-            <Link
-              to="/auth/signup"
-              style={styles.link}
-            >
-              <motion.span
-                initial={{ backgroundSize: "0% 2px" }}
-                whileHover={{ 
-                  backgroundSize: "100% 2px",
-                  color: "#4338ca" 
-                }}
-                style={styles.linkUnderline}
-              >
-                Sign Up
-              </motion.span>
-            </Link>
-          </motion.span>
-        </motion.p>
-      </motion.div>
+        <p className="mt-8 text-center text-sm text-gray-500 animate-fade-in-delay opacity-0">
+          Don't have an account!?{" "}
+          <Link to="/auth/signup" className="text-indigo-600 font-medium no-underline transition-all duration-300 relative hover:text-indigo-700">
+            Sign Up
+            <span className="absolute w-full h-0.5 bottom-0 left-0 bg-gradient-to-r from-indigo-600 to-purple-500 scale-x-0 origin-bottom-right transition-transform duration-300 group-hover:scale-x-100 group-hover:origin-bottom-left"></span>
+          </Link>
+        </p>
+      </div>
       
       <ToastContainer
+        className="toast-container"
         position="top-center"
         autoClose={3000}
         hideProgressBar={false}
@@ -637,7 +202,102 @@ const Login = () => {
         theme="colored"
         limit={3}
       />
-    </motion.div>
+      
+      {/* CSS for custom animations */}
+      <style jsx>{`
+        @keyframes slow-spin {
+          0% { transform: rotate(0deg); }
+          100% { transform: rotate(360deg); }
+        }
+        
+        @keyframes float1 {
+          0%, 100% { transform: translate(0, 0) rotate(0deg); }
+          25% { transform: translate(5px, -15px) rotate(5deg); }
+          50% { transform: translate(10px, 5px) rotate(10deg); }
+          75% { transform: translate(-5px, 10px) rotate(-5deg); }
+        }
+        
+        @keyframes float2 {
+          0%, 100% { transform: translate(0, 0) rotate(0deg); }
+          33% { transform: translate(-10px, 10px) rotate(-5deg); }
+          66% { transform: translate(15px, 5px) rotate(5deg); }
+        }
+        
+        @keyframes shimmer {
+          0% { background-position: -200% 0; }
+          100% { background-position: 200% 0; }
+        }
+        
+        @keyframes error-shake {
+          0%, 100% { transform: translateX(0); }
+          10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+          20%, 40%, 60%, 80% { transform: translateX(5px); }
+        }
+        
+        @keyframes fade-in {
+          from { opacity: 0; transform: translateY(-10px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes slide-up {
+          from { opacity: 0; transform: translateY(20px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes shine {
+          to { left: 100%; }
+        }
+        
+        .bg-radial-gradient {
+          background: radial-gradient(circle, rgba(79, 70, 229, 0.03) 0%, rgba(168, 85, 247, 0.03) 50%, rgba(236, 72, 153, 0.03) 100%);
+        }
+        
+        .animate-slow-spin {
+          animation: slow-spin 30s linear infinite;
+        }
+        
+        .animate-float1 {
+          animation: float1 15s ease-in-out infinite;
+        }
+        
+        .animate-float2 {
+          animation: float2 18s ease-in-out infinite;
+        }
+        
+        .animate-shimmer {
+          background-size: 200% auto;
+          animation: shimmer 8s linear infinite;
+        }
+        
+        .animate-error-shake {
+          animation: error-shake 0.5s cubic-bezier(.36,.07,.19,.97) both;
+        }
+        
+        .animate-fade-in {
+          animation: fade-in 0.8s ease-out;
+        }
+        
+        .animate-fade-in-delay {
+          animation: fade-in 0.8s ease-out 0.6s forwards;
+        }
+        
+        .animate-slide-up {
+          animation: slide-up 0.5s ease-out 0.2s forwards;
+        }
+        
+        .animate-slide-up-delay-1 {
+          animation: slide-up 0.5s ease-out 0.3s forwards;
+        }
+        
+        .animate-slide-up-delay-2 {
+          animation: slide-up 0.5s ease-out 0.4s forwards;
+        }
+        
+        .animate-shine {
+          animation: shine 3s infinite linear;
+        }
+      `}</style>
+    </div>
   );
 };
 

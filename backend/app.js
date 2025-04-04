@@ -136,7 +136,7 @@ const bookingRoutes = require("./routes/booking");
 const notificationRoutes = require("./routes/notification");
 
 app.use("/listings", listingRoutes);
-app.use("api/listings/:listingId/reviews", reviewRoutes);
+app.use("/listings/:listingId/reviews", reviewRoutes);
 app.use("/auth", userRoutes);
 app.use("/bookings", bookingRoutes);
 app.use("/notifications", notificationRoutes);

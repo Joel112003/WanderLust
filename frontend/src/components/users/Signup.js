@@ -5,6 +5,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { AuthContext } from "../../AuthContext";
 import { motion } from "framer-motion";
+import "../../utilis/css/Signup.css";
 
 const API_URL = process.env.REACT_APP_API_URL || "http://localhost:8000";
 const signupEndpoint = `${API_URL}/auth/signup`;
@@ -31,24 +32,12 @@ const Signup = () => {
     toast.error(err, {
       position: "top-right",
       autoClose: 3000,
-      style: {
-        backgroundColor: "#EF4444",
-        borderRadius: "10px",
-        fontWeight: "500",
-        boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
-      },
     });
 
   const handleSuccess = (msg) =>
     toast.success(msg, {
       position: "top-right",
       autoClose: 2000,
-      style: {
-        backgroundColor: "#8B5CF6",
-        borderRadius: "10px",
-        fontWeight: "500",
-        boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
-      },
     });
 
   const handleSubmit = async (e) => {
@@ -111,7 +100,7 @@ const Signup = () => {
     }
   };
 
-  // Animation variants (same as before)
+  // Animation variants
   const containerVariants = {
     hidden: { opacity: 0, y: 50 },
     visible: {
@@ -262,195 +251,20 @@ const Signup = () => {
     },
   };
 
-  // Inline styles
-  const styles = {
-    pageContainer: {
-      minHeight: "100vh",
-      display: "flex",
-      alignItems: "center",
-      justifyContent: "center",
-      background:
-        "linear-gradient(135deg, #e0f2fe 0%, #ede9fe 50%, #e0e7ff 100%)",
-      position: "relative",
-      overflow: "hidden",
-    },
-    bgPattern1: {
-      position: "absolute",
-      top: 0,
-      right: 0,
-      width: "256px",
-      height: "256px",
-      backgroundColor: "#d8b4fe",
-      borderRadius: "50%",
-      opacity: 0.2,
-      marginRight: "-128px",
-      marginTop: "-128px",
-    },
-    bgPattern2: {
-      position: "absolute",
-      bottom: 0,
-      left: 0,
-      width: "320px",
-      height: "320px",
-      backgroundColor: "#93c5fd",
-      borderRadius: "50%",
-      opacity: 0.2,
-      marginLeft: "-160px",
-      marginBottom: "-160px",
-    },
-    bgPattern3: {
-      position: "absolute",
-      top: "25%",
-      left: "25%",
-      width: "160px",
-      height: "160px",
-      backgroundColor: "#a5b4fc",
-      borderRadius: "50%",
-      opacity: 0.1,
-    },
-    formContainer: {
-      backgroundColor: "white",
-      padding: "32px",
-      borderRadius: "12px",
-      boxShadow:
-        "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)",
-      width: "100%",
-      maxWidth: "448px",
-      transition: "all 0.7s ease",
-    },
-    title: {
-      fontSize: "36px",
-      fontWeight: 800,
-      textAlign: "center",
-      marginBottom: "32px",
-      background: "linear-gradient(90deg, #8b5cf6 0%, #4f46e5 100%)",
-      WebkitBackgroundClip: "text",
-      backgroundClip: "text",
-      color: "transparent",
-    },
-    errorBox: {
-      backgroundColor: "#fee2e2",
-      borderLeft: "4px solid #ef4444",
-      color: "#b91c1c",
-      padding: "16px",
-      borderRadius: "8px",
-      marginBottom: "24px",
-    },
-    formGroup: {
-      marginBottom: "24px",
-    },
-    label: {
-      display: "block",
-      fontSize: "14px",
-      fontWeight: 600,
-      color: "#4b5563",
-      marginBottom: "4px",
-      transition: "color 0.3s ease",
-    },
-    input: {
-      marginTop: "4px",
-      display: "block",
-      width: "100%",
-      padding: "12px 16px",
-      border: "none",
-      borderBottom: "2px solid #d1d5db",
-      backgroundColor: "#f9fafb",
-      borderTopLeftRadius: "6px",
-      borderTopRightRadius: "6px",
-      outline: "none",
-      transition: "all 0.3s ease",
-    },
-    inputFocus: {
-      borderBottomColor: "#8b5cf6",
-      boxShadow: "0 0 0 3px rgba(139, 92, 246, 0.3)",
-      transform: "translateY(-3px)",
-    },
-    passwordToggle: {
-      position: "absolute",
-      right: "12px",
-      top: "50%",
-      transform: "translateY(-50%)",
-      color: "#6b7280",
-      cursor: "pointer",
-      transition: "color 0.3s ease",
-    },
-    passwordStrength: {
-      height: "4px",
-      width: "100%",
-      background: "linear-gradient(90deg, #8b5cf6 0%, #4f46e5 100%)",
-      marginTop: "4px",
-      borderRadius: "2px",
-      transformOrigin: "left",
-    },
-    passwordWarning: {
-      fontSize: "12px",
-      color: "#b45309",
-      marginTop: "4px",
-      height: "auto",
-      overflow: "hidden",
-    },
-    submitButton: {
-      width: "100%",
-      background: "linear-gradient(90deg, #4f46e5 0%, #4f46e5 100%)",
-      color: "white",
-      padding: "12px 16px",
-      borderRadius: "8px",
-      fontWeight: 500,
-      boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
-      border: "none",
-      outline: "none",
-      cursor: "pointer",
-      transition: "all 0.3s ease",
-    },
-    submitButtonHover: {
-      boxShadow: "0 10px 20px rgba(0, 0, 0, 0.1)",
-      transform: "scale(1.03)",
-    },
-    linkText: {
-      textAlign: "center",
-      color: "#4b5563",
-      marginTop: "24px",
-    },
-    link: {
-      color: "#8b5cf6",
-      fontWeight: 500,
-      textDecoration: "none",
-      transition: "color 0.3s ease",
-      margin: "0 4px",
-    },
-    linkHover: {
-      color: "#6d28d9",
-      textDecoration: "underline",
-    },
-    footer: {
-      borderTop: "1px solid #e5e7eb",
-      marginTop: "32px",
-      paddingTop: "24px",
-      textAlign: "center",
-      fontSize: "12px",
-      color: "#6b7280",
-    },
-  };
-
   return (
     <motion.div
+      className="signup-page-container"
       initial="hidden"
       animate="visible"
       exit="exit"
-      style={styles.pageContainer}
     >
       {/* Animated background patterns */}
       <motion.div
         variants={bgPatternVariants}
-        style={{
-          position: "absolute",
-          inset: 0,
-          overflow: "hidden",
-          pointerEvents: "none",
-        }}
+        className="signup-bg-patterns"
       >
         <motion.div
-          style={styles.bgPattern1}
+          className="signup-bg-pattern-1"
           animate={{
             scale: [1, 1.2, 1],
             rotate: [0, 5, 0],
@@ -462,7 +276,7 @@ const Signup = () => {
           }}
         />
         <motion.div
-          style={styles.bgPattern2}
+          className="signup-bg-pattern-2"
           animate={{
             scale: [1, 1.1, 1],
             rotate: [0, -3, 0],
@@ -475,7 +289,7 @@ const Signup = () => {
           }}
         />
         <motion.div
-          style={styles.bgPattern3}
+          className="signup-bg-pattern-3"
           animate={{
             y: [0, 30, 0],
             x: [0, 20, 0],
@@ -491,17 +305,17 @@ const Signup = () => {
 
       <motion.div
         variants={containerVariants}
-        style={styles.formContainer}
+        className="signup-form-container"
         whileHover={cardVariants.hover}
       >
-        <motion.h1 variants={titleVariants} style={styles.title}>
+        <motion.h1 variants={titleVariants} className="signup-title">
           Sign Up
         </motion.h1>
 
         {error && (
           <motion.div
             variants={errorVariants}
-            style={styles.errorBox}
+            className="signup-error-box"
             initial="hidden"
             animate="visible"
             exit="hidden"
@@ -522,11 +336,11 @@ const Signup = () => {
 
         <motion.form
           onSubmit={handleSubmit}
-          style={{ marginTop: "24px" }}
+          className="signup-form"
           variants={containerVariants}
         >
-          <motion.div variants={formItemVariants} style={styles.formGroup}>
-            <label style={styles.label}>Username</label>
+          <motion.div variants={formItemVariants} className="signup-form-group">
+            <label className="signup-form-label">Username</label>
             <motion.div
               initial="initial"
               whileFocus="focus"
@@ -536,9 +350,9 @@ const Signup = () => {
                 type="text"
                 name="username"
                 value={username}
-                placeholder="Enter your username"
+                placeholder="Choose a unique username"
                 onChange={handleOnChange}
-                style={styles.input}
+                className="signup-form-input"
                 required
                 disabled={loading}
               />
@@ -555,16 +369,16 @@ const Signup = () => {
                     damping: 15,
                   },
                 }}
+                className="signup-progress-bar"
                 style={{
-                  ...styles.passwordStrength,
                   transform: `scaleX(${Math.min(username.length / 10, 1)})`,
                 }}
               />
             )}
           </motion.div>
 
-          <motion.div variants={formItemVariants} style={styles.formGroup}>
-            <label style={styles.label}>Email</label>
+          <motion.div variants={formItemVariants} className="signup-form-group">
+            <label className="signup-form-label">Email</label>
             <motion.div
               initial="initial"
               whileFocus="focus"
@@ -574,9 +388,9 @@ const Signup = () => {
                 type="email"
                 name="email"
                 value={email}
-                placeholder="Enter your email"
+                placeholder="your.email@example.com"
                 onChange={handleOnChange}
-                style={styles.input}
+                className="signup-form-input"
                 required
                 disabled={loading}
               />
@@ -593,17 +407,17 @@ const Signup = () => {
                     damping: 15,
                   },
                 }}
+                className="signup-progress-bar"
                 style={{
-                  ...styles.passwordStrength,
                   transform: `scaleX(${/\S+@\S+\.\S+/.test(email) ? 1 : 0.5})`,
                 }}
               />
             )}
           </motion.div>
 
-          <motion.div variants={formItemVariants} style={styles.formGroup}>
-            <label style={styles.label}>Password</label>
-            <div style={{ position: "relative" }}>
+          <motion.div variants={formItemVariants} className="signup-form-group">
+            <label className="signup-form-label">Password</label>
+            <div className="signup-password-container">
               <motion.div
                 initial="initial"
                 whileFocus="focus"
@@ -613,9 +427,9 @@ const Signup = () => {
                   type={showPassword ? "text" : "password"}
                   name="password"
                   value={password}
-                  placeholder="Enter your password"
+                  placeholder="Min. 8 characters"
                   onChange={handleOnChange}
-                  style={styles.input}
+                  className="signup-form-input"
                   required
                   disabled={loading}
                 />
@@ -625,11 +439,11 @@ const Signup = () => {
                 variants={passwordToggleVariants}
                 whileHover="hover"
                 onClick={() => setShowPassword(!showPassword)}
-                style={styles.passwordToggle}
+                className="signup-password-toggle"
               >
                 {showPassword ? (
                   <svg
-                    style={{ width: "20px", height: "20px" }}
+                    className="signup-icon"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -644,7 +458,7 @@ const Signup = () => {
                   </svg>
                 ) : (
                   <svg
-                    style={{ width: "20px", height: "20px" }}
+                    className="signup-icon"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -678,8 +492,8 @@ const Signup = () => {
                     damping: 15,
                   },
                 }}
+                className="signup-progress-bar"
                 style={{
-                  ...styles.passwordStrength,
                   transform: `scaleX(${Math.min(password.length / 12, 1)})`,
                 }}
               />
@@ -692,7 +506,7 @@ const Signup = () => {
                   height: password.length < 8 ? "auto" : 0,
                   transition: { duration: 0.3 },
                 }}
-                style={styles.passwordWarning}
+                className="signup-password-warning"
               >
                 Password must be at least 8 characters long
               </motion.p>
@@ -705,30 +519,21 @@ const Signup = () => {
             whileTap="tap"
             type="submit"
             disabled={loading}
-            style={styles.submitButton}
+            className="signup-submit-button"
           >
             {loading ? (
               <motion.div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}
+                className="signup-loading-container"
                 animate={{ rotate: 360 }}
                 transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
               >
                 <svg
-                  style={{
-                    animation: "spin 1s linear infinite",
-                    height: "20px",
-                    width: "20px",
-                    marginRight: "8px",
-                  }}
+                  className="signup-spinner"
                   fill="none"
                   viewBox="0 0 24 24"
                 >
                   <circle
-                    style={{ opacity: 0.25 }}
+                    className="signup-spinner-track"
                     cx="12"
                     cy="12"
                     r="10"
@@ -736,7 +541,7 @@ const Signup = () => {
                     strokeWidth="4"
                   ></circle>
                   <path
-                    style={{ opacity: 0.75 }}
+                    className="signup-spinner-path"
                     fill="currentColor"
                     d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
                   ></path>
@@ -749,11 +554,11 @@ const Signup = () => {
           </motion.button>
         </motion.form>
 
-        <motion.div variants={formItemVariants} style={styles.linkText}>
+        <motion.div variants={formItemVariants} className="signup-login-link">
           <p>
             Already have an account?{" "}
             <motion.span variants={linkVariants} whileHover="hover">
-              <Link to="/auth/login" style={styles.link}>
+              <Link to="/auth/login" className="signup-link">
                 Log In
               </Link>
             </motion.span>
@@ -766,17 +571,17 @@ const Signup = () => {
             opacity: 1,
             transition: { delay: 1, duration: 0.5 },
           }}
-          style={styles.footer}
+          className="signup-footer"
         >
-          By signing up, you agree to our
+          By signing up, you agree to our{" "}
           <motion.span variants={linkVariants} whileHover="hover">
-            <Link to="/terms" style={styles.link}>
+            <Link to="/terms" className="signup-link">
               Terms of Service
             </Link>
-          </motion.span>
-          and
+          </motion.span>{" "}
+          and{" "}
           <motion.span variants={linkVariants} whileHover="hover">
-            <Link to="/privacy" style={styles.link}>
+            <Link to="/privacy" className="signup-link">
               Privacy Policy
             </Link>
           </motion.span>

@@ -7,7 +7,8 @@
   <meta name="theme-color" content="#000000" />
   <meta name="description"
     content="WanderLust - Holiday rentals, cabins, beach houses & more. Explore your next travel destination with ease." />
-  <!-- Open Graph Meta Tags for Social Media -->
+  
+  <!-- Open Graph Meta Tags -->
   <meta property="og:title" content="WanderLust | Holiday rentals, cabins, beach houses & more" />
   <meta property="og:description"
     content="Explore your next travel destination with WanderLust. Find holiday rentals, cabins, beach houses, and more." />
@@ -16,14 +17,21 @@
   <meta property="og:image" content="https://www.yourwebsite.com/logo.png" />
 
   <title>WanderLust | Holiday rentals, cabins, beach houses & more</title>
-  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
 
-  <!-- Font Awesome -->
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet" />
-
-  <!-- Bootstrap CSS -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
-    integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous" />
+  <!-- Load Tailwind CSS properly -->
+   
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            clifford: '#da373d',
+          }
+        }
+      }
+    }
+  </script>
 
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -34,22 +42,21 @@
   <!-- Mapbox CSS -->
   <link href='https://api.mapbox.com/mapbox-gl-js/v3.10.0/mapbox-gl.css' rel='stylesheet' />
 
-
+  <!-- If you need Font Awesome -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet" />
 </head>
 
 <body>
   <noscript>You need to enable JavaScript to run this app.</noscript>
   <div id="root"></div>
 
-  <!-- Bootstrap JS -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
-    integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"
-    defer></script>
-
   <!-- Mapbox JS -->
   <script src='https://api.mapbox.com/mapbox-gl-js/v3.10.0/mapbox-gl.js' defer></script>
 
-
+  <!-- Only include Bootstrap if absolutely necessary -->
+  <!-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+    crossorigin="anonymous" defer></script> -->
 </body>
 
 </html>

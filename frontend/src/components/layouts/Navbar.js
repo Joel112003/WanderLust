@@ -15,15 +15,29 @@ const Navbar = () => {
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (
+        menuOpen &&
         !event.target.closest(".user-menu") &&
         !event.target.closest(".dropdown-menu")
       ) {
         setMenuOpen(false);
       }
     };
+    
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
+  }, [menuOpen]);
+
+  // Close menu when pressing escape key
+  useEffect(() => {
+    const handleEscKey = (event) => {
+      if (event.key === "Escape" && menuOpen) {
+        setMenuOpen(false);
+      }
+    };
+    
+    document.addEventListener("keydown", handleEscKey);
+    return () => document.removeEventListener("keydown", handleEscKey);
+  }, [menuOpen]);
 
   const handleLogout = () => {
     if (logout) {
@@ -32,7 +46,7 @@ const Navbar = () => {
 
       toast.success("👋 See you soon! Come back to WanderLust", {
         position: "top-end",
-        autoClose: 1000,
+        autoClose: 1500,
         hideProgressBar: false,
         closeOnClick: true,
         pauseOnHover: true,
@@ -79,7 +93,7 @@ const Navbar = () => {
       />
 
       {/* Brand Logo */}
-      <div className="navbar-logo mr-auto">
+      <div className="navbar-logo">
         <Link
           to="/listings"
           className="brand-text text-2xl font-bold relative group"
@@ -94,9 +108,9 @@ const Navbar = () => {
         >
           WanderLust
           <span
-            className="absolute left-0 bottom-0 w-full h-0.5 bg-red-400 
-      transform scale-x-0 group-hover:scale-x-100 
-      transition-transform duration-300 origin-left"
+            className="absolute left-0 bottom-0 w-full h-0.5 bg-gradient-to-r from-red-400 to-amber-400
+              transform scale-x-0 group-hover:scale-x-100 
+              transition-transform duration-300 origin-left"
           ></span>
         </Link>
 
@@ -114,55 +128,59 @@ const Navbar = () => {
 
       {/* User Menu */}
       <div className="navbar-user">
-        <div className="user-menu" onClick={() => setMenuOpen(!menuOpen)}>
-          <i className="fa-solid fa-bars"></i>
+        <div 
+          className="user-menu" 
+          onClick={() => setMenuOpen(!menuOpen)}
+          aria-expanded={menuOpen}
+          aria-haspopup="true"
+        >
+          <i className="fa-solid fa-bars menu-icon"></i>
           <div className="user-icon">
-            <i className="fa-solid fa-user fa-shake"></i>
+           <b><i className="fa-solid fa-user"></i></b> 
           </div>
         </div>
 
         {/* Dropdown Menu */}
-        {menuOpen && (
-          <div className={`dropdown-menu ${menuOpen ? "show" : ""}`}>
-            {isAuthenticated ? (
-              <>
-                <Link to="/profile" className="dropdown-item">
-                  <i className="fa-solid fa-user-circle mr-2"></i>Account
-                </Link>
-                <Link to="/listings/new" className="dropdown-item">
-                  <i className="fa-solid fa-home mr-2"></i>WanderLust Your Home
-                </Link>
-                <Link to="/help-center" className="dropdown-item">
-                  <i className="fa-solid fa-question-circle mr-2"></i>Help
-                  Center
-                </Link>
-                <button
-                  onClick={handleLogout}
-                  className="dropdown-item logout-button"
-                >
-                  <i className="fa-solid fa-sign-out-alt mr-2"></i>Logout
-                </button>
-              </>
-            ) : (
-              <>
-                <Link to="/auth/login" className="dropdown-item">
-                  <i className="fa-solid fa-sign-in-alt mr-2"></i>Login
-                </Link>
-                <Link to="/auth/signup" className="dropdown-item">
-                  <i className="fa-solid fa-user-plus mr-2"></i>Sign Up
-                </Link>
-                <hr />
-                <Link to="/listings/new" className="dropdown-item">
-                  <i className="fa-solid fa-home mr-2"></i>WanderLust Your Home
-                </Link>
-                <Link to="/help-center" className="dropdown-item">
-                  <i className="fa-solid fa-question-circle mr-2"></i>Help
-                  Center
-                </Link>
-              </>
-            )}
-          </div>
-        )}
+        <div className={`dropdown-menu ${menuOpen ? "show" : ""}`}>
+          {isAuthenticated ? (
+            <>
+              <Link to="/profile" className="dropdown-item">
+                <i className="fa-solid fa-user-circle mr-2"></i>Account
+              </Link>
+              <Link to="/listings/new" className="dropdown-item">
+                <i className="fa-solid fa-home mr-2"></i>WanderLust Your Home
+              </Link>
+              <Link to="/help-center" className="dropdown-item">
+                <i className="fa-solid fa-question-circle mr-2"></i>Help
+                Center
+              </Link>
+              <div className="dropdown-divider"></div>
+              <button
+                onClick={handleLogout}
+                className="dropdown-item logout-button"
+              >
+                <i className="fa-solid fa-sign-out-alt mr-2"></i>Logout
+              </button>
+            </>
+          ) : (
+            <>
+              <Link to="/auth/login" className="dropdown-item">
+                <i className="fa-solid fa-sign-in-alt mr-2"></i>Login
+              </Link>
+              <Link to="/auth/signup" className="dropdown-item">
+                <i className="fa-solid fa-user-plus mr-2"></i>Sign Up
+              </Link>
+              <div className="dropdown-divider"></div>
+              <Link to="/listings/new" className="dropdown-item">
+                <i className="fa-solid fa-home mr-2"></i>WanderLust Your Home
+              </Link>
+              <Link to="/help-center" className="dropdown-item">
+                <i className="fa-solid fa-question-circle mr-2"></i>Help
+                Center
+              </Link>
+            </>
+          )}
+        </div>
       </div>
     </nav>
   );
