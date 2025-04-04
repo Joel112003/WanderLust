@@ -10,68 +10,77 @@ const Review = ({ listingId }) => {
   const [rating, setRating] = useState(0);
   const [comment, setComment] = useState("");
   const [reviews, setReviews] = useState([]);
-  const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const [deleteLoading, setDeleteLoading] = useState(false);
   const [user, setUser] = useState(null);
-  const [overallRating, setOverallRating] = useState(4.84);
+  const [overallRating, setOverallRating] = useState(0);
+  const [loadingStates, setLoadingStates] = useState({
+    reviews: false,
+    submit: false,
+    delete: false,
+  });
 
   // Get token from localStorage
   const getToken = useCallback(() => localStorage.getItem("token"), []);
 
-  // Fetch user details from backend
-  const fetchUserDetails = useCallback(async (token) => {
-    try {
-      const response = await axios.get(profileEndpoint, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      const fetchedUser = response.data.user || response.data;
-      setUser(fetchedUser);
-    } catch (error) {
-      console.error("Failed to fetch user details:", error);
+  // Check authentication
+  const checkAuth = useCallback(() => {
+    const token = getToken();
+    if (!token) {
+      setError("You must be logged in to perform this action.");
+      return false;
     }
-  }, []);
+    return true;
+  }, [getToken]);
+
+  // Fetch user details from backend
+  const fetchUserDetails = useCallback(
+    async (token) => {
+      try {
+        const response = await axios.get(profileEndpoint, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        const fetchedUser = response.data.user || response.data;
+        setUser(fetchedUser);
+      } catch (error) {
+        console.error("Failed to fetch user details:", error);
+      }
+    },
+    [profileEndpoint]
+  );
 
   // Fetch reviews for the listing
-const fetchReviews = async () => {
-  try {
-    setLoading(true);
-    const response = await axios.get(
-      `${API_URL}/listings/${listingId}/reviews`,
-      {
+  const fetchReviews = useCallback(async () => {
+    try {
+      setLoadingStates((prev) => ({ ...prev, reviews: true }));
+      setError("");
+      const response = await axios.get(`${API_URL}/listings/${listingId}/reviews`, {
         params: {
           page: 1,
-          limit: 10
-        }
-      }
-    );
-    
-    if (response.data.success) {
-      setReviews(response.data.reviews);
-      // Calculate average rating if needed
-      if (response.data.reviews.length > 0) {
-        const avg = response.data.reviews.reduce(
-          (sum, r) => sum + r.rating, 0
-        ) / response.data.reviews.length;
+          limit: 10,
+        },
+      });
+
+      if (response.data.success) {
+        setReviews(response.data.reviews);
+        // Calculate average rating
+        const avg =
+          response.data.reviews.length > 0
+            ? response.data.reviews.reduce((sum, r) => sum + r.rating, 0) /
+              response.data.reviews.length
+            : 0;
         setOverallRating(avg);
       }
+    } catch (error) {
+      setError(
+        error.response?.data?.message ||
+          "Error loading reviews. Please try again later."
+      );
+      setReviews([]);
+      setOverallRating(0);
+    } finally {
+      setLoadingStates((prev) => ({ ...prev, reviews: false }));
     }
-  } catch (error) {
-    if (error.response) {
-      // Handle different error statuses
-      if (error.response.status === 404) {
-        setError("This listing has no reviews yet");
-        setReviews([]);
-      } else {
-        setError(error.response.data.message || "Error loading reviews");
-      }
-    } else {
-      setError("Network error - could not connect to server");
-    }
-  } finally {
-    setLoading(false);
-  }
-};
+  }, [listingId]);
 
   // Fetch user details if token exists
   useEffect(() => {
@@ -89,89 +98,90 @@ const fetchReviews = async () => {
   // Submit a new review
   const handleSubmitReview = async (e) => {
     e.preventDefault();
-    const token = getToken();
-    if (!token) {
-      setError("You must be logged in to submit a review.");
+    
+    if (!checkAuth()) return;
+    
+    if (!rating) {
+      setError("Please select a rating.");
       return;
     }
-    if (!rating || !comment) {
-      setError("Please provide both rating and comment.");
+    
+    if (!comment || comment.length < 10) {
+      setError("Please provide a comment with at least 10 characters.");
       return;
     }
+
     try {
-      setLoading(true);
+      setLoadingStates((prev) => ({ ...prev, submit: true }));
       const response = await axios.post(
         `${API_URL}/listings/${listingId}/reviews`,
         { rating, comment },
         {
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
+            Authorization: `Bearer ${getToken()}`,
           },
         }
       );
+
       let newReview = response.data.review;
       if (!newReview.author && user) {
         newReview.author = user;
       }
-      setReviews((prevReviews) => [newReview, ...prevReviews]);
+
+      const updatedReviews = [newReview, ...reviews];
+      setReviews(updatedReviews);
       setRating(0);
       setComment("");
       setError("");
 
       // Recalculate overall rating
-      const updatedReviews = [newReview, ...reviews];
       const avgRating =
-        updatedReviews.reduce((sum, review) => sum + review.rating, 0) /
-        updatedReviews.length;
+        updatedReviews.length > 0
+          ? updatedReviews.reduce((sum, review) => sum + review.rating, 0) /
+            updatedReviews.length
+          : 0;
       setOverallRating(avgRating);
     } catch (err) {
       setError(
         err.response?.data?.errors?.comment ||
           err.response?.data?.errors?.rating ||
           err.response?.data?.message ||
-          "Failed to submit review."
+          "Failed to submit review. Please try again later."
       );
       console.error("Submit review error:", err);
     } finally {
-      setLoading(false);
+      setLoadingStates((prev) => ({ ...prev, submit: false }));
     }
   };
 
   // Delete a review
   const handleDeleteReview = async (reviewId) => {
-    const token = getToken();
-    if (!token) {
-      setError("You must be logged in to delete a review.");
-      return;
-    }
+    if (!checkAuth()) return;
+
     try {
-      setDeleteLoading(true);
-      await axios.delete(
-        `${API_URL}/listings/${listingId}/reviews/${reviewId}`,
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
+      setLoadingStates((prev) => ({ ...prev, delete: true }));
+      await axios.delete(`${API_URL}/listings/${listingId}/reviews/${reviewId}`, {
+        headers: { Authorization: `Bearer ${getToken()}` },
+      });
+
       const updatedReviews = reviews.filter((r) => r._id !== reviewId);
       setReviews(updatedReviews);
 
-      if (updatedReviews.length > 0) {
-        const avgRating =
-          updatedReviews.reduce((sum, review) => sum + review.rating, 0) /
-          updatedReviews.length;
-        setOverallRating(avgRating);
-      } else {
-        setOverallRating(0);
-      }
+      const avgRating =
+        updatedReviews.length > 0
+          ? updatedReviews.reduce((sum, review) => sum + review.rating, 0) /
+            updatedReviews.length
+          : 0;
+      setOverallRating(avgRating);
     } catch (err) {
       setError(
-        err.response?.data?.message || 
-        "Failed to delete review. Please try again later."
+        err.response?.data?.message ||
+          "Failed to delete review. Please try again later."
       );
       console.error("Delete review error:", err);
     } finally {
-      setDeleteLoading(false);
+      setLoadingStates((prev) => ({ ...prev, delete: false }));
     }
   };
 
@@ -188,7 +198,7 @@ const fetchReviews = async () => {
             {"☆".repeat(5 - Math.round(overallRating))}
           </div>
         </div>
-        <div className="text-gray-600 ">
+        <div className="text-gray-600">
           {reviews.length} Review{reviews.length !== 1 && "s"}
         </div>
       </div>
@@ -197,7 +207,11 @@ const fetchReviews = async () => {
 
   return (
     <div className="reviews-section">
-      {error && <div className="alert alert-danger">{error}</div>}
+      {error && (
+        <div className="alert alert-danger mb-4" role="alert">
+          {error}
+        </div>
+      )}
 
       {/* Rating Summary Section */}
       {renderRatingSummary()}
@@ -219,8 +233,9 @@ const fetchReviews = async () => {
                         value={star}
                         checked={rating === star}
                         onChange={(e) => setRating(parseInt(e.target.value))}
+                        aria-required="true"
                       />
-                      <label htmlFor={`star${star}`}></label>
+                      <label htmlFor={`star${star}`} aria-label={`${star} stars`}></label>
                     </React.Fragment>
                   ))}
                 </div>
@@ -232,7 +247,7 @@ const fetchReviews = async () => {
               </div>
               <div className="mb-3">
                 <label htmlFor="comment" className="form-label">
-                  Comment
+                  Comment (minimum 10 characters)
                 </label>
                 <textarea
                   id="comment"
@@ -241,14 +256,20 @@ const fetchReviews = async () => {
                   value={comment}
                   onChange={(e) => setComment(e.target.value)}
                   required
+                  minLength="10"
+                  aria-describedby="commentHelp"
                 />
+                <small id="commentHelp" className="text-muted">
+                  Please share your detailed experience
+                </small>
               </div>
               <button
                 type="submit"
                 className="btn btn-danger"
-                disabled={loading}
+                disabled={loadingStates.submit}
+                aria-busy={loadingStates.submit}
               >
-                {loading ? "Submitting..." : "Submit Review"}
+                {loadingStates.submit ? "Submitting..." : "Submit Review"}
               </button>
             </form>
           </div>
@@ -261,8 +282,8 @@ const fetchReviews = async () => {
           <h3 className="card-title h4 relative pb-2 inline-block">
             All Reviews
             <span className="absolute bottom-0 left-0 w-full h-0.5 bg-gradient-to-r from-red-500 to-red-500"></span>
-          </h3>{" "}
-          {loading ? (
+          </h3>
+          {loadingStates.reviews ? (
             <p>Just Wait A Minute Buddy!!!</p>
           ) : reviews && reviews.length > 0 ? (
             <div className="space-y-4 mt-10">
@@ -291,9 +312,10 @@ const fetchReviews = async () => {
                         <button
                           className="btn btn-sm btn-outline-danger"
                           onClick={() => handleDeleteReview(review._id)}
-                          disabled={deleteLoading}
+                          disabled={loadingStates.delete}
+                          aria-label="Delete review"
                         >
-                          {deleteLoading ? "Deleting..." : "Delete"}
+                          {loadingStates.delete ? "Deleting..." : "Delete"}
                         </button>
                       </div>
                     )}

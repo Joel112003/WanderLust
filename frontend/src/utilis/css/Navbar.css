@@ -1,4 +1,4 @@
-/* Navbar Container */
+/* Navbar Container - Enhanced Glass Morphism */
 .navbar {
   position: fixed;
   top: 0;
@@ -8,16 +8,22 @@
   justify-content: space-between;
   align-items: center;
   padding: 12px 24px;
-  background-color: white;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  background-color: rgba(255, 255, 255, 0.86);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.08);
   z-index: 1000;
-  transition: all 0.3s ease;
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  background-color: rgba(255, 255, 255, 0.92);
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  backdrop-filter: blur(12px) saturate(180%);
+  -webkit-backdrop-filter: blur(12px) saturate(180%);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.18);
 }
 
-/* Brand Logo */
+.navbar.scrolled {
+  background-color: rgba(255, 255, 255, 0.96);
+  box-shadow: 0 6px 30px rgba(0, 0, 0, 0.12);
+  padding: 8px 24px;
+}
+
+/* Brand Logo - Enhanced Animation */
 .navbar-logo {
   display: flex;
   align-items: center;
@@ -25,52 +31,91 @@
   font-size: 1.5rem;
   color: #ff385c;
   cursor: pointer;
-  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
   margin-right: auto;
+  will-change: transform;
 }
 
 .navbar-logo i {
   transform-origin: center;
-  animation: logoSpin 0.7s cubic-bezier(0.34, 1.56, 0.64, 1);
+  animation: logoIntro 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) both;
 }
 
-@keyframes logoSpin {
-  0% { transform: rotate(-180deg) scale(0.8); opacity: 0; }
-  100% { transform: rotate(0deg) scale(1); opacity: 1; }
+@keyframes logoIntro {
+  0% { 
+    transform: rotate(-180deg) scale(0.6); 
+    opacity: 0; 
+    filter: blur(2px);
+  }
+  60% { 
+    transform: rotate(10deg) scale(1.1); 
+  }
+  100% { 
+    transform: rotate(0deg) scale(1); 
+    opacity: 1;
+    filter: blur(0);
+  }
 }
 
 .navbar-logo:hover {
-  transform: scale(1.03);
+  transform: scale(1.05) translateX(3px);
 }
 
 .brand-text {
   text-decoration: none;
   color: #ff385c;
   font-weight: bold;
-  transition: all 0.3s ease;
+  transition: all 0.4s ease;
   position: relative;
+  display: inline-block;
 }
 
-/* Search Bar */
+.brand-text::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: linear-gradient(90deg, #ff385c, #ff6b81);
+  transition: width 0.4s cubic-bezier(0.65, 0, 0.35, 1);
+}
+
+.navbar-logo:hover .brand-text::after {
+  width: 100%;
+}
+
+/* Search Bar - Enhanced Interaction */
 .navbar-search {
   display: flex;
   align-items: center;
   gap: 15px;
   padding: 10px 20px;
-  background-color: white;
+  background-color: rgba(255, 255, 255, 0.9);
   border-radius: 30px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  box-shadow: 
+    0 2px 10px rgba(0, 0, 0, 0.05),
+    inset 0 0 0 1px rgba(0, 0, 0, 0.05);
+  transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  will-change: transform, opacity;
+  border: 1px solid rgba(0, 0, 0, 0.04);
+}
+
+.navbar-search:hover {
+  box-shadow: 
+    0 4px 16px rgba(0, 0, 0, 0.1),
+    inset 0 0 0 1px rgba(0, 0, 0, 0.08);
+  transform: translateY(-1px);
 }
 
 .navbar-search.visible {
   opacity: 1;
-  transform: translateY(0);
+  transform: translateY(0) scale(1);
 }
 
 .navbar-search.hidden {
   opacity: 0;
-  transform: translateY(-20px);
+  transform: translateY(-10px) scale(0.98);
 }
 
 .search-field {
@@ -83,6 +128,11 @@
   font-size: 0.9rem;
   color: #666;
   font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.search-field:hover label {
+  color: #ff385c;
 }
 
 .search-field input {
@@ -92,31 +142,40 @@
   font-size: 1rem;
   background: transparent;
   transition: all 0.3s ease;
+  width: 180px;
 }
 
 .search-field input:focus {
   border-bottom: 2px solid #ff385c;
+  width: 220px;
 }
 
 .search-button {
-  background-color: #ff385c;
+  background: linear-gradient(135deg, #ff385c, #ff6b81);
   border: none;
   border-radius: 50%;
   padding: 12px;
   color: white;
   cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
   display: flex;
   align-items: center;
   justify-content: center;
+  box-shadow: 0 2px 8px rgba(255, 56, 92, 0.3);
+  will-change: transform;
 }
 
 .search-button:hover {
-  background-color: #e31c5f;
-  transform: scale(1.08);
+  background: linear-gradient(135deg, #e31c5f, #ff385c);
+  transform: scale(1.1) rotate(8deg);
+  box-shadow: 0 4px 16px rgba(255, 56, 92, 0.4);
 }
 
-/* Airbnb-inspired User Menu */
+.search-button:active {
+  transform: scale(0.95);
+}
+
+/* User Menu - Enhanced Micro-interactions */
 .navbar-user {
   position: relative;
   z-index: 1000;
@@ -129,11 +188,10 @@
   cursor: pointer;
   padding: 8px 8px 8px 16px;
   border-radius: 28px;
-  background: #ffffff;
-  border: 1px solid #dddddd;
-  transition: box-shadow 0.2s cubic-bezier(0.2,0,0,1),
-             transform 0.1s ease,
-             border-color 0.3s ease;
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(221, 221, 221, 0.5);
+  transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  will-change: transform, box-shadow;
   position: relative;
   overflow: hidden;
 }
@@ -141,40 +199,43 @@
 .user-menu::before {
   content: '';
   position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 120%;
-  height: 120%;
-  background: radial-gradient(circle, rgba(255,56,92,0.1) 0%, rgba(255,255,255,0) 70%);
-  transform: translate(-50%, -50%) scale(0);
-  transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, rgba(255,56,92,0.1) 0%, rgba(255,255,255,0) 80%);
+  opacity: 0;
+  transition: opacity 0.4s ease;
 }
 
 .user-menu:hover::before {
-  transform: translate(-50%, -50%) scale(2);
+  opacity: 1;
 }
 
 .user-menu:hover {
-  box-shadow: 0 2px 8px rgba(0,0,0,0.12);
-  border-color: #ff385c50;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+  border-color: rgba(255,56,92,0.3);
+  transform: translateY(-2px);
 }
 
 .user-menu:active {
-  transform: scale(0.97);
+  transform: scale(0.96) translateY(0);
 }
 
 .menu-icon {
   font-size: 16px;
   color: #555;
-  transition: color 0.3s ease;
+  transition: all 0.3s ease;
+  transform-origin: center;
 }
 
 .user-menu:hover .menu-icon {
   color: #ff385c;
+  transform: rotate(180deg);
 }
 
 .user-icon {
-  background-color: #f0f0f0;
+  background-color: #f7f7f7;
   border-radius: 50%;
   width: 32px;
   height: 32px;
@@ -182,41 +243,43 @@
   align-items: center;
   justify-content: center;
   overflow: hidden;
-  border: 1px solid rgba(0,0,0,0.08);
-  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), 
-              background-color 0.3s ease;
+  border: 1px solid rgba(0,0,0,0.05);
+  transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
   color: #555;
+  box-shadow: inset 0 0 0 1px rgba(0,0,0,0.03);
 }
 
 .user-menu:hover .user-icon {
-  transform: scale(1.08);
-  background-color: #ff385c15;
+  transform: scale(1.1);
+  background-color: rgba(255,56,92,0.1);
   color: #ff385c;
+  box-shadow: 
+    0 0 0 2px rgba(255,56,92,0.2),
+    inset 0 0 0 1px rgba(255,56,92,0.1);
 }
 
-.user-icon img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-/* Dropdown Menu - Airbnb Style */
+/* Dropdown Menu - Enhanced Animation */
 .dropdown-menu {
   position: absolute;
-  top: calc(100% + 8px);
+  top: calc(100% + 10px);
   right: 0;
-  width: 240px;
-  background: #ffffff;
-  border-radius: 12px;
-  box-shadow: 0 12px 28px rgba(0,0,0,0.12),
-             0 8px 20px rgba(0,0,0,0.08);
+  width: 260px;
+  background: rgba(255, 255, 255, 0.98);
+  border-radius: 16px;
+  box-shadow: 
+    0 12px 32px rgba(0,0,0,0.15),
+    0 4px 8px rgba(0,0,0,0.08);
   opacity: 0;
-  transform: translateY(-8px) scale(0.95);
+  transform: translateY(10px) scale(0.95);
+  transform-origin: top right;
   visibility: hidden;
-  transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
   z-index: 1000;
   overflow: hidden;
   pointer-events: none;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .dropdown-menu.show {
@@ -229,12 +292,12 @@
 .dropdown-item {
   display: flex;
   align-items: center;
-  padding: 12px 16px;
+  padding: 14px 18px;
   color: #222222;
   font-size: 14px;
   line-height: 18px;
   font-weight: 400;
-  transition: all 0.2s ease;
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
   position: relative;
   overflow: hidden;
   text-decoration: none;
@@ -245,74 +308,83 @@
   cursor: pointer;
 }
 
-.dropdown-item::after {
+.dropdown-item::before {
   content: '';
   position: absolute;
-  bottom: 0;
-  left: 0;
+  top: 0;
+  left: -100%;
   width: 100%;
-  height: 2px;
-  background: linear-gradient(90deg, #e11d48, #f59e0b);
-  transform: scaleX(0);
-  transition: transform 0.3s ease;
-  transform-origin: right;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,56,92,0.08), transparent);
+  transition: left 0.6s ease;
 }
 
-.dropdown-item:hover::after {
-  transform: scaleX(1);
-  transform-origin: left;
+.dropdown-item:hover::before {
+  left: 100%;
 }
 
 .dropdown-item:hover {
-  background-color: #f7f7f7;
-  padding-left: 20px;
+  background-color: rgba(247, 247, 247, 0.6);
+  padding-left: 22px;
 }
 
 .dropdown-item i {
   margin-right: 12px;
   color: #717171;
-  transition: color 0.3s ease, transform 0.3s ease;
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  font-size: 18px;
 }
 
 .dropdown-item:hover i {
   color: #ff385c;
-  transform: scale(1.15);
+  transform: translateX(3px) scale(1.15);
 }
 
-/* Menu Divider */
+/* Menu Divider with Animation */
 .dropdown-divider {
   height: 1px;
-  background: #ebebeb;
-  margin: 4px 0;
+  background: linear-gradient(90deg, transparent, rgba(0,0,0,0.08), transparent);
+  margin: 6px 16px;
+  opacity: 0;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: all 0.4s ease;
+}
+
+.dropdown-menu.show .dropdown-divider {
+  opacity: 1;
+  transform: scaleX(1);
 }
 
 .logout-button {
   color: #222222;
   font-weight: 500;
-  border-top: 1px solid #ebebeb;
+  border-top: 1px solid rgba(235, 235, 235, 0.6);
+  position: relative;
 }
 
 .logout-button:hover {
-  background-color: #fff1f1;
+  background-color: rgba(255, 241, 241, 0.6);
   color: #e60000;
 }
 
 .logout-button:hover i {
   color: #e60000;
+  animation: shake 0.5s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
 }
 
-/* Focus States */
-.dropdown-item:focus-visible,
-.logout-button:focus-visible,
-.user-menu:focus-visible {
-  outline: 2px solid #000000;
-  outline-offset: -2px;
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  20%, 60% { transform: translateX(-3px); }
+  40%, 80% { transform: translateX(3px); }
 }
 
 /* Mobile Optimization */
 @media (max-width: 768px) {
   .navbar {
     padding: 10px 16px;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
   }
   
   .dropdown-menu {
@@ -320,11 +392,12 @@
     top: auto;
     bottom: 0;
     right: 16px;
+    left: 16px;
     width: auto;
-    min-width: 200px;
     max-width: calc(100% - 32px);
-    border-radius: 12px;
-    transform-origin: bottom right;
+    border-radius: 16px 16px 0 0;
+    transform-origin: bottom;
+    box-shadow: 0 -8px 32px rgba(0,0,0,0.2);
   }
   
   .user-menu {
@@ -334,35 +407,20 @@
   .brand-text {
     font-size: 1.4rem;
   }
-}
-
-/* Small mobile screens */
-@media (max-width: 480px) {
-  .dropdown-menu {
-    right: 8px;
-    max-width: calc(100% - 16px);
+  
+  .search-field input {
+    width: 140px;
   }
   
-  .navbar {
-    padding: 8px 12px;
+  .search-field input:focus {
+    width: 160px;
   }
 }
 
 /* Animation Optimizations */
 @media (prefers-reduced-motion: reduce) {
-  .navbar-logo i,
-  .dropdown-menu,
-  .dropdown-item::after,
-  .user-menu::before,
-  .user-icon,
-  .brand-text {
+  * {
     animation: none !important;
     transition: none !important;
-  }
-  
-  .user-menu:hover,
-  .dropdown-item:hover,
-  .user-icon:hover {
-    transform: none !important;
   }
 }

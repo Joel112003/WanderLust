@@ -94,6 +94,7 @@ const ListingDetail = () => {
   const [isOwner, setIsOwner] = useState(false);
   const [existingBookings, setExistingBookings] = useState([]);
   const [loadingBookings, setLoadingBookings] = useState(false);
+  const[isProcessing, setIsProcessing] = useState(false);
 
   const mainContentRef = useRef(null);
   const bookingCardRef = useRef(null);
@@ -125,7 +126,9 @@ const ListingDetail = () => {
         }
 
         const response = await fetch(
-          `${process.env.REACT_APP_API_URL || 'http://localhost:8000'}/listings/${id}`
+          `${
+            process.env.REACT_APP_API_URL || "http://localhost:8000"
+          }/listings/${id}`
         );
 
         if (!response.ok) {
@@ -154,84 +157,91 @@ const ListingDetail = () => {
 
   const processListingForMap = (listing) => {
     if (
-      (listing.latitude && listing.longitude && 
-       !isNaN(listing.latitude) && !isNaN(listing.longitude)) ||
+      (listing.latitude &&
+        listing.longitude &&
+        !isNaN(listing.latitude) &&
+        !isNaN(listing.longitude)) ||
       (listing.geometry?.coordinates?.length === 2 &&
-       !isNaN(listing.geometry.coordinates[0]) && 
-       !isNaN(listing.geometry.coordinates[1]))
+        !isNaN(listing.geometry.coordinates[0]) &&
+        !isNaN(listing.geometry.coordinates[1]))
     ) {
       return listing;
     }
-    
+
     if (listing.location && !listing.latitude && !listing.longitude) {
       try {
-        const locationCoordinates = getDefaultCoordinates(listing.location, listing.country);
+        const locationCoordinates = getDefaultCoordinates(
+          listing.location,
+          listing.country
+        );
         return {
           ...listing,
           latitude: locationCoordinates[1],
           longitude: locationCoordinates[0],
           geometry: {
             type: "Point",
-            coordinates: locationCoordinates
-          }
+            coordinates: locationCoordinates,
+          },
         };
       } catch (error) {
         console.error("Error geocoding location:", error);
         return listing;
       }
     }
-    
+
     return listing;
   };
-  
+
   const getDefaultCoordinates = (location, country) => {
     const normalizedLocation = location?.toLowerCase().trim() || "";
     const normalizedCountry = country?.toLowerCase().trim() || "";
-    
+
     const locationMap = {
-      "delhi": [77.1025, 28.7041],
-      "new delhi": [77.2090, 28.6139],
-      "mumbai": [72.8777, 19.0760],
-      "bangalore": [77.5946, 12.9716],
-      "bengaluru": [77.5946, 12.9716],
-      "hyderabad": [78.4867, 17.3850],
-      "chennai": [80.2707, 13.0827],
-      "kolkata": [88.3639, 22.5726],
-      "pune": [73.8567, 18.5204],
-      "jaipur": [75.7873, 26.9124],
-      "ahmedabad": [72.5714, 23.0225],
-      "goa": [74.1240, 15.2993],
-      "kochi": [76.2673, 9.9312],
-      "varanasi": [83.0000, 25.3176],
-      "agra": [78.0081, 27.1767],
-      "shimla": [77.1734, 31.1048],
-      "manali": [77.1892, 32.2432],
-      "rishikesh": [78.2676, 30.0869],
-      "darjeeling": [88.2636, 27.0410],
-      "udaipur": [73.7125, 24.5854],
-      "amritsar": [74.8723, 31.6340],
-      "mysore": [76.6394, 12.2958],
-      "ooty": [76.6950, 11.4102],
-      "munnar": [77.0595, 10.0889],
-      "ladakh": [77.5619, 34.1526],
-      "leh": [77.5800, 34.1526],
-      "positano": [8.4231, 45.4111],
+      delhi: [77.1025, 28.7041],
+      "new delhi": [77.209, 28.6139],
+      mumbai: [72.8777, 19.076],
+      bangalore: [77.5946, 12.9716],
+      bengaluru: [77.5946, 12.9716],
+      hyderabad: [78.4867, 17.385],
+      chennai: [80.2707, 13.0827],
+      kolkata: [88.3639, 22.5726],
+      pune: [73.8567, 18.5204],
+      jaipur: [75.7873, 26.9124],
+      ahmedabad: [72.5714, 23.0225],
+      goa: [74.124, 15.2993],
+      kochi: [76.2673, 9.9312],
+      varanasi: [83.0, 25.3176],
+      agra: [78.0081, 27.1767],
+      shimla: [77.1734, 31.1048],
+      manali: [77.1892, 32.2432],
+      rishikesh: [78.2676, 30.0869],
+      darjeeling: [88.2636, 27.041],
+      udaipur: [73.7125, 24.5854],
+      amritsar: [74.8723, 31.634],
+      mysore: [76.6394, 12.2958],
+      ooty: [76.695, 11.4102],
+      munnar: [77.0595, 10.0889],
+      ladakh: [77.5619, 34.1526],
+      leh: [77.58, 34.1526],
+      positano: [8.4231, 45.4111],
     };
-    
+
     for (const [key, coordinates] of Object.entries(locationMap)) {
       if (normalizedLocation.includes(key)) {
         return coordinates;
       }
     }
-    
+
     return [78.9629, 20.5937]; // Center of India
   };
-  
+
   const fetchExistingBookings = async (listingId) => {
     setLoadingBookings(true);
     try {
       const response = await fetch(
-        `${process.env.REACT_APP_API_URL || 'http://localhost:8000'}/bookings/listing/${listingId}`
+        `${
+          process.env.REACT_APP_API_URL || "http://localhost:8000"
+        }/bookings/listing/${listingId}`
       );
 
       if (!response.ok) {
@@ -242,12 +252,16 @@ const ListingDetail = () => {
 
       const bookingsData = await response.json();
       console.log("Raw booking data:", bookingsData);
-      
+
       let activeBookings = [];
-      
+
       if (Array.isArray(bookingsData)) {
-        activeBookings = bookingsData.filter(booking => 
-          booking && booking.status !== "cancelled" && booking.checkIn && booking.checkOut
+        activeBookings = bookingsData.filter(
+          (booking) =>
+            booking &&
+            booking.status !== "cancelled" &&
+            booking.checkIn &&
+            booking.checkOut
         );
       }
 
@@ -262,49 +276,51 @@ const ListingDetail = () => {
   };
 
   const isDateBooked = (date) => {
-    if (!date || !existingBookings || existingBookings.length === 0) return false;
+    if (!date || !existingBookings || existingBookings.length === 0)
+      return false;
 
     const checkDate = new Date(date);
     checkDate.setHours(12, 0, 0, 0);
 
-    const formattedCheckDate = checkDate.toISOString().split('T')[0];
+    const formattedCheckDate = checkDate.toISOString().split("T")[0];
 
     for (const booking of existingBookings) {
       if (!booking.checkIn || !booking.checkOut) continue;
-      
+
       const bookingStart = new Date(booking.checkIn);
       const bookingEnd = new Date(booking.checkOut);
 
       bookingStart.setHours(12, 0, 0, 0);
       bookingEnd.setHours(12, 0, 0, 0);
 
-      const formattedStart = bookingStart.toISOString().split('T')[0];
-      const formattedEnd = bookingEnd.toISOString().split('T')[0];
+      const formattedStart = bookingStart.toISOString().split("T")[0];
+      const formattedEnd = bookingEnd.toISOString().split("T")[0];
 
       if (
-        (formattedCheckDate >= formattedStart && formattedCheckDate < formattedEnd) ||
-        formattedCheckDate === formattedStart || 
+        (formattedCheckDate >= formattedStart &&
+          formattedCheckDate < formattedEnd) ||
+        formattedCheckDate === formattedStart ||
         formattedCheckDate === formattedEnd
       ) {
         return true;
       }
     }
-    
+
     return false;
   };
 
   const getBookedDateRanges = () => {
     if (!existingBookings || existingBookings.length === 0) return [];
-    
+
     return existingBookings
-      .filter(booking => booking.checkIn && booking.checkOut)
-      .map(booking => {
-      const start = new Date(booking.checkIn);
-      const end = new Date(booking.checkOut);
-      start.setHours(12, 0, 0, 0);
-      end.setHours(12, 0, 0, 0);
-      return { start, end };
-    });
+      .filter((booking) => booking.checkIn && booking.checkOut)
+      .map((booking) => {
+        const start = new Date(booking.checkIn);
+        const end = new Date(booking.checkOut);
+        start.setHours(12, 0, 0, 0);
+        end.setHours(12, 0, 0, 0);
+        return { start, end };
+      });
   };
 
   const shouldDisableDate = (date) => {
@@ -314,7 +330,7 @@ const ListingDetail = () => {
   const renderBookingCalendar = () => {
     const bookedRanges = getBookedDateRanges();
     console.log("Booked ranges for display:", bookedRanges);
-    
+
     return (
       <div className="mb-4">
         <div className="flex flex-col space-y-2">
@@ -324,7 +340,9 @@ const ListingDetail = () => {
               value={checkInDate}
               onChange={(newValue) => setCheckInDate(newValue)}
               shouldDisableDate={shouldDisableDate}
-              renderInput={(params) => <TextField {...params} fullWidth size="small" />}
+              renderInput={(params) => (
+                <TextField {...params} fullWidth size="small" />
+              )}
               minDate={new Date()}
             />
           </LocalizationProvider>
@@ -336,12 +354,18 @@ const ListingDetail = () => {
               value={checkOutDate}
               onChange={(newValue) => setCheckOutDate(newValue)}
               shouldDisableDate={shouldDisableDate}
-              renderInput={(params) => <TextField {...params} fullWidth size="small" />}
-              minDate={checkInDate ? new Date(checkInDate.getTime() + 86400000) : new Date()} // Add 1 day to check-in date
+              renderInput={(params) => (
+                <TextField {...params} fullWidth size="small" />
+              )}
+              minDate={
+                checkInDate
+                  ? new Date(checkInDate.getTime() + 86400000)
+                  : new Date()
+              } // Add 1 day to check-in date
             />
           </LocalizationProvider>
         </div>
-        
+
         {bookedRanges.length > 0 ? (
           <div className="mt-4 p-2 bg-gray-50 rounded-lg border border-gray-200">
             <h4 className="text-xs font-semibold text-gray-700 mb-1">
@@ -349,16 +373,22 @@ const ListingDetail = () => {
             </h4>
             <div className="max-h-28 overflow-y-auto text-xs">
               {bookedRanges.map((range, index) => (
-                <div key={index} className="text-xs text-gray-600 mb-1 flex items-center">
+                <div
+                  key={index}
+                  className="text-xs text-gray-600 mb-1 flex items-center"
+                >
                   <span className="inline-block w-2 h-2 bg-red-500 rounded-full mr-1"></span>
-                  {range.start.toLocaleDateString()} to {range.end.toLocaleDateString()}
+                  {range.start.toLocaleDateString()} to{" "}
+                  {range.end.toLocaleDateString()}
                 </div>
               ))}
             </div>
           </div>
         ) : (
           <div className="mt-4 p-2 bg-gray-50 rounded-lg border border-gray-200">
-            <p className="text-xs text-gray-600">All dates are currently available</p>
+            <p className="text-xs text-gray-600">
+              All dates are currently available
+            </p>
           </div>
         )}
       </div>
@@ -368,16 +398,23 @@ const ListingDetail = () => {
   const hasDateRangeConflict = (startDate, endDate) => {
     if (!startDate || !endDate || existingBookings.length === 0) return false;
 
-    const formattedStartDate = startDate.toISOString().split('T')[0];
-    const formattedEndDate = endDate.toISOString().split('T')[0];
+    const formattedStartDate = startDate.toISOString().split("T")[0];
+    const formattedEndDate = endDate.toISOString().split("T")[0];
 
     for (const booking of existingBookings) {
       if (!booking.checkIn || !booking.checkOut) continue;
-      
-      const bookingStartDate = new Date(booking.checkIn).toISOString().split('T')[0];
-      const bookingEndDate = new Date(booking.checkOut).toISOString().split('T')[0];
-      
-      if (formattedStartDate === bookingStartDate && formattedEndDate === bookingEndDate) {
+
+      const bookingStartDate = new Date(booking.checkIn)
+        .toISOString()
+        .split("T")[0];
+      const bookingEndDate = new Date(booking.checkOut)
+        .toISOString()
+        .split("T")[0];
+
+      if (
+        formattedStartDate === bookingStartDate &&
+        formattedEndDate === bookingEndDate
+      ) {
         return true;
       }
     }
@@ -389,11 +426,11 @@ const ListingDetail = () => {
       }
       currentDate.setDate(currentDate.getDate() + 1);
     }
-    
+
     if (isDateBooked(endDate)) {
       return true;
     }
-    
+
     return false;
   };
 
@@ -407,7 +444,9 @@ const ListingDetail = () => {
         }
 
         const response = await fetch(
-          `${process.env.REACT_APP_API_URL || 'http://localhost:8000'}/users/me`,
+          `${
+            process.env.REACT_APP_API_URL || "http://localhost:8000"
+          }/users/me`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -466,14 +505,14 @@ const ListingDetail = () => {
   const handleReserve = async () => {
     if (!checkInDate || !checkOutDate) {
       toast.error("Please select both check-in and check-out dates", {
-        autoClose: 1500
+        autoClose: 1500,
       });
       return;
     }
 
     if (checkOutDate <= checkInDate) {
       toast.error("Check-out date must be after check-in date", {
-        autoClose: 1500
+        autoClose: 1500,
       });
       return;
     }
@@ -482,7 +521,7 @@ const ListingDetail = () => {
       toast.error(
         "This listing is already booked for some of your selected dates. Please choose different dates.",
         {
-          autoClose: 2000
+          autoClose: 2000,
         }
       );
       return;
@@ -491,7 +530,7 @@ const ListingDetail = () => {
     const token = localStorage.getItem("token");
     if (!token) {
       toast.error("Please login to book this listing", {
-        autoClose: 1500
+        autoClose: 1500,
       });
       setTimeout(() => navigate("/auth/login"), 1000);
       return;
@@ -501,7 +540,7 @@ const ListingDetail = () => {
       const loadingToastId = toast.loading("Creating your booking...");
 
       const response = await fetch(
-        `${process.env.REACT_APP_API_URL || 'http://localhost:8000'}/bookings`,
+        `${process.env.REACT_APP_API_URL || "http://localhost:8000"}/bookings`,
         {
           method: "POST",
           headers: {
@@ -526,7 +565,7 @@ const ListingDetail = () => {
       }
 
       toast.success("🎉 Booking confirmed! Redirecting...", {
-        autoClose: 1500
+        autoClose: 1500,
       });
 
       setTimeout(() => {
@@ -549,7 +588,7 @@ const ListingDetail = () => {
       toast.error(
         error.message || "Failed to create booking. Please try again.",
         {
-          autoClose: 2000
+          autoClose: 2000,
         }
       );
     }
@@ -817,24 +856,7 @@ const ListingDetail = () => {
           ref={bookingCardRef}
         >
           <div className="rounded-xl border border-gray-200 shadow-lg p-4 bg-white">
-            <div className="flex items-baseline justify-between mb-4">
-              <div>
-                <span className="text-xl font-semibold text-gray-900">
-                  ₹{formatPrice(listing.price)}
-                </span>
-                <span className="text-gray-600"> night</span>
-              </div>
-              <div className="flex items-center">
-                <Star className="h-3 w-3 text-rose-500" />
-                <span className="ml-1 text-sm font-medium">
-                  {listing.reviews?.length || 0}
-                </span>
-                <span className="mx-1 text-gray-500 text-sm">·</span>
-                <span className="text-gray-500 text-sm underline">
-                  {listing.reviews?.length || 0} reviews
-                </span>
-              </div>
-            </div>
+            {/* ... existing price and review display ... */}
 
             <div className="space-y-3">
               {renderBookingCalendar()}
@@ -856,56 +878,91 @@ const ListingDetail = () => {
                 </div>
               </div>
 
-              <motion.button
-                type="button"
-                onClick={handleReserve}
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-                style={{
-                  width: '100%',
-                  background: 'linear-gradient(to right, #f43f5e, #e11d48)',
-                  color: 'white',
-                  padding: '0.75rem 0',
-                  borderRadius: '0.5rem',
-                  fontWeight: '500',
-                  transition: 'all 0.2s ease',
-                  boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
-                  cursor: 'pointer',
-                  border: 'none',
-                  outline: 'none'
-                }}
-                onMouseOver={(e) => {
-                  e.currentTarget.style.background = 'linear-gradient(to right, #e11d48, #be123c)';
-                  e.currentTarget.style.boxShadow = '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)';
-                }}
-                onMouseOut={(e) => {
-                  e.currentTarget.style.background = 'linear-gradient(to right, #f43f5e, #e11d48)';
-                  e.currentTarget.style.boxShadow = '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)';
-                }}
+              <AnimatePresence>
+                {isProcessing ? (
+                  <motion.div
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: "auto" }}
+                    exit={{ opacity: 0, height: 0 }}
+                    className="overflow-hidden"
+                  >
+                    <motion.button
+                      disabled
+                      className="w-full bg-rose-500 text-white py-3 rounded-lg font-medium flex items-center justify-center"
+                      style={{ cursor: "not-allowed" }}
+                    >
+                      <motion.div
+                        animate={{ rotate: 360 }}
+                        transition={{
+                          duration: 1,
+                          repeat: Infinity,
+                          ease: "linear",
+                        }}
+                        className="h-5 w-5 border-2 border-white rounded-full border-t-transparent mr-2"
+                      />
+                      Creating your booking...
+                    </motion.button>
+                  </motion.div>
+                ) : (
+                  <motion.button
+                    key="reserve-button"
+                    initial={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    type="button"
+                    onClick={async () => {
+                      setIsProcessing(true);
+                      try {
+                        // Simulate API call or processing
+                        await new Promise((resolve) =>
+                          setTimeout(resolve, 1500)
+                        );
+                        handleReserve();
+                      } catch (error) {
+                        setIsProcessing(false);
+                      }
+                    }}
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                    className="w-full bg-gradient-to-r from-rose-500 to-rose-600 text-white py-3 rounded-lg font-medium shadow-md hover:shadow-lg transition-all"
+                  >
+                    Reserve
+                  </motion.button>
+                )}
+              </AnimatePresence>
+
+              <motion.p
+                className="text-center text-gray-500 text-sm mt-2"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.2 }}
               >
-                Reserve
-              </motion.button>
-              <p className="text-center text-gray-500 text-sm mt-2">
                 You won't be charged yet
-              </p>
+              </motion.p>
             </div>
 
             <div className="mt-6 space-y-3">
               {loadingBookings ? (
                 <div className="text-center py-2">
                   <div className="animate-spin h-5 w-5 border-2 border-rose-500 rounded-full border-t-transparent mx-auto"></div>
-                  <p className="text-sm text-gray-500 mt-1">Checking availability...</p>
+                  <p className="text-sm text-gray-500 mt-1">
+                    Checking availability...
+                  </p>
                 </div>
               ) : existingBookings && existingBookings.length > 0 ? (
                 <div className="bg-yellow-50 p-3 rounded-md mb-4">
                   <p className="text-sm text-yellow-800 font-medium flex items-center">
-                    <span className="mr-2">⚠️</span> This listing is booked for the following dates:
+                    <span className="mr-2">⚠️</span> This listing is booked for
+                    the following dates:
                   </p>
                   <div className="mt-2 max-h-24 overflow-y-auto text-xs">
                     {existingBookings.map((booking, idx) => (
-                      <div key={idx} className="mb-1 pb-1 border-b border-yellow-100 last:border-0">
+                      <div
+                        key={idx}
+                        className="mb-1 pb-1 border-b border-yellow-100 last:border-0"
+                      >
                         <span className="font-medium">
-                          {new Date(booking.checkIn).toLocaleDateString()} - {new Date(booking.checkOut).toLocaleDateString()}
+                          {new Date(booking.checkIn).toLocaleDateString()} -{" "}
+                          {new Date(booking.checkOut).toLocaleDateString()}
                         </span>
                       </div>
                     ))}
@@ -917,7 +974,8 @@ const ListingDetail = () => {
               ) : (
                 <div className="bg-green-50 p-3 rounded-md mb-4">
                   <p className="text-sm text-green-800 flex items-center">
-                    <span className="mr-1">✓</span> No current bookings - All dates available!
+                    <span className="mr-1">✓</span> No current bookings - All
+                    dates available!
                   </p>
                 </div>
               )}
