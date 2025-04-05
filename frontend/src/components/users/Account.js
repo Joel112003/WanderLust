@@ -19,12 +19,6 @@ import {
   ListItemText,
   ListItemAvatar,
   Badge,
-  IconButton,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
 } from "@mui/material";
 import {
   Edit,
@@ -33,7 +27,6 @@ import {
   Home,
   Payment,
   Receipt,
-  Settings,
   Person,
   Email,
   Phone,
@@ -45,10 +38,10 @@ import {
   Download,
 } from "@mui/icons-material";
 import axios from "axios";
-import { toast, ToastContainer } from "react-toastify";
+import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { motion } from "framer-motion";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const API_URL = process.env.REACT_APP_API_URL || "http://localhost:8000";
 
@@ -75,37 +68,30 @@ const tabVariants = {
 };
 
 const Account = () => {
-  // State management
-  // Inside your component
-  const { id } = useParams();
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [tabValue, setTabValue] = useState(1); // Start with listings tab (index 1)
+  const [tabValue, setTabValue] = useState(1);
   const [bookings, setBookings] = useState([]);
   const [listings, setListings] = useState([]);
   const [notifications, setNotifications] = useState([]);
   const [transactions, setTransactions] = useState([]);
-  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
 
   const navigate = useNavigate();
 
-  // Fetch user data on component mount
   useEffect(() => {
     const fetchUserData = async () => {
       const token = localStorage.getItem("token");
       if (!token) {
-        toast.error("Please login to view your account");
         setLoading(false);
         return;
       }
 
       try {
-        // Fetch user profile
         const profileResponse = await axios.get(`${API_URL}/auth/profile`, {
           headers: { Authorization: `Bearer ${token}` },
         });
 
-        if (profileResponse.data && profileResponse.data.user) {
+        if (profileResponse.data?.user) {
           const userData = profileResponse.data.user;
           setUser({
             email: userData.email,
@@ -124,46 +110,32 @@ const Account = () => {
           });
         }
 
-        // Fetch user listings - Note: API endpoint is /listings/user (not /api/listings/user)
         const listingsResponse = await axios.get(`${API_URL}/listings/user`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         setListings(listingsResponse.data.data || []);
 
-        // Fetch user bookings - Using the correct endpoint /bookings/my-bookings
         try {
-          console.log(
-            "Fetching bookings from:",
-            `${API_URL}/bookings/my-bookings`
-          );
           const bookingsResponse = await axios.get(
             `${API_URL}/bookings/my-bookings`,
             {
               headers: { Authorization: `Bearer ${token}` },
             }
           );
-          console.log("Bookings response:", bookingsResponse);
           setBookings(
             Array.isArray(bookingsResponse.data) ? bookingsResponse.data : []
           );
         } catch (bookingError) {
           console.error("Error fetching bookings:", bookingError);
-          toast.error("Failed to load your bookings");
         }
 
-        // Fetch user notifications - Using the correct endpoint /notifications
         try {
-          console.log(
-            "Fetching notifications from:",
-            `${API_URL}/notifications`
-          );
           const notificationsResponse = await axios.get(
             `${API_URL}/notifications`,
             {
               headers: { Authorization: `Bearer ${token}` },
             }
           );
-          console.log("Notifications response:", notificationsResponse);
           setNotifications(
             notificationsResponse.data.data ||
               (Array.isArray(notificationsResponse.data)
@@ -172,13 +144,11 @@ const Account = () => {
           );
         } catch (notificationError) {
           console.error("Error fetching notifications:", notificationError);
-          toast.error("Failed to load your notifications");
         }
 
         setLoading(false);
       } catch (error) {
         console.error("Error fetching user data:", error);
-        toast.error("Failed to load your account data");
         setLoading(false);
       }
     };
@@ -186,47 +156,13 @@ const Account = () => {
     fetchUserData();
   }, []);
 
-  // Event handlers
   const handleTabChange = (_, newValue) => setTabValue(newValue);
 
   const handleLogout = () => {
     localStorage.removeItem("token");
-    toast.info("Logged out successfully. Redirecting...");
-    setTimeout(() => {
-      window.location.href = "/auth/login";
-    }, 1500);
+    window.location.href = "/auth/login";
   };
 
-  const handleDeleteClick = () => {
-    setDeleteDialogOpen(true);
-  };
-
-  const handleDeleteConfirm = async () => {
-    setDeleteDialogOpen(false);
-
-    try {
-      const response = await axios.delete(`${API_URL}/listings/${id}`, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      });
-
-      if (response.data.success) {
-        toast.success("Listing deleted successfully!");
-        setTimeout(() => navigate("/listings"), 1500);
-      }
-    } catch (err) {
-      console.error("Delete error:", err.response?.data || err);
-      toast.error(err.response?.data?.error || "Failed to delete listing", {
-        autoClose: 5000,
-      });
-    }
-  };
-
-  const handleDeleteCancel = () => {
-    setDeleteDialogOpen(false);
-  };
-  // Mark notification as read
   const markNotificationAsRead = async (id) => {
     try {
       const token = localStorage.getItem("token");
@@ -247,7 +183,6 @@ const Account = () => {
       );
     } catch (error) {
       console.error("Error marking notification as read:", error);
-      toast.error("Could not mark notification as read");
     }
   };
 
@@ -259,13 +194,14 @@ const Account = () => {
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.5 }}
         >
-          <CircularProgress className="text-red-500" size={60} thickness={4} />
+          <div className="flex items-center justify-center min-h-screen">
+            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-red-500"></div>
+          </div>{" "}
         </motion.div>
       </div>
     );
   }
 
-  // Tab content rendering
   const renderTabContent = () => {
     switch (tabValue) {
       case 0: // Bookings
@@ -475,7 +411,7 @@ const Account = () => {
                               Download
                             </Button>
                           )}
-                        </CardActions>
+                        </CardActions>{" "}
                       </Card>
                     </motion.div>
                   </Grid>
@@ -545,7 +481,9 @@ const Account = () => {
                             size="small"
                             color="primary"
                             startIcon={<Edit />}
-                            href={`/listings/${listing.id}/edit`}
+                            onClick={() =>
+                              navigate(`/listings/${listing.id}/edit`)
+                            }
                           >
                             Edit
                           </Button>
@@ -553,41 +491,12 @@ const Account = () => {
                             size="small"
                             color="error"
                             startIcon={<Delete />}
-                            onClick={handleDeleteClick}
-                            sx={{ mt: 2 }}
+                            onClick={() =>
+                              navigate(`/listings/${listing.id}/delete`)
+                            }
                           >
-                            Delete Listing
+                            Delete
                           </Button>
-
-                          {/* Confirmation Dialog */}
-                          <Dialog
-                            open={deleteDialogOpen}
-                            onClose={handleDeleteCancel}
-                            aria-labelledby="alert-dialog-title"
-                            aria-describedby="alert-dialog-description"
-                          >
-                            <DialogTitle id="alert-dialog-title">
-                              Confirm Deletion
-                            </DialogTitle>
-                            <DialogContent>
-                              <DialogContentText id="alert-dialog-description">
-                                Are you sure you want to delete this listing?
-                                This action cannot be undone.
-                              </DialogContentText>
-                            </DialogContent>
-                            <DialogActions>
-                              <Button onClick={handleDeleteCancel}>
-                                Cancel
-                              </Button>
-                              <Button
-                                onClick={handleDeleteConfirm}
-                                color="error"
-                                autoFocus
-                              >
-                                Delete
-                              </Button>
-                            </DialogActions>
-                          </Dialog>
                         </CardActions>
                       </Card>
                     </motion.div>
@@ -645,7 +554,6 @@ const Account = () => {
                 </Button>
               )}
             </Box>
-
             {notifications.length === 0 ? (
               <Typography className="text-gray-600">
                 You don't have any notifications.
@@ -711,7 +619,7 @@ const Account = () => {
                   </motion.div>
                 ))}
               </List>
-            )}
+            )}{" "}
           </motion.div>
         );
 
@@ -914,7 +822,7 @@ const Account = () => {
                   </Button>
                 </Box>
               </>
-            )}
+            )}{" "}
           </motion.div>
         );
 

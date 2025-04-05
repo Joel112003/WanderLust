@@ -14,6 +14,7 @@ import Signup from "./components/users/Signup";
 import Login from "./components/users/Login";
 import Account from "./components/users/Account";
 import Spinner from "./components/views/Spinner";
+import DeleteListingPage from "./components/views/DeleteListingPage";
 import BookingConfirmation  from "./components/views/BookingConfirmation ";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -35,6 +36,7 @@ const App = () => {
             <Route path="/listings/:id" element={<ListingDetail />} />
             <Route path="/listings/new" element={<CreateListing />} />
             <Route path="/listings/:id/edit" element={<EditListing />} />
+            <Route path="/listings/:id/delete" element={<DeleteListingPage />} />
             <Route path="/search-results" element={<SearchResults />} />
             <Route path="/auth/signup" element={<Signup />} />
             <Route path="/auth/login" element={<Login />} />

@@ -1,4 +1,5 @@
 const Listing = require("../models/listing");
+const Review = require("../models/review");  // Add this import
 const mongoose = require("mongoose");
 const cloudinary = require('cloudinary').v2;
 const streamifier = require('streamifier');
@@ -314,85 +315,140 @@ exports.updateListing = async (req, res, next) => {
 };
 
 exports.deleteListing = async (req, res, next) => {
+  const session = await mongoose.startSession();
+  session.startTransaction();
+
   try {
     const { id } = req.params;
     
     // Validate ID format
     if (!mongoose.Types.ObjectId.isValid(id)) {
+      await session.abortTransaction();
       return res.status(400).json({
         success: false,
         error: "Invalid ID format",
-        details: [{ message: "The provided ID is not a valid MongoDB ObjectID" }]
+        details: [{ 
+          field: "id",
+          message: "The provided ID is not a valid MongoDB ObjectID" 
+        }]
       });
     }
 
-    // Find listing with owner populated
-    const listing = await Listing.findById(id).populate('owner');
+    // Find listing with owner populated (within transaction)
+    const listing = await Listing.findById(id)
+      .populate('owner')
+      .session(session);
+
     if (!listing) {
+      await session.abortTransaction();
       return res.status(404).json({
         success: false,
         error: "Listing not found",
-        details: [{ message: "No listing exists with the provided ID" }]
+        details: [{ 
+          field: "id", 
+          message: "No listing exists with the provided ID" 
+        }]
       });
     }
     
     // Verify ownership (unless admin)
     if (listing.owner._id.toString() !== req.user._id.toString() && !req.user.isAdmin) {
+      await session.abortTransaction();
       return res.status(403).json({
         success: false,
         error: "Unauthorized",
-        details: [{ message: "You don't have permission to delete this listing" }]
+        details: [{ 
+          field: "authorization",
+          message: "You don't have permission to delete this listing" 
+        }]
       });
     }
 
-    // Delete image from Cloudinary if exists
+    // Delete image from Cloudinary if exists (outside transaction)
     if (listing.image?.filename) {
       try {
         await cloudinary.uploader.destroy(listing.image.filename, {
           resource_type: 'image',
-          invalidate: true
+          invalidate: true,
+          timeout: 30000 // 30 seconds timeout
         });
         console.log(`Deleted image ${listing.image.filename} from Cloudinary`);
       } catch (err) {
-        console.error('Error deleting image from Cloudinary:', err);
-        // Continue with deletion even if image deletion fails
+        console.error('Cloudinary deletion error:', err);
+        // Continue with DB deletion even if image deletion fails
       }
     }
 
-    // Delete all associated reviews first
-    await Review.deleteMany({ _id: { $in: listing.reviews } });
+    // Delete all associated reviews if they exist (within transaction)
+    if (listing.reviews && listing.reviews.length > 0) {
+      await Review.deleteMany({ _id: { $in: listing.reviews } })
+        .session(session);
+    }
 
-    // Delete the listing
-    const deletedListing = await Listing.findByIdAndDelete(id);
+    // Delete the listing (within transaction)
+    const deletedListing = await Listing.findByIdAndDelete(id)
+      .session(session);
+
     if (!deletedListing) {
+      await session.abortTransaction();
       throw new Error('Listing deletion failed unexpectedly');
     }
 
-    // Log the deletion
-    console.log(`Listing ${id} deleted by user ${req.user._id}`);
+    // Commit the transaction
+    await session.commitTransaction();
+    session.endSession();
 
-    res.status(200).json({
+    // Log the successful deletion
+    console.log(`Listing ${id} deleted successfully by user ${req.user._id}`);
+
+    return res.status(200).json({
       success: true,
       message: "Listing deleted successfully",
       data: {
         id: deletedListing._id,
-        title: deletedListing.title
+        title: deletedListing.title,
+        timestamp: new Date().toISOString()
       }
     });
 
   } catch (error) {
-    console.error('Error in deleteListing:', error);
+    // Abort transaction on any error
+    await session.abortTransaction();
+    session.endSession();
     
+    console.error('Delete listing error:', error);
+
     // Handle specific error cases
     if (error.name === 'CastError') {
       return res.status(400).json({
         success: false,
         error: "Invalid ID format",
-        details: [{ message: "The provided ID is malformed" }]
+        details: [{ 
+          field: "id",
+          message: "The provided ID is malformed" 
+        }]
       });
     }
 
-    next(error);
+    if (error.name === 'MongoError' && error.code === 11000) {
+      return res.status(409).json({
+        success: false,
+        error: "Database conflict",
+        details: [{ 
+          field: "database",
+          message: "A conflict occurred during deletion" 
+        }]
+      });
+    }
+
+    // For other unexpected errors
+    return res.status(500).json({
+      success: false,
+      error: "Internal server error during deletion",
+      details: process.env.NODE_ENV === 'development' ? 
+        [{ message: error.message }] : 
+        [{ message: "An unexpected error occurred" }]
+    });
   }
 };
 
