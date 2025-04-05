@@ -13,7 +13,7 @@ import {
   LinkedIn,
   ArrowUpward
 } from "@mui/icons-material";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import { useScrollTrigger, Zoom } from "@mui/material";
 
 // Scroll to top component
@@ -101,7 +101,8 @@ const Footer = () => {
           alignItems: "center",
           gap: "16px",
           borderTop: `1px solid ${theme.palette.divider}`,
-          position: 'relative',
+          marginTop: 'auto', // This makes the footer stick to bottom
+          width: '100%',
         }}
       >
         <motion.div
@@ -109,6 +110,7 @@ const Footer = () => {
           whileInView="visible"
           variants={containerVariants}
           viewport={{ once: true }}
+          style={{ width: '100%' }}
         >
           {/* Social Media Links */}
           <motion.div variants={itemVariants}>

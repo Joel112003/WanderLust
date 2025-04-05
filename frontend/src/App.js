@@ -16,7 +16,6 @@ import Account from "./components/users/Account";
 import Spinner from "./components/views/Spinner";
 import DeleteListingPage from "./components/views/DeleteListingPage";
 import BookingConfirmation  from "./components/views/BookingConfirmation ";
-import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 
@@ -48,19 +47,7 @@ const App = () => {
             <Route path="*" element={<Error />} />
           </Routes>
           <Footer />
-          <ToastContainer
-            position="bottom-right"
-            autoClose={2000}
-            hideProgressBar={false}
-            newestOnTop
-            closeOnClick
-            rtl={false}
-            pauseOnFocusLoss={false}
-            draggable
-            pauseOnHover={false}
-            theme="light"
-            limit={3}
-          />
+          
         </>
       ) : (
         <Spinner onComplete={() => setLoadingComplete(true)} />

@@ -40,7 +40,7 @@ const DeleteListingPage = () => {
           Authorization: `Bearer ${localStorage.getItem('token')}`
         }
       })
-      navigate('/profile/listings', {
+      navigate('/profile', {
         state: { 
           message: 'Listing deleted successfully',
           showToast: true
