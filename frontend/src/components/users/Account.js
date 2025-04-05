@@ -19,7 +19,12 @@ import {
   ListItemText,
   ListItemAvatar,
   Badge,
-  IconButton
+  IconButton,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
 } from "@mui/material";
 import {
   Edit,
@@ -37,13 +42,13 @@ import {
   CheckCircle,
   Cancel,
   Star,
-  Download
+  Download,
 } from "@mui/icons-material";
 import axios from "axios";
-import { toast } from "react-toastify";
+import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { motion } from "framer-motion";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 const API_URL = process.env.REACT_APP_API_URL || "http://localhost:8000";
 
@@ -71,6 +76,8 @@ const tabVariants = {
 
 const Account = () => {
   // State management
+  // Inside your component
+  const { id } = useParams();
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [tabValue, setTabValue] = useState(1); // Start with listings tab (index 1)
@@ -78,6 +85,8 @@ const Account = () => {
   const [listings, setListings] = useState([]);
   const [notifications, setNotifications] = useState([]);
   const [transactions, setTransactions] = useState([]);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+
   const navigate = useNavigate();
 
   // Fetch user data on component mount
@@ -123,12 +132,20 @@ const Account = () => {
 
         // Fetch user bookings - Using the correct endpoint /bookings/my-bookings
         try {
-          console.log("Fetching bookings from:", `${API_URL}/bookings/my-bookings`);
-          const bookingsResponse = await axios.get(`${API_URL}/bookings/my-bookings`, {
-            headers: { Authorization: `Bearer ${token}` },
-          });
+          console.log(
+            "Fetching bookings from:",
+            `${API_URL}/bookings/my-bookings`
+          );
+          const bookingsResponse = await axios.get(
+            `${API_URL}/bookings/my-bookings`,
+            {
+              headers: { Authorization: `Bearer ${token}` },
+            }
+          );
           console.log("Bookings response:", bookingsResponse);
-          setBookings(Array.isArray(bookingsResponse.data) ? bookingsResponse.data : []);
+          setBookings(
+            Array.isArray(bookingsResponse.data) ? bookingsResponse.data : []
+          );
         } catch (bookingError) {
           console.error("Error fetching bookings:", bookingError);
           toast.error("Failed to load your bookings");
@@ -136,14 +153,22 @@ const Account = () => {
 
         // Fetch user notifications - Using the correct endpoint /notifications
         try {
-          console.log("Fetching notifications from:", `${API_URL}/notifications`);
-          const notificationsResponse = await axios.get(`${API_URL}/notifications`, {
-            headers: { Authorization: `Bearer ${token}` },
-          });
+          console.log(
+            "Fetching notifications from:",
+            `${API_URL}/notifications`
+          );
+          const notificationsResponse = await axios.get(
+            `${API_URL}/notifications`,
+            {
+              headers: { Authorization: `Bearer ${token}` },
+            }
+          );
           console.log("Notifications response:", notificationsResponse);
           setNotifications(
-            notificationsResponse.data.data || 
-            (Array.isArray(notificationsResponse.data) ? notificationsResponse.data : [])
+            notificationsResponse.data.data ||
+              (Array.isArray(notificationsResponse.data)
+                ? notificationsResponse.data
+                : [])
           );
         } catch (notificationError) {
           console.error("Error fetching notifications:", notificationError);
@@ -172,17 +197,52 @@ const Account = () => {
     }, 1500);
   };
 
+  const handleDeleteClick = () => {
+    setDeleteDialogOpen(true);
+  };
+
+  const handleDeleteConfirm = async () => {
+    setDeleteDialogOpen(false);
+
+    try {
+      const response = await axios.delete(`${API_URL}/listings/${id}`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+
+      if (response.data.success) {
+        toast.success("Listing deleted successfully!");
+        setTimeout(() => navigate("/listings"), 1500);
+      }
+    } catch (err) {
+      console.error("Delete error:", err.response?.data || err);
+      toast.error(err.response?.data?.error || "Failed to delete listing", {
+        autoClose: 5000,
+      });
+    }
+  };
+
+  const handleDeleteCancel = () => {
+    setDeleteDialogOpen(false);
+  };
   // Mark notification as read
   const markNotificationAsRead = async (id) => {
     try {
       const token = localStorage.getItem("token");
-      await axios.put(`${API_URL}/notifications/${id}/read`, {}, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      
+      await axios.put(
+        `${API_URL}/notifications/${id}/read`,
+        {},
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+
       setNotifications((prevNotifications) =>
         prevNotifications.map((notification) =>
-          notification._id === id ? { ...notification, isRead: true } : notification
+          notification._id === id
+            ? { ...notification, isRead: true }
+            : notification
         )
       );
     } catch (error) {
@@ -199,7 +259,7 @@ const Account = () => {
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.5 }}
         >
-          <CircularProgress className="text-blue-500" size={60} thickness={4} />
+          <CircularProgress className="text-red-500" size={60} thickness={4} />
         </motion.div>
       </div>
     );
@@ -228,130 +288,186 @@ const Account = () => {
                 {bookings.map((booking) => (
                   <Grid item xs={12} sm={6} md={6} key={booking._id}>
                     <motion.div variants={itemVariants}>
-                      <Card 
+                      <Card
                         className="shadow-md hover:shadow-lg transition-shadow duration-300"
-                        sx={{ 
-                          position: 'relative',
-                          border: booking.status === 'confirmed' ? '1px solid rgba(46, 125, 50, 0.3)' : 
-                                 booking.status === 'pending' ? '1px solid rgba(237, 108, 2, 0.3)' : 
-                                 '1px solid rgba(211, 47, 47, 0.3)',
-                          overflow: 'visible',
-                          height: '100%',
-                          display: 'flex',
-                          flexDirection: 'column'
+                        sx={{
+                          position: "relative",
+                          border:
+                            booking.status === "confirmed"
+                              ? "1px solid rgba(46, 125, 50, 0.3)"
+                              : booking.status === "pending"
+                              ? "1px solid rgba(237, 108, 2, 0.3)"
+                              : "1px solid rgba(211, 47, 47, 0.3)",
+                          overflow: "visible",
+                          height: "100%",
+                          display: "flex",
+                          flexDirection: "column",
                         }}
                       >
-                        {booking.status === 'confirmed' && (
+                        {booking.status === "confirmed" && (
                           <Chip
                             label="Confirmed"
                             color="success"
                             size="small"
-                            sx={{ 
-                              position: 'absolute', 
-                              top: 10, 
-                              right: 10, 
+                            sx={{
+                              position: "absolute",
+                              top: 10,
+                              right: 10,
                               zIndex: 1,
-                              fontWeight: 'bold'
+                              fontWeight: "bold",
                             }}
                           />
                         )}
-                        {booking.status === 'pending' && (
+                        {booking.status === "pending" && (
                           <Chip
                             label="Pending"
                             color="warning"
                             size="small"
-                            sx={{ 
-                              position: 'absolute', 
-                              top: 10, 
-                              right: 10, 
+                            sx={{
+                              position: "absolute",
+                              top: 10,
+                              right: 10,
                               zIndex: 1,
-                              fontWeight: 'bold'
+                              fontWeight: "bold",
                             }}
                           />
                         )}
-                        {booking.status === 'cancelled' && (
+                        {booking.status === "cancelled" && (
                           <Chip
                             label="Cancelled"
                             color="error"
                             size="small"
-                            sx={{ 
-                              position: 'absolute', 
-                              top: 10, 
-                              right: 10, 
+                            sx={{
+                              position: "absolute",
+                              top: 10,
+                              right: 10,
                               zIndex: 1,
-                              fontWeight: 'bold'
+                              fontWeight: "bold",
                             }}
                           />
                         )}
-                        <Box 
-                          sx={{ 
-                            height: 160, 
-                            backgroundImage: `url(${booking.listing?.image?.url || booking.listing?.images?.[0]?.url || '/placeholder.jpg'})`,
-                            backgroundSize: 'cover',
-                            backgroundPosition: 'center',
-                            borderBottom: '1px solid rgba(0,0,0,0.1)'
+                        <Box
+                          sx={{
+                            height: 160,
+                            backgroundImage: `url(${
+                              booking.listing?.image?.url ||
+                              booking.listing?.images?.[0]?.url ||
+                              "/placeholder.jpg"
+                            })`,
+                            backgroundSize: "cover",
+                            backgroundPosition: "center",
+                            borderBottom: "1px solid rgba(0,0,0,0.1)",
                           }}
                         />
                         <CardContent sx={{ flexGrow: 1, pb: 1 }}>
-                          <Typography variant="h6" className="font-semibold mb-1 line-clamp-1">
+                          <Typography
+                            variant="h6"
+                            className="font-semibold mb-1 line-clamp-1"
+                          >
                             {booking.listing?.title || "Unnamed Listing"}
                           </Typography>
-                          <Typography variant="body2" color="text.secondary" className="mb-2">
-                            <LocationOn fontSize="small" sx={{ verticalAlign: 'middle', mr: 0.5 }} />
-                            {booking.listing?.location || "Location not available"}
+                          <Typography
+                            variant="body2"
+                            color="text.secondary"
+                            className="mb-2"
+                          >
+                            <LocationOn
+                              fontSize="small"
+                              sx={{ verticalAlign: "middle", mr: 0.5 }}
+                            />
+                            {booking.listing?.location ||
+                              "Location not available"}
                           </Typography>
-                          
-                          <Box sx={{ 
-                            backgroundColor: booking.status === 'confirmed' ? 'rgba(46, 125, 50, 0.08)' : 
-                                           booking.status === 'pending' ? 'rgba(237, 108, 2, 0.08)' : 
-                                           'rgba(211, 47, 47, 0.08)',
-                            padding: '12px',
-                            borderRadius: '4px',
-                            marginTop: '12px',
-                            marginBottom: '12px'
-                          }}>
-                            <Typography variant="subtitle2" sx={{ fontWeight: 'bold', mb: 1 }}>
-                              Booking Confirmation #{booking._id.substring(0, 8)}
+
+                          <Box
+                            sx={{
+                              backgroundColor:
+                                booking.status === "confirmed"
+                                  ? "rgba(46, 125, 50, 0.08)"
+                                  : booking.status === "pending"
+                                  ? "rgba(237, 108, 2, 0.08)"
+                                  : "rgba(211, 47, 47, 0.08)",
+                              padding: "12px",
+                              borderRadius: "4px",
+                              marginTop: "12px",
+                              marginBottom: "12px",
+                            }}
+                          >
+                            <Typography
+                              variant="subtitle2"
+                              sx={{ fontWeight: "bold", mb: 1 }}
+                            >
+                              Booking Confirmation #
+                              {booking._id.substring(0, 8)}
                             </Typography>
                             <Divider className="my-2" />
                             <Grid container spacing={1} className="mt-1">
                               <Grid item xs={6}>
-                                <Typography variant="body2" className="font-medium">Check-in:</Typography>
-                                <Typography variant="body2" color="text.secondary">
-                                  {new Date(booking.checkIn).toLocaleDateString()}
+                                <Typography
+                                  variant="body2"
+                                  className="font-medium"
+                                >
+                                  Check-in:
+                                </Typography>
+                                <Typography
+                                  variant="body2"
+                                  color="text.secondary"
+                                >
+                                  {new Date(
+                                    booking.checkIn
+                                  ).toLocaleDateString()}
                                 </Typography>
                               </Grid>
                               <Grid item xs={6}>
-                                <Typography variant="body2" className="font-medium">Check-out:</Typography>
-                                <Typography variant="body2" color="text.secondary">
-                                  {new Date(booking.checkOut).toLocaleDateString()}
+                                <Typography
+                                  variant="body2"
+                                  className="font-medium"
+                                >
+                                  Check-out:
+                                </Typography>
+                                <Typography
+                                  variant="body2"
+                                  color="text.secondary"
+                                >
+                                  {new Date(
+                                    booking.checkOut
+                                  ).toLocaleDateString()}
                                 </Typography>
                               </Grid>
                             </Grid>
                           </Box>
-                          
-                          <Typography variant="body2" className="font-medium mt-2" sx={{ 
-                            color: booking.status === 'confirmed' ? 'success.main' : 
-                                  booking.status === 'pending' ? 'warning.main' : 
-                                  'error.main',
-                            fontWeight: 'bold'
-                          }}>
+
+                          <Typography
+                            variant="body2"
+                            className="font-medium mt-2"
+                            sx={{
+                              color:
+                                booking.status === "confirmed"
+                                  ? "success.main"
+                                  : booking.status === "pending"
+                                  ? "warning.main"
+                                  : "error.main",
+                              fontWeight: "bold",
+                            }}
+                          >
                             Total: ₹{booking.total.toLocaleString()}
                           </Typography>
                         </CardContent>
                         <CardActions>
-                          <Button 
-                            size="small" 
+                          <Button
+                            size="small"
                             color="primary"
-                            onClick={() => navigate(`/listings/${booking.listing}`)}
+                            onClick={() =>
+                              navigate(`/listings/${booking.listing}`)
+                            }
                             variant="outlined"
                             startIcon={<Visibility />}
                           >
                             View Listing
                           </Button>
-                          {booking.status === 'confirmed' && (
-                            <Button 
-                              size="small" 
+                          {booking.status === "confirmed" && (
+                            <Button
+                              size="small"
                               color="success"
                               variant="outlined"
                               startIcon={<Download />}
@@ -437,9 +553,41 @@ const Account = () => {
                             size="small"
                             color="error"
                             startIcon={<Delete />}
+                            onClick={handleDeleteClick}
+                            sx={{ mt: 2 }}
                           >
-                            Delete
+                            Delete Listing
                           </Button>
+
+                          {/* Confirmation Dialog */}
+                          <Dialog
+                            open={deleteDialogOpen}
+                            onClose={handleDeleteCancel}
+                            aria-labelledby="alert-dialog-title"
+                            aria-describedby="alert-dialog-description"
+                          >
+                            <DialogTitle id="alert-dialog-title">
+                              Confirm Deletion
+                            </DialogTitle>
+                            <DialogContent>
+                              <DialogContentText id="alert-dialog-description">
+                                Are you sure you want to delete this listing?
+                                This action cannot be undone.
+                              </DialogContentText>
+                            </DialogContent>
+                            <DialogActions>
+                              <Button onClick={handleDeleteCancel}>
+                                Cancel
+                              </Button>
+                              <Button
+                                onClick={handleDeleteConfirm}
+                                color="error"
+                                autoFocus
+                              >
+                                Delete
+                              </Button>
+                            </DialogActions>
+                          </Dialog>
                         </CardActions>
                       </Card>
                     </motion.div>
@@ -458,7 +606,10 @@ const Account = () => {
             animate="visible"
             className="mt-6"
           >
-            <Box className="flex justify-between items-center mb-4" style={{ marginBottom: "20px" }}>
+            <Box
+              className="flex justify-between items-center mb-4"
+              style={{ marginBottom: "20px" }}
+            >
               <Typography variant="h6" className="font-bold text-gray-900">
                 Notifications
               </Typography>
@@ -468,17 +619,21 @@ const Account = () => {
                   onClick={async () => {
                     try {
                       const token = localStorage.getItem("token");
-                      await axios.put(`${API_URL}/notifications/mark-all-read`, {}, {
-                        headers: { Authorization: `Bearer ${token}` }
-                      });
-                      
+                      await axios.put(
+                        `${API_URL}/notifications/mark-all-read`,
+                        {},
+                        {
+                          headers: { Authorization: `Bearer ${token}` },
+                        }
+                      );
+
                       setNotifications((prevNotifications) =>
                         prevNotifications.map((notification) => ({
                           ...notification,
-                          isRead: true
+                          isRead: true,
                         }))
                       );
-                      
+
                       toast.success("All notifications marked as read");
                     } catch (error) {
                       console.error("Error marking all as read:", error);
@@ -490,7 +645,7 @@ const Account = () => {
                 </Button>
               )}
             </Box>
-            
+
             {notifications.length === 0 ? (
               <Typography className="text-gray-600">
                 You don't have any notifications.
@@ -531,7 +686,9 @@ const Account = () => {
                         </p>
                         {notification.type === "booking_confirmed" && (
                           <div className="mt-2 text-xs text-gray-500">
-                            <p>Booking details will appear in your bookings tab.</p>
+                            <p>
+                              Booking details will appear in your bookings tab.
+                            </p>
                           </div>
                         )}
                       </div>
@@ -543,7 +700,9 @@ const Account = () => {
                           size="small"
                           color="primary"
                           className="mt-1"
-                          onClick={() => markNotificationAsRead(notification._id)}
+                          onClick={() =>
+                            markNotificationAsRead(notification._id)
+                          }
                         >
                           Mark as Read
                         </Button>
@@ -765,7 +924,12 @@ const Account = () => {
   };
 
   return (
-    <div className="container mx-auto px-4 py-8 max-w-5xl mt-20 shadow-lg" style={{marginBottom:"100px", minHeight: "calc(100vh - 200px)"}}>
+    <div
+      className="container mx-auto px-4 py-8 max-w-5xl mt-20 shadow-lg"
+      style={{ marginBottom: "100px", minHeight: "calc(100vh - 200px)" }}
+    >
+      <ToastContainer position="top-right" autoClose={3000} />
+
       <Paper className="p-6 shadow-md rounded-lg">
         <Box className="flex justify-between items-center mb-8">
           <Box className="flex items-center">

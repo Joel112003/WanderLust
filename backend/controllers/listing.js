@@ -261,77 +261,54 @@ exports.getListingForEdit = async (req, res, next) => {
   }
 };
 
+// In your backend controller
 exports.updateListing = async (req, res, next) => {
   try {
     const { id } = req.params;
     
-    // Validate ID format
+    // Validate MongoDB ID
     if (!mongoose.Types.ObjectId.isValid(id)) {
       return res.status(400).json({
         success: false,
         error: "Invalid ID format"
       });
     }
-    
-    // Check if listing exists
-    const existingListing = await Listing.findById(id);
-    if (!existingListing) {
+
+    // Validate against schema
+    const { error } = listingSchema.validate(req.listingData, { abortEarly: false });
+    if (error) {
+      const details = error.details.map(d => ({
+        field: d.path.join('.'),
+        message: d.message.replace(/"/g, '')
+      }));
+      return res.status(400).json({
+        success: false,
+        error: "Validation failed",
+        details
+      });
+    }
+
+    // Update the listing
+    const updatedListing = await Listing.findByIdAndUpdate(
+      id,
+      req.listingData.listing, // Use the nested listing object
+      { new: true, runValidators: true }
+    );
+
+    if (!updatedListing) {
       return res.status(404).json({
         success: false,
         error: "Listing not found"
       });
     }
-    
-    const oldImageId = existingListing.image?.filename;
-    let updatedData = { ...req.body };
 
-    // Handle image update if new file provided
-    if (req.file) {
-      const result = await uploadToCloudinary(req.file.buffer);
-      updatedData.image = {
-        url: result.secure_url,
-        filename: result.public_id,
-        width: result.width,
-        height: result.height
-      };
-      
-      // Delete old image from Cloudinary if exists
-      if (oldImageId) {
-        try {
-          await cloudinary.uploader.destroy(oldImageId);
-        } catch (err) {
-          console.error('Error deleting old image:', err);
-        }
-      }
-    }
-
-    // Validate updated data
-    validateListingData(updatedData);
-
-    // Update listing
-    const updatedListing = await Listing.findByIdAndUpdate(
-      id, 
-      updatedData, 
-      { 
-        new: true, 
-        runValidators: true,
-        lean: true
-      }
-    );
-    
     res.status(200).json({
       success: true,
-      data: updatedListing,
-      message: "Listing updated successfully"
+      data: updatedListing
     });
+
   } catch (error) {
-    if (error.name === 'ValidationError') {
-      return res.status(400).json({
-        success: false,
-        error: error.message,
-        details: error.details
-      });
-    }
+    console.error("Update error:", error);
     next(error);
   }
 };
@@ -344,36 +321,77 @@ exports.deleteListing = async (req, res, next) => {
     if (!mongoose.Types.ObjectId.isValid(id)) {
       return res.status(400).json({
         success: false,
-        error: "Invalid ID format"
+        error: "Invalid ID format",
+        details: [{ message: "The provided ID is not a valid MongoDB ObjectID" }]
       });
     }
 
-    // Find listing first to get image reference
-    const listing = await Listing.findById(id);
+    // Find listing with owner populated
+    const listing = await Listing.findById(id).populate('owner');
     if (!listing) {
       return res.status(404).json({
         success: false,
-        error: "Listing not found"
+        error: "Listing not found",
+        details: [{ message: "No listing exists with the provided ID" }]
       });
     }
     
+    // Verify ownership (unless admin)
+    if (listing.owner._id.toString() !== req.user._id.toString() && !req.user.isAdmin) {
+      return res.status(403).json({
+        success: false,
+        error: "Unauthorized",
+        details: [{ message: "You don't have permission to delete this listing" }]
+      });
+    }
+
     // Delete image from Cloudinary if exists
     if (listing.image?.filename) {
       try {
-        await cloudinary.uploader.destroy(listing.image.filename);
+        await cloudinary.uploader.destroy(listing.image.filename, {
+          resource_type: 'image',
+          invalidate: true
+        });
+        console.log(`Deleted image ${listing.image.filename} from Cloudinary`);
       } catch (err) {
-        console.error('Error deleting image:', err);
+        console.error('Error deleting image from Cloudinary:', err);
+        // Continue with deletion even if image deletion fails
       }
     }
 
-    // Delete listing from database
-    await Listing.findByIdAndDelete(id);
-    
+    // Delete all associated reviews first
+    await Review.deleteMany({ _id: { $in: listing.reviews } });
+
+    // Delete the listing
+    const deletedListing = await Listing.findByIdAndDelete(id);
+    if (!deletedListing) {
+      throw new Error('Listing deletion failed unexpectedly');
+    }
+
+    // Log the deletion
+    console.log(`Listing ${id} deleted by user ${req.user._id}`);
+
     res.status(200).json({
       success: true,
-      message: "Listing deleted successfully"
+      message: "Listing deleted successfully",
+      data: {
+        id: deletedListing._id,
+        title: deletedListing.title
+      }
     });
+
   } catch (error) {
+    console.error('Error in deleteListing:', error);
+    
+    // Handle specific error cases
+    if (error.name === 'CastError') {
+      return res.status(400).json({
+        success: false,
+        error: "Invalid ID format",
+        details: [{ message: "The provided ID is malformed" }]
+      });
+    }
+
     next(error);
   }
 };
