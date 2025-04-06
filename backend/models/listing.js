@@ -51,6 +51,10 @@ const listingSchema = new Schema({
     enum: validCategories,
     required: true,
   },
+  guests: { type: Number, required: true, min: 1 },
+  bedrooms: { type: Number, required: true, min: 1 },
+  beds: { type: Number, required: true, min: 1 },
+  baths: { type: Number, required: true, min: 1 },
   
 }, { timestamps: true });
 

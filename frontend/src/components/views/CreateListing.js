@@ -15,7 +15,9 @@ import {
 import { gsap } from "gsap";
 import { Add, Image as ImageIcon, Close } from "@mui/icons-material";
 import Confetti from "react-confetti";
-import axios from 'axios';
+import axios from "axios";
+
+
 
 const CreateListing = () => {
   const navigate = useNavigate();
@@ -31,6 +33,10 @@ const CreateListing = () => {
     country: "",
     location: "",
     category: "",
+    guests: 1,
+    bedrooms: 1,
+    beds: 1,
+    baths: 1,
   });
 
   const [selectedImage, setSelectedImage] = useState(null);
@@ -166,6 +172,14 @@ const CreateListing = () => {
     if (!formData.country.trim()) errors.country = "Country is required";
     if (!formData.location.trim()) errors.location = "Location is required";
     if (!formData.category) errors.category = "Category is required";
+    if (!formData.guests || formData.guests < 1)
+      errors.guests = "Must accommodate at least 1 guest";
+    if (!formData.bedrooms || formData.bedrooms < 1)
+      errors.bedrooms = "Must have at least 1 bedroom";
+    if (!formData.beds || formData.beds < 1)
+      errors.beds = "Must have at least 1 bed";
+    if (!formData.baths || formData.baths < 1)
+      errors.baths = "Must have at least 1 bath";
     return errors;
   };
 
@@ -182,13 +196,13 @@ const CreateListing = () => {
       if (response.data.features && response.data.features.length > 0) {
         // Mapbox returns coordinates as [longitude, latitude]
         const [longitude, latitude] = response.data.features[0].center;
-        return { 
-          latitude, 
+        return {
+          latitude,
           longitude,
           geometry: {
-            type: 'Point',
-            coordinates: [longitude, latitude]
-          }
+            type: "Point",
+            coordinates: [longitude, latitude],
+          },
         };
       }
       throw new Error("Location not found");
@@ -222,19 +236,24 @@ const CreateListing = () => {
 
     try {
       // First get coordinates from the location and country
-      const geoData = await geocodeAddress(formData.location, formData.country)
-        .catch(error => {
-          // If geocoding fails, set default coordinates (you can adjust these)
-          console.warn("Geocoding failed, using default coordinates:", error.message);
-          return { 
-            latitude: 20.5937, 
-            longitude: 78.9629,
-            geometry: {
-              type: 'Point',
-              coordinates: [78.9629, 20.5937] // Default to center of India
-            }
-          };
-        });
+      const geoData = await geocodeAddress(
+        formData.location,
+        formData.country
+      ).catch((error) => {
+        // If geocoding fails, set default coordinates (you can adjust these)
+        console.warn(
+          "Geocoding failed, using default coordinates:",
+          error.message
+        );
+        return {
+          latitude: 20.5937,
+          longitude: 78.9629,
+          geometry: {
+            type: "Point",
+            coordinates: [78.9629, 20.5937], // Default to center of India
+          },
+        };
+      });
 
       const formDataToSend = new FormData();
       formDataToSend.append("title", formData.title);
@@ -243,11 +262,14 @@ const CreateListing = () => {
       formDataToSend.append("country", formData.country);
       formDataToSend.append("location", formData.location);
       formDataToSend.append("category", formData.category);
-      
+      formDataToSend.append("guests", formData.guests);
+      formDataToSend.append("bedrooms", formData.bedrooms);
+      formDataToSend.append("beds", formData.beds);
+      formDataToSend.append("baths", formData.baths);
       // Add geographical coordinates
       formDataToSend.append("latitude", geoData.latitude);
       formDataToSend.append("longitude", geoData.longitude);
-      
+
       // Add geometry as JSON string
       formDataToSend.append("geometry", JSON.stringify(geoData.geometry));
 
@@ -260,20 +282,20 @@ const CreateListing = () => {
 
       // Use axios instead of fetch for better FormData handling
       const response = await axios.post(
-        `${process.env.REACT_APP_API_URL}/listings`, 
-        formDataToSend, 
+        `${process.env.REACT_APP_API_URL}/listings`,
+        formDataToSend,
         {
           headers: {
-            'Authorization': `Bearer ${token}`,
+            Authorization: `Bearer ${token}`,
             // Don't set Content-Type for FormData
           },
         }
       );
       console.log(`API URL: ${process.env.REACT_APP_API_URL}/listings`);
       if (response.status !== 200 && response.status !== 201) {
-        throw new Error(response.data.error || 'Failed to create listing');
+        throw new Error(response.data.error || "Failed to create listing");
       }
-      
+
       const data = response.data;
       console.log("Listing created:", data);
 
@@ -285,8 +307,15 @@ const CreateListing = () => {
         navigate("/listings");
       }, 2000);
     } catch (error) {
-      console.error("Error details:", error.response?.data || error.message || error);
-      setSnackbarMessage(error.response?.data?.message || error.message || "Failed to create listing");
+      console.error(
+        "Error details:",
+        error.response?.data || error.message || error
+      );
+      setSnackbarMessage(
+        error.response?.data?.message ||
+          error.message ||
+          "Failed to create listing"
+      );
       setIsSnackbarOpen(true);
     } finally {
       setIsSubmitting(false);
@@ -487,6 +516,52 @@ const CreateListing = () => {
               fullWidth
               error={!!formErrors.location}
               helperText={formErrors.location}
+            />
+          </div>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+            <TextField
+              label="Guests"
+              name="guests"
+              type="number"
+              value={formData.guests}
+              onChange={handleChange}
+              fullWidth
+              error={!!formErrors.guests}
+              helperText={formErrors.guests}
+              inputProps={{ min: 1 }}
+            />
+            <TextField
+              label="Bedrooms"
+              name="bedrooms"
+              type="number"
+              value={formData.bedrooms}
+              onChange={handleChange}
+              fullWidth
+              error={!!formErrors.bedrooms}
+              helperText={formErrors.bedrooms}
+              inputProps={{ min: 1 }}
+            />
+            <TextField
+              label="Beds"
+              name="beds"
+              type="number"
+              value={formData.beds}
+              onChange={handleChange}
+              fullWidth
+              error={!!formErrors.beds}
+              helperText={formErrors.beds}
+              inputProps={{ min: 1 }}
+            />
+            <TextField
+              label="Baths"
+              name="baths"
+              type="number"
+              value={formData.baths}
+              onChange={handleChange}
+              fullWidth
+              error={!!formErrors.baths}
+              helperText={formErrors.baths}
+              inputProps={{ min: 1 }}
             />
           </div>
 

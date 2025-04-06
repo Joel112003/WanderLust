@@ -175,15 +175,15 @@ exports.getListingById = async (req, res) => {
 exports.createListing = async (req, res, next) => {
   try {
     // Extract text fields from form-data
-    const { title, description, price, country, location, category } = req.body;
-
+    const { title, description, price, country, location, category, guests, bedrooms, beds, baths } = req.body;
     // Validate required fields
-    if (!title || !description || !price || !country || !location || !category) {
-      return res.status(400).json({
-        success: false,
-        error: "All fields are required"
-      });
-    }
+    if (!title || !description || !price || !country || !location || !category || 
+      !guests || !bedrooms || !beds || !baths) {
+    return res.status(400).json({
+      success: false,
+      error: "All fields are required"
+    });
+  }
 
     // Validate image
     if (!req.file) {
@@ -203,20 +203,25 @@ exports.createListing = async (req, res, next) => {
     const geometry = await geocodeLocation(location, country);
 
     // Create new listing
-    const newListing = new Listing({
-      title,
-      description,
-      price: Number(price),
-      country,
-      location,
-      category,
-      image: {
-        url: imageUrl,
-        filename: filename
-      },
-      owner: req.user._id,
-      geometry: geometry // Add the geometry field with coordinates
-    });
+  // Create new listing
+  const newListing = new Listing({
+    title,
+    description,
+    price: Number(price),
+    country,
+    location,
+    category,
+    guests: Number(guests),
+    bedrooms: Number(bedrooms),
+    beds: Number(beds),
+    baths: Number(baths),
+    image: {
+      url: imageUrl,
+      filename: filename
+    },
+    owner: req.user._id,
+    geometry: geometry
+  });
 
     await newListing.save();
 

@@ -15,6 +15,10 @@ function EditListing() {
     location: "",
     country: "",
     category: "",
+    guests: 1,
+    bedrooms: 1,
+    beds: 1,
+    baths: 1,
   });
   const [imageFile, setImageFile] = useState(null);
   const [previewImage, setPreviewImage] = useState("");
@@ -84,16 +88,13 @@ function EditListing() {
     }
   };
 
-
-  
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
-  
+
     try {
       const formPayload = new FormData();
-      
+
       // Create properly structured listing data
       const listing = {
         title: formData.title,
@@ -101,31 +102,35 @@ function EditListing() {
         price: formData.price,
         location: formData.location,
         country: formData.country,
-        category: formData.category
+        category: formData.category,
+        guests: listing.guests || 1,
+        bedrooms: listing.bedrooms || 1,
+        beds: listing.beds || 1,
+        baths: listing.baths || 1,
       };
-      
+
       // Append as JSON string
-      formPayload.append('listing', JSON.stringify(listing));
-      
+      formPayload.append("listing", JSON.stringify(listing));
+
       // Add image if exists
       if (imageFile) {
-        formPayload.append('image', imageFile);
+        formPayload.append("image", imageFile);
       }
-  
+
       const response = await axios.put(
         `${API_BASE_URL}/listings/${id}`,
         formPayload,
         {
           headers: {
-            'Content-Type': 'multipart/form-data'
+            "Content-Type": "multipart/form-data",
           },
           transformRequest: (data, headers) => {
-            delete headers['Content-Type'];
+            delete headers["Content-Type"];
             return data;
-          }
+          },
         }
       );
-  
+
       if (response.data.success) {
         toast.success("Listing updated successfully!");
         setTimeout(() => navigate(`/listings/${id}`), 1500);
@@ -134,11 +139,11 @@ function EditListing() {
       console.error("Update error:", err.response?.data || err);
       const errorDetails = err.response?.data?.details || [];
       toast.error(
-        `Update failed: ${err.response?.data?.error || 'Unknown error'}`,
-        { 
+        `Update failed: ${err.response?.data?.error || "Unknown error"}`,
+        {
           autoClose: 5000,
           hideProgressBar: false,
-          closeOnClick: true
+          closeOnClick: true,
         }
       );
     } finally {
@@ -164,7 +169,7 @@ function EditListing() {
         draggable
         pauseOnHover
       />
-      
+
       <motion.div
         initial={{ y: 20 }}
         animate={{ y: 0 }}
@@ -251,7 +256,64 @@ function EditListing() {
                 ))}
               </select>
             </motion.div>
+            {/* Capacity Fields */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              <motion.div whileHover={{ scale: 1.01 }} className="group">
+                <label className="block text-sm font-medium text-gray-700 group-hover:text-purple-600">
+                  Guests
+                </label>
+                <input
+                  type="number"
+                  name="guests"
+                  value={formData.guests}
+                  onChange={handleChange}
+                  min="1"
+                  className="mt-1 block w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:ring-purple-500 focus:border-purple-500"
+                />
+              </motion.div>
 
+              <motion.div whileHover={{ scale: 1.01 }} className="group">
+                <label className="block text-sm font-medium text-gray-700 group-hover:text-purple-600">
+                  Bedrooms
+                </label>
+                <input
+                  type="number"
+                  name="bedrooms"
+                  value={formData.bedrooms}
+                  onChange={handleChange}
+                  min="1"
+                  className="mt-1 block w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:ring-purple-500 focus:border-purple-500"
+                />
+              </motion.div>
+
+              <motion.div whileHover={{ scale: 1.01 }} className="group">
+                <label className="block text-sm font-medium text-gray-700 group-hover:text-purple-600">
+                  Beds
+                </label>
+                <input
+                  type="number"
+                  name="beds"
+                  value={formData.beds}
+                  onChange={handleChange}
+                  min="1"
+                  className="mt-1 block w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:ring-purple-500 focus:border-purple-500"
+                />
+              </motion.div>
+
+              <motion.div whileHover={{ scale: 1.01 }} className="group">
+                <label className="block text-sm font-medium text-gray-700 group-hover:text-purple-600">
+                  Baths
+                </label>
+                <input
+                  type="number"
+                  name="baths"
+                  value={formData.baths}
+                  onChange={handleChange}
+                  min="1"
+                  className="mt-1 block w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:ring-purple-500 focus:border-purple-500"
+                />
+              </motion.div>
+            </div>
             {/* Image Upload */}
             <motion.div whileHover={{ scale: 1.01 }} className="group">
               <label className="block text-sm font-medium text-gray-700 group-hover:text-purple-600">
