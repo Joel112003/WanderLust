@@ -89,12 +89,13 @@ const ListingDetail = () => {
   const [isWishListed, setIsWishListed] = useState(false);
   const [checkInDate, setCheckInDate] = useState(null);
   const [checkOutDate, setCheckOutDate] = useState(null);
+  const mapRef = useRef(); // <-- Add this line with other refs
   const [guestCount, setGuestCount] = useState(1);
   const [showAllHighlights, setShowAllHighlights] = useState(false);
   const [isOwner, setIsOwner] = useState(false);
   const [existingBookings, setExistingBookings] = useState([]);
   const [loadingBookings, setLoadingBookings] = useState(false);
-  const[isProcessing, setIsProcessing] = useState(false);
+  const [isProcessing, setIsProcessing] = useState(false);
 
   const mainContentRef = useRef(null);
   const bookingCardRef = useRef(null);
@@ -154,6 +155,16 @@ const ListingDetail = () => {
 
     fetchListing();
   }, [id]);
+
+  const handleGeocodeLocation = async (location, country) => {
+    const address = `${location}, ${country}`;
+    const coordinates = await mapRef.current?.geocodeAndAddMarker(address);
+    if (coordinates) {
+      console.log("Marker added at:", coordinates);
+      return coordinates;
+    }
+    return null;
+  };
 
   const processListingForMap = (listing) => {
     if (
@@ -597,8 +608,8 @@ const ListingDetail = () => {
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
-      <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-red-500"></div>
-    </div>
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-red-500"></div>
+      </div>
     );
   }
 
@@ -683,7 +694,6 @@ const ListingDetail = () => {
           </div>
         </div>
       </motion.div>
-
       {/* Photo Gallery */}
       <motion.div
         initial={{ opacity: 0 }}
@@ -736,7 +746,6 @@ const ListingDetail = () => {
           Show all photos
         </motion.button>
       </motion.div>
-
       <div className="flex flex-col lg:flex-row gap-8">
         {/* Main content */}
         <div className="lg:w-7/12">
@@ -753,8 +762,8 @@ const ListingDetail = () => {
                 {listing.country}
               </h2>
               <p className="text-gray-600">
-              {listing.guests || 1} guests • {listing.bedrooms || 1} bedrooms • 
-              {listing.beds || 1} beds • {listing.baths || 1} baths
+                {listing.guests || 1} guests • {listing.bedrooms || 1} bedrooms
+                •{listing.beds || 1} beds • {listing.baths || 1} baths
               </p>
             </div>
           </motion.div>
@@ -1058,7 +1067,6 @@ const ListingDetail = () => {
           </div>
         </motion.div>
       </div>
-
       {/* Location Section */}
       <div className="space-y-6 mb-5">
         <div className="pb-6">
@@ -1066,11 +1074,15 @@ const ListingDetail = () => {
             Where you'll be
           </h2>
           <div className="h-80 rounded-lg overflow-hidden">
-            <Map listings={[listing]} height="600px" singleListing={true} />
+            <Map
+              ref={mapRef}
+              listings={[listing]}
+              height="600px"
+              singleListing={true}
+            />
           </div>
         </div>
       </div>
-
       {/* Host Section */}
       <div className="pb-6 border-b border-white-200 mt-5">
         <HostSection owner={listing.owner} />

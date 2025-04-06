@@ -1,11 +1,15 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState, useRef } from "react"; // Add useRef here
 import axios from "axios";
+import mapboxgl from "mapbox-gl"; // Add this import
+import "mapbox-gl/dist/mapbox-gl.css"; // Optional but recommended for map stylingimport axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
 import { motion } from "framer-motion";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 const API_BASE_URL = process.env.REACT_APP_API_URL || "http://localhost:8000";
+// This should be in your environment configuration
+mapboxgl.accessToken = process.env.REACT_APP_MAPBOX_TOKEN;
 
 function EditListing() {
   const [formData, setFormData] = useState({
@@ -22,6 +26,7 @@ function EditListing() {
   });
   const [imageFile, setImageFile] = useState(null);
   const [previewImage, setPreviewImage] = useState("");
+  const mapRef = useRef();
   const [isLoading, setIsLoading] = useState(false);
 
   const navigate = useNavigate();
@@ -44,7 +49,8 @@ function EditListing() {
       try {
         const response = await axios.get(`${API_BASE_URL}/listings/${id}`);
         const listing = response.data.data;
-
+  
+        // Set form data
         setFormData({
           title: listing.title,
           description: listing.description,
@@ -52,19 +58,92 @@ function EditListing() {
           location: listing.location,
           country: listing.country,
           category: listing.category,
+          guests: listing.guests,
+          bedrooms: listing.bedrooms,
+          beds: listing.beds,
+          baths: listing.baths,
         });
-
+  
+        // Set preview image
         if (listing.image?.url) {
           setPreviewImage(listing.image.url);
+        }
+  
+        // Process listing for map and geocode location
+        const processedListing = processListingForMap(listing);
+        
+        // Add marker to map if location exists
+        if (processedListing.location && processedListing.country) {
+          handleGeocodeLocation(processedListing.location, processedListing.country);
         }
       } catch (err) {
         toast.error("Failed to load listing data");
         console.error("Fetch error:", err);
       }
     };
-
+  
     fetchListing();
   }, [id]);
+  const processListingForMap = (listing) => {
+    // If listing already has coordinates, return as-is
+    if (listing.geometry?.coordinates) {
+      return listing;
+    }
+  
+    // If no coordinates but has location/country, add default coordinates
+    if (listing.location && listing.country) {
+      return {
+        ...listing,
+        geometry: {
+          type: "Point",
+          coordinates: getDefaultCoordinates(listing.location, listing.country)
+        }
+      };
+    }
+  
+    return listing;
+  };
+  
+  const getDefaultCoordinates = (location, country) => {
+    // Simple fallback coordinates (center of India)
+    return [78.9629, 20.5937];
+  };
+  
+  const handleGeocodeLocation = async (location, country) => {
+    if (!mapRef.current) return null;
+    
+    try {
+      const address = `${location}, ${country}`;
+      const response = await fetch(
+        `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(address)}.json?access_token=${mapboxgl.accessToken}`
+      );
+      const data = await response.json();
+      
+      if (data.features?.length > 0) {
+        const coordinates = data.features[0].center;
+        
+        // Clear existing markers
+        document.querySelectorAll('.mapboxgl-marker').forEach(marker => marker.remove());
+        
+        // Add new marker
+        new mapboxgl.Marker()
+          .setLngLat(coordinates)
+          .addTo(mapRef.current);
+        
+        // Center map on marker
+        mapRef.current.flyTo({
+          center: coordinates,
+          zoom: 14
+        });
+  
+        return coordinates;
+      }
+      return null;
+    } catch (error) {
+      console.error("Geocoding error:", error);
+      return null;
+    }
+  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
