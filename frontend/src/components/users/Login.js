@@ -35,17 +35,26 @@ const Login = () => {
       theme: "colored",
     });
 
-  const handleSuccess = (msg) =>
-    toast.success(msg, {
-      position: "top-right",
-      autoClose: 2000,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: false,
-      draggable: true,
-      progress: undefined,
-      theme: "colored",
-    });
+    const handleSuccess = (msg) => {
+      const toastId = toast.success(msg, {
+        position: "top-right",
+        autoClose: true, // Disable auto-close initially
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: false,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
+      });
+    
+      // Close toast after detecting scroll
+      const handleScroll = () => {
+        toast.dismiss(toastId); // Close the toast when scrolled
+        window.removeEventListener("scroll", handleScroll); // Cleanup
+      };
+    
+      window.addEventListener("scroll", handleScroll);
+    };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
