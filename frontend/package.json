@@ -26,6 +26,7 @@
     "dayjs": "^1.11.13",
     "framer-motion": "^12.4.7",
     "gsap": "^3.12.7",
+    "leaflet-defaulticon-compatibility": "^0.1.2",
     "lucide-react": "^0.484.0",
     "mapbox-gl": "^3.10.0",
     "moment": "^2.30.1",

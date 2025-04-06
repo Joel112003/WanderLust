@@ -856,7 +856,17 @@ const ListingDetail = () => {
           ref={bookingCardRef}
         >
           <div className="rounded-xl border border-gray-200 shadow-lg p-4 bg-white">
-            {/* ... existing price and review display ... */}
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-xl font-semibold text-gray-900">
+                ₹{formatPrice(listing.price)} / night
+              </h2>
+              <div className="flex items-center">
+                <Star className="h-4 w-4 text-rose-500" />
+                <span className="ml-1 font-medium">
+                  {listing.reviews?.length || 0}&nbsp;Review
+                </span>
+              </div>
+            </div>
 
             <div className="space-y-3">
               {renderBookingCalendar()}

@@ -103,6 +103,21 @@ const Footer = () => {
           borderTop: `1px solid ${theme.palette.divider}`,
           marginTop: 'auto', // This makes the footer stick to bottom
           width: '100%',
+          position: 'relative',
+          zIndex: 1,
+          boxShadow: theme.palette.mode === 'dark' 
+            ? '0px -2px 10px rgba(0, 0, 0, 0.5)' 
+            : '0px -2px 10px rgba(0, 0, 0, 0.1)',
+          background: theme.palette.mode === 'dark'
+            ? 'linear-gradient(180deg, rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.9))' 
+            : 'linear-gradient(180deg, rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 1))',
+          backdropFilter: theme.palette.mode === 'dark'
+            ? 'blur(10px)'
+            : 'blur(5px)',
+          borderRadius: '8px',
+          boxShadow: theme.palette.mode === 'dark'
+            ? '0px 0px 10px rgba(0, 0, 0, 0.5)'
+            : '0px 0px 10px rgba(0, 0, 0, 0.1)',
         }}
       >
         <motion.div

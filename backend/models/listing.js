@@ -43,6 +43,7 @@ const listingSchema = new Schema({
         },
         message: "Coordinates must have exactly 2 values (longitude, latitude)"
       }
+      
     }
   },
   category: {

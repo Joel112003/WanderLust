@@ -15,7 +15,7 @@ import {
 import { gsap } from "gsap";
 import { Add, Image as ImageIcon, Close } from "@mui/icons-material";
 import Confetti from "react-confetti";
-import axios from 'axios'; // Import axios
+import axios from 'axios';
 
 const CreateListing = () => {
   const navigate = useNavigate();
@@ -169,6 +169,35 @@ const CreateListing = () => {
     return errors;
   };
 
+  // New function to geocode address to coordinates
+  const geocodeAddress = async (location, country) => {
+    try {
+      // Use Mapbox Geocoding API
+      const mapboxToken = process.env.REACT_APP_MAPBOX_TOKEN;
+      const query = encodeURIComponent(`${location}, ${country}`);
+      const response = await axios.get(
+        `https://api.mapbox.com/geocoding/v5/mapbox.places/${query}.json?access_token=${mapboxToken}&limit=1`
+      );
+
+      if (response.data.features && response.data.features.length > 0) {
+        // Mapbox returns coordinates as [longitude, latitude]
+        const [longitude, latitude] = response.data.features[0].center;
+        return { 
+          latitude, 
+          longitude,
+          geometry: {
+            type: 'Point',
+            coordinates: [longitude, latitude]
+          }
+        };
+      }
+      throw new Error("Location not found");
+    } catch (error) {
+      console.error("Geocoding error:", error);
+      throw new Error("Failed to convert address to coordinates");
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -192,6 +221,21 @@ const CreateListing = () => {
     setIsSubmitting(true);
 
     try {
+      // First get coordinates from the location and country
+      const geoData = await geocodeAddress(formData.location, formData.country)
+        .catch(error => {
+          // If geocoding fails, set default coordinates (you can adjust these)
+          console.warn("Geocoding failed, using default coordinates:", error.message);
+          return { 
+            latitude: 20.5937, 
+            longitude: 78.9629,
+            geometry: {
+              type: 'Point',
+              coordinates: [78.9629, 20.5937] // Default to center of India
+            }
+          };
+        });
+
       const formDataToSend = new FormData();
       formDataToSend.append("title", formData.title);
       formDataToSend.append("description", formData.description);
@@ -199,6 +243,13 @@ const CreateListing = () => {
       formDataToSend.append("country", formData.country);
       formDataToSend.append("location", formData.location);
       formDataToSend.append("category", formData.category);
+      
+      // Add geographical coordinates
+      formDataToSend.append("latitude", geoData.latitude);
+      formDataToSend.append("longitude", geoData.longitude);
+      
+      // Add geometry as JSON string
+      formDataToSend.append("geometry", JSON.stringify(geoData.geometry));
 
       if (selectedImage) {
         formDataToSend.append("image", selectedImage);
@@ -237,7 +288,7 @@ const CreateListing = () => {
       console.error("Error details:", error.response?.data || error.message || error);
       setSnackbarMessage(error.response?.data?.message || error.message || "Failed to create listing");
       setIsSnackbarOpen(true);
-    }finally {
+    } finally {
       setIsSubmitting(false);
     }
   };
