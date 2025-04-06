@@ -5,9 +5,7 @@ const cloudinary = require('cloudinary').v2;
 const streamifier = require('streamifier');
 const { listingSchema } = require("../schema.js");
 const axios = require('axios');
-const mbxGeocoding = require('@mapbox/mapbox-sdk/services/geocoding');
-const mapToken = process.env.MAPBOX_TOKEN;
-const geocodingClient = mbxGeocoding({ accessToken: mapToken });
+
 
 
 // Configure Cloudinary
