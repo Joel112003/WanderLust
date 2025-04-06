@@ -44,12 +44,12 @@ const Navbar = () => {
       logout();
       navigate("/auth/login");
 
-      toast.success("👋 See you soon! Come back to WanderLust", {
+      toast.success("SuccessFully Logged Out!!!", {
         position: "top-end",
         autoClose: 1500,
         hideProgressBar: false,
         closeOnClick: true,
-        pauseOnHover: true,
+        pauseOnHover: false,
         draggable: true,
         progress: undefined,
         theme: "colored",
