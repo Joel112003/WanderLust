@@ -182,10 +182,10 @@ function EditListing() {
         location: formData.location,
         country: formData.country,
         category: formData.category,
-        guests: listing.guests || 1,
-        bedrooms: listing.bedrooms || 1,
-        beds: listing.beds || 1,
-        baths: listing.baths || 1,
+        guests: formData.guests || 1,
+        bedrooms: formData.bedrooms || 1,
+        beds: formData.beds || 1,
+        baths: formData.baths || 1,
       };
 
       // Append as JSON string
