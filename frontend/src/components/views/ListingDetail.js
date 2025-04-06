@@ -753,9 +753,8 @@ const ListingDetail = () => {
                 {listing.country}
               </h2>
               <p className="text-gray-600">
-                {listing.maxGuests || 4} guests • {listing.bedrooms || 2}{" "}
-                bedrooms •{listing.beds || 2} beds • {listing.bathrooms || 1}{" "}
-                baths
+              {listing.guests || 1} guests • {listing.bedrooms || 1} bedrooms • 
+              {listing.beds || 1} beds • {listing.baths || 1} baths
               </p>
             </div>
           </motion.div>
