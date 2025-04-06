@@ -36,7 +36,6 @@ import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { TextField, Box } from "@mui/material";
 import Review from "./Review";
 import { locationCoordinates, getCoordinates } from './locations';
-
 import Map from "./Map";
 import HostSection from "./HostSection";
 import "../../utilis/css/ListingDetail.css";

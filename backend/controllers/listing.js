@@ -5,6 +5,10 @@ const cloudinary = require('cloudinary').v2;
 const streamifier = require('streamifier');
 const { listingSchema } = require("../schema.js");
 const axios = require('axios');
+const mbxGeocoding = require('@mapbox/mapbox-sdk/services/geocoding');
+const mapToken = process.env.MAPBOX_TOKEN;
+const geocodingClient = mbxGeocoding({ accessToken: mapToken });
+
 
 // Configure Cloudinary
 cloudinary.config({
@@ -42,7 +46,7 @@ const uploadToCloudinary = async (fileBuffer, retries = 3) => {
 // Geocoding helper function to convert location string to coordinates
 const geocodeLocation = async (location, country) => {
   try {
-    const mapboxToken = process.env.MAPBOX_TOKEN || process.env.REACT_APP_MAPBOX_TOKEN;
+    const mapboxToken = process.env.MAPBOX_TOKEN;
     if (!mapboxToken) {
       console.warn('MAPBOX_TOKEN not found in environment variables');
       return null;
@@ -54,7 +58,7 @@ const geocodeLocation = async (location, country) => {
     
     const response = await axios.get(url);
     
-    if (response.data && response.data.features && response.data.features.length > 0) {
+    if (response.data?.features?.length > 0) {
       const [longitude, latitude] = response.data.features[0].center;
       return {
         type: "Point",
@@ -68,26 +72,7 @@ const geocodeLocation = async (location, country) => {
   }
 };
 
-// Enhanced validation with custom error messages
-const validateListingData = (data) => {
-  const { error } = listingSchema.validate(data, {
-    abortEarly: false,
-    allowUnknown: false,
-    convert: false
-  });
-  
-  if (error) {
-    const errors = error.details.map(detail => ({
-      field: detail.path.join('.'),
-      message: detail.message
-    }));
-    throw { 
-      name: 'ValidationError',
-      message: 'Invalid listing data',
-      details: errors
-    };
-  }
-};
+
 
 
 // Listing CRUD Operations
@@ -174,16 +159,15 @@ exports.getListingById = async (req, res) => {
 
 exports.createListing = async (req, res, next) => {
   try {
-    // Extract text fields from form-data
     const { title, description, price, country, location, category, guests, bedrooms, beds, baths } = req.body;
+
     // Validate required fields
-    if (!title || !description || !price || !country || !location || !category || 
-      !guests || !bedrooms || !beds || !baths) {
-    return res.status(400).json({
-      success: false,
-      error: "All fields are required"
-    });
-  }
+    if (!title || !description || !price || !country || !location || !category || !guests || !bedrooms || !beds || !baths) {
+      return res.status(400).json({
+        success: false,
+        error: "All fields are required"
+      });
+    }
 
     // Validate image
     if (!req.file) {
@@ -193,35 +177,46 @@ exports.createListing = async (req, res, next) => {
       });
     }
 
-    // Use the file that multer has already processed and stored
-    // The CloudinaryStorage in multer-storage-cloudinary already uploaded the file
-    // So we can access the result directly from req.file
     const imageUrl = req.file.path;
     const filename = req.file.filename;
 
-    // Geocode the location to get coordinates
-    const geometry = await geocodeLocation(location, country);
+    // Handle coordinates from frontend (if provided)
+    let geometry = null;
+    if (req.body.longitude && req.body.latitude) {
+      geometry = {
+        type: "Point",
+        coordinates: [parseFloat(req.body.longitude), parseFloat(req.body.latitude)],
+      };
+    } else {
+      // Fallback to Mapbox geocoding
+      geometry = await geocodeLocation(location, country);
+      if (!geometry) {
+        return res.status(400).json({
+          success: false,
+          error: "Could not determine location coordinates"
+        });
+      }
+    }
 
     // Create new listing
-  // Create new listing
-  const newListing = new Listing({
-    title,
-    description,
-    price: Number(price),
-    country,
-    location,
-    category,
-    guests: Number(guests),
-    bedrooms: Number(bedrooms),
-    beds: Number(beds),
-    baths: Number(baths),
-    image: {
-      url: imageUrl,
-      filename: filename
-    },
-    owner: req.user._id,
-    geometry: geometry
-  });
+    const newListing = new Listing({
+      title,
+      description,
+      price: Number(price),
+      country,
+      location,
+      category,
+      guests: Number(guests),
+      bedrooms: Number(bedrooms),
+      beds: Number(beds),
+      baths: Number(baths),
+      image: {
+        url: imageUrl,
+        filename: filename
+      },
+      owner: req.user._id,
+      geometry: geometry
+    });
 
     await newListing.save();
 

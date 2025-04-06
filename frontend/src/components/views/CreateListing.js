@@ -186,15 +186,13 @@ const CreateListing = () => {
   // New function to geocode address to coordinates
   const geocodeAddress = async (location, country) => {
     try {
-      // Use Mapbox Geocoding API
       const mapboxToken = process.env.REACT_APP_MAPBOX_TOKEN;
       const query = encodeURIComponent(`${location}, ${country}`);
       const response = await axios.get(
         `https://api.mapbox.com/geocoding/v5/mapbox.places/${query}.json?access_token=${mapboxToken}&limit=1`
       );
-
+  
       if (response.data.features && response.data.features.length > 0) {
-        // Mapbox returns coordinates as [longitude, latitude]
         const [longitude, latitude] = response.data.features[0].center;
         return {
           latitude,
@@ -266,9 +264,11 @@ const CreateListing = () => {
       formDataToSend.append("bedrooms", formData.bedrooms);
       formDataToSend.append("beds", formData.beds);
       formDataToSend.append("baths", formData.baths);
-      // Add geographical coordinates
-      formDataToSend.append("latitude", geoData.latitude);
-      formDataToSend.append("longitude", geoData.longitude);
+      // Add coordinates
+    formDataToSend.append("longitude", geoData.longitude);
+    formDataToSend.append("latitude", geoData.latitude);
+    // Add geometry as JSON string
+    formDataToSend.append("geometry", JSON.stringify(geoData.geometry));
 
       // Add geometry as JSON string
       formDataToSend.append("geometry", JSON.stringify(geoData.geometry));

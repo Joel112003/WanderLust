@@ -91,7 +91,6 @@ const Map = React.forwardRef((
         image: listing.images?.[0] || listing.image?.url,
         bedrooms: listing.bedrooms,
         bathrooms: listing.bathrooms,
-        area: listing.area
       }
     }))
   }), [validListings]);
