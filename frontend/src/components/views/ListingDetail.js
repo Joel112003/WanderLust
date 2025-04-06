@@ -35,6 +35,8 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { TextField, Box } from "@mui/material";
 import Review from "./Review";
+import { locationCoordinates, getCoordinates } from './locations';
+
 import Map from "./Map";
 import HostSection from "./HostSection";
 import "../../utilis/css/ListingDetail.css";
@@ -89,7 +91,6 @@ const ListingDetail = () => {
   const [isWishListed, setIsWishListed] = useState(false);
   const [checkInDate, setCheckInDate] = useState(null);
   const [checkOutDate, setCheckOutDate] = useState(null);
-  const mapRef = useRef(); // <-- Add this line with other refs
   const [guestCount, setGuestCount] = useState(1);
   const [showAllHighlights, setShowAllHighlights] = useState(false);
   const [isOwner, setIsOwner] = useState(false);
@@ -142,8 +143,9 @@ const ListingDetail = () => {
           throw new Error("Failed to fetch listing data");
         }
 
-        const processedListing = processListingForMap(result.data);
+        const processedListing = processListingForMaps(result.data);
         setListing(processedListing);
+        
         fetchExistingBookings(processedListing._id);
         setLoading(false);
       } catch (error) {
@@ -156,15 +158,7 @@ const ListingDetail = () => {
     fetchListing();
   }, [id]);
 
-  const handleGeocodeLocation = async (location, country) => {
-    const address = `${location}, ${country}`;
-    const coordinates = await mapRef.current?.geocodeAndAddMarker(address);
-    if (coordinates) {
-      console.log("Marker added at:", coordinates);
-      return coordinates;
-    }
-    return null;
-  };
+  
 
   const processListingForMap = (listing) => {
     if (
@@ -203,48 +197,35 @@ const ListingDetail = () => {
     return listing;
   };
 
-  const getDefaultCoordinates = (location, country) => {
-    const normalizedLocation = location?.toLowerCase().trim() || "";
-    const normalizedCountry = country?.toLowerCase().trim() || "";
+// Then replace your existing getDefaultCoordinates function with:
+const getDefaultCoordinates = (location, country) => {
+  // Try to get by location name first
+  const locationCoords = getCoordinates(location);
+  if (locationCoords !== locationCoordinates.default) {
+    return locationCoords;
+  }
+  
+  // Fall back to country if location not found
+  return getCoordinates(country);
+};
 
-    const locationMap = {
-      delhi: [77.1025, 28.7041],
-      "new delhi": [77.209, 28.6139],
-      mumbai: [72.8777, 19.076],
-      bangalore: [77.5946, 12.9716],
-      bengaluru: [77.5946, 12.9716],
-      hyderabad: [78.4867, 17.385],
-      chennai: [80.2707, 13.0827],
-      kolkata: [88.3639, 22.5726],
-      pune: [73.8567, 18.5204],
-      jaipur: [75.7873, 26.9124],
-      ahmedabad: [72.5714, 23.0225],
-      goa: [74.124, 15.2993],
-      kochi: [76.2673, 9.9312],
-      varanasi: [83.0, 25.3176],
-      agra: [78.0081, 27.1767],
-      shimla: [77.1734, 31.1048],
-      manali: [77.1892, 32.2432],
-      rishikesh: [78.2676, 30.0869],
-      darjeeling: [88.2636, 27.041],
-      udaipur: [73.7125, 24.5854],
-      amritsar: [74.8723, 31.634],
-      mysore: [76.6394, 12.2958],
-      ooty: [76.695, 11.4102],
-      munnar: [77.0595, 10.0889],
-      ladakh: [77.5619, 34.1526],
-      leh: [77.58, 34.1526],
-      positano: [8.4231, 45.4111],
-    };
+const processListingForMaps = (listing) => {
+  // If listing already has valid coordinates, return as-is
+  if (listing.geometry?.coordinates?.length === 2) {
+    return listing;
+  }
 
-    for (const [key, coordinates] of Object.entries(locationMap)) {
-      if (normalizedLocation.includes(key)) {
-        return coordinates;
-      }
+  // Get coordinates based on location and country
+  const coordinates = getDefaultCoordinates(listing.location, listing.country);
+  
+  return {
+    ...listing,
+    geometry: {
+      type: "Point",
+      coordinates: coordinates
     }
-
-    return [78.9629, 20.5937]; // Center of India
   };
+};
 
   const fetchExistingBookings = async (listingId) => {
     setLoadingBookings(true);
@@ -1075,7 +1056,9 @@ const ListingDetail = () => {
           </h2>
           <div className="h-80 rounded-lg overflow-hidden">
             <Map
-              ref={mapRef}
+               center={listing.geometry?.coordinates || getDefaultCoordinates(listing.location, listing.country)}
+              zoom={15}
+        
               listings={[listing]}
               height="600px"
               singleListing={true}
