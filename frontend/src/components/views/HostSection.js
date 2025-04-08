@@ -151,7 +151,7 @@ const HostSection = ({ owner }) => {
     e.currentTarget.style.backgroundPosition = '0 0';
   }}
 >
-  Hosted by {owner?.username || "Host"}
+  Hosted by {owner?.username || "Joel"}
 </span>
 
             {/* Underline that works */}
