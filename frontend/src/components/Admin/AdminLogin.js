@@ -31,18 +31,19 @@ function AdminLogin() {
       const res = await axios.post(`${API_URL}/admin/login`, formData);
       localStorage.setItem('adminToken', res.data.token);
       toast.success('Admin login successful!', {
-        className: 'bg-green-100 text-green-900'
+        className: 'bg-emerald-100 text-emerald-800 font-medium'
       });
       navigate('/admin');
     } catch (err) {
       toast.error(err.response?.data?.message || 'Login failed', {
-        className: 'bg-red-100 text-red-900'
+        className: 'bg-rose-100 text-rose-800 font-medium'
       });
     } finally {
       setLoading(false);
     }
   };
 
+  // Enhanced animation variants
   const containerVariants = {
     hidden: { opacity: 0, y: -50 },
     visible: { 
@@ -50,28 +51,46 @@ function AdminLogin() {
       y: 0,
       transition: {
         type: "spring",
-        stiffness: 100,
-        damping: 15,
-        staggerChildren: 0.1
+        stiffness: 80,
+        damping: 12,
+        staggerChildren: 0.15
       }
     }
   };
 
   const itemVariants = {
-    hidden: { opacity: 0, x: -20 },
+    hidden: { opacity: 0, x: -30 },
     visible: { 
       opacity: 1, 
       x: 0,
-      transition: { type: "spring", stiffness: 100 }
+      transition: { type: "spring", stiffness: 100, damping: 10 }
     }
   };
+
+  const IconBadge = ({ children }) => (
+    <motion.div
+      initial={{ scale: 0 }}
+      animate={{ scale: 1 }}
+      transition={{ 
+        type: "spring", 
+        stiffness: 200, 
+        damping: 15,
+        delay: 0.3 
+      }}
+      className="w-24 h-24 mx-auto bg-gradient-to-br from-indigo-600 via-purple-600 to-violet-500 
+                rounded-full flex items-center justify-center shadow-lg shadow-indigo-500/30"
+    >
+      {children}
+    </motion.div>
+  );
 
   const InputField = ({ icon, name, type, placeholder }) => (
     <motion.div
       variants={itemVariants}
       className="relative group"
     >
-      <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none transition-colors duration-300 group-hover:text-purple-500">
+      <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none 
+                    text-gray-400 group-hover:text-indigo-500 transition-colors duration-300">
         {icon}
       </div>
       <input
@@ -81,63 +100,68 @@ function AdminLogin() {
         required
         value={formData[name]}
         onChange={handleChange}
-        className="pl-10 block w-full py-3 border border-gray-300 rounded-lg 
-                 focus:ring-2 focus:ring-purple-500 focus:border-purple-500
-                 transition-all duration-300 ease-in-out
-                 hover:border-purple-400 hover:shadow-md
-                 bg-white bg-opacity-80 backdrop-blur-sm"
+        className="pl-12 block w-full py-4 px-4 border-2 border-gray-200 rounded-xl 
+                text-gray-700 bg-gray-50 focus:ring-4 focus:ring-indigo-500/20 focus:border-indigo-500
+                transition-all duration-300 ease-out
+                hover:border-indigo-300 hover:shadow-lg hover:shadow-indigo-500/10
+                placeholder:text-gray-400"
         placeholder={placeholder}
       />
       <motion.div
-        className="absolute inset-0 border border-purple-500 rounded-lg pointer-events-none opacity-0"
+        className="absolute inset-0 rounded-xl border-2 border-indigo-500 pointer-events-none opacity-0"
         animate={{
-          scale: [1, 1.02, 1],
-          opacity: [0, 0.2, 0],
+          scale: [1, 1.03, 1],
+          opacity: [0, 0.3, 0],
         }}
-        transition={{ duration: 1, repeat: Infinity }}
+        transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
       />
     </motion.div>
   );
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-50 to-indigo-100">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-50 via-purple-50 to-violet-50">
+      {/* Decorative background elements */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute -top-40 -right-40 w-96 h-96 bg-purple-300 rounded-full mix-blend-multiply opacity-20 animate-pulse"></div>
+        <div className="absolute -bottom-40 -left-40 w-96 h-96 bg-indigo-300 rounded-full mix-blend-multiply opacity-20 animate-pulse" style={{ animationDelay: '1s' }}></div>
+        <div className="absolute top-1/3 left-1/4 w-64 h-64 bg-violet-300 rounded-full mix-blend-multiply opacity-10 animate-pulse" style={{ animationDelay: '2s' }}></div>
+      </div>
+      
       <motion.div
         initial="hidden"
         animate="visible"
         variants={containerVariants}
-        className="w-full max-w-md p-8 space-y-8"
+        className="w-full max-w-md p-4 z-10"
       >
         <motion.div
-          className="bg-white rounded-2xl shadow-2xl p-8 backdrop-blur-lg bg-opacity-90"
-          whileHover={{ boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.25)" }}
-          transition={{ duration: 0.3 }}
+          className="bg-white rounded-3xl shadow-2xl p-10 backdrop-blur-lg bg-opacity-95"
+          whileHover={{ 
+            boxShadow: "0 30px 60px -15px rgba(79, 70, 229, 0.25)",
+            y: -5
+          }}
+          transition={{ duration: 0.4 }}
         >
           <motion.div
-            className="text-center space-y-2"
+            className="text-center space-y-4 mb-10"
             variants={itemVariants}
           >
-            <motion.div
-              initial={{ scale: 0 }}
-              animate={{ scale: 1 }}
-              transition={{ type: "spring", stiffness: 200, delay: 0.2 }}
-              className="w-20 h-20 mx-auto bg-gradient-to-br from-purple-600 to-indigo-600 rounded-full flex items-center justify-center"
-            >
-              <FaKey className="text-3xl text-white" />
-            </motion.div>
-            <h2 className="text-3xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-purple-600 to-indigo-600">
+            <IconBadge>
+              <FaKey className="text-4xl text-white" />
+            </IconBadge>
+            <h2 className="text-4xl font-bold mt-6 bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 via-purple-600 to-violet-600">
               Admin Login
             </h2>
-            <p className="text-sm text-gray-600">
+            <p className="text-gray-500 font-medium">
               Access the Wanderlust admin panel
             </p>
           </motion.div>
 
           <motion.form
-            className="mt-8 space-y-6"
+            className="mt-10 space-y-8"
             onSubmit={handleSubmit}
             variants={containerVariants}
           >
-            <div className="space-y-4">
+            <div className="space-y-6">
               <InputField
                 icon={<FaUser className="h-5 w-5" />}
                 name="username"
@@ -158,34 +182,55 @@ function AdminLogin() {
               />
             </div>
 
-            <motion.div variants={itemVariants}>
+            <motion.div variants={itemVariants} className="pt-4">
               <motion.button
                 type="submit"
                 disabled={loading}
-                className={`group relative w-full flex justify-center py-3 px-4 
-                           border border-transparent text-sm font-medium rounded-lg
-                           text-white bg-gradient-to-r from-purple-600 to-indigo-600
-                           hover:from-purple-700 hover:to-indigo-700
-                           focus:outline-none focus:ring-2 focus:ring-offset-2 
-                           focus:ring-purple-500 transition-all duration-300
-                           ${loading ? 'opacity-70' : ''}`}
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
+                className={`group relative w-full flex justify-center py-4 px-6 
+                           text-base font-semibold rounded-xl
+                           text-white bg-gradient-to-r from-indigo-600 via-purple-600 to-violet-600
+                           hover:from-indigo-700 hover:via-purple-700 hover:to-violet-700
+                           shadow-lg shadow-indigo-500/30 hover:shadow-xl hover:shadow-indigo-600/30
+                           focus:outline-none focus:ring-4 focus:ring-indigo-500/20
+                           transition-all duration-300 ease-out
+                           ${loading ? 'opacity-80 cursor-not-allowed' : ''}`}
+                whileHover={{ scale: 1.03 }}
+                whileTap={{ scale: 0.97 }}
               >
                 {loading ? (
                   <motion.span
-                    className="flex items-center"
-                    animate={{ opacity: [1, 0.5, 1] }}
-                    transition={{ duration: 1, repeat: Infinity }}
+                    className="flex items-center justify-center"
+                    animate={{ opacity: [1, 0.6, 1] }}
+                    transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
                   >
                     <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                       <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                       <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                     </svg>
-                    Signing in...
+                    Authenticating...
                   </motion.span>
-                ) : 'Sign in'}
+                ) : (
+                  <span className="flex items-center">
+                    Sign in
+                    <motion.span 
+                      className="ml-2"
+                      animate={{ x: [0, 4, 0] }}
+                      transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
+                    >
+                      →
+                    </motion.span>
+                  </span>
+                )}
               </motion.button>
+            </motion.div>
+            
+            <motion.div 
+              variants={itemVariants}
+              className="mt-4 text-center"
+            >
+              <a href="#" className="text-sm font-medium text-indigo-600 hover:text-indigo-800 transition-colors duration-300">
+                Forgot your password?
+              </a>
             </motion.div>
           </motion.form>
         </motion.div>
