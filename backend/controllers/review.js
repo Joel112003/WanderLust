@@ -127,6 +127,7 @@ module.exports.addReview = async (req, res) => {
       author: req.user._id,
       listing: listingId,
       authorName: req.user.username, // Store username as a backup
+      
     });
     await newReview.save();
     

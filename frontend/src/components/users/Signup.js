@@ -40,6 +40,16 @@ const Signup = () => {
       autoClose: 2000,
     });
 
+  // Password validation checks
+  const passwordChecks = {
+    length: password.length >= 8,
+    uppercase: /[A-Z]/.test(password),
+    lowercase: /[a-z]/.test(password),
+    number: /[0-9]/.test(password),
+  };
+
+  const isPasswordValid = Object.values(passwordChecks).every(Boolean);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
@@ -56,8 +66,8 @@ const Signup = () => {
       setLoading(false);
       return;
     }
-    if (password.length < 8) {
-      setError("Password must be at least 8 characters long.");
+    if (!isPasswordValid) {
+      setError("Password doesn't meet all requirements.");
       setLoading(false);
       return;
     }
@@ -427,7 +437,7 @@ const Signup = () => {
                   type={showPassword ? "text" : "password"}
                   name="password"
                   value={password}
-                  placeholder="Min. 8 characters"
+                  placeholder="Min. 8 characters with A-Z, a-z, 0-9"
                   onChange={handleOnChange}
                   className="signup-form-input"
                   required
@@ -480,36 +490,103 @@ const Signup = () => {
                 )}
               </motion.button>
             </div>
-            {password && (
+             {/* Password requirements checklist */}
+             {password && (
               <motion.div
-                initial={{ opacity: 0, x: -10 }}
-                animate={{
-                  opacity: 1,
-                  x: 0,
-                  transition: {
-                    type: "spring",
-                    stiffness: 500,
-                    damping: 15,
-                  },
-                }}
-                className="signup-progress-bar"
-                style={{
-                  transform: `scaleX(${Math.min(password.length / 12, 1)})`,
-                }}
-              />
-            )}
-            {password && (
-              <motion.p
                 initial={{ opacity: 0, height: 0 }}
                 animate={{
-                  opacity: password.length < 8 ? 1 : 0,
-                  height: password.length < 8 ? "auto" : 0,
+                  opacity: 1,
+                  height: "auto",
                   transition: { duration: 0.3 },
                 }}
-                className="signup-password-warning"
+                className="signup-password-requirements"
               >
-                Password must be at least 8 characters long
-              </motion.p>
+                <motion.ul>
+                  <motion.li
+                    className={passwordChecks.length ? "valid" : "invalid"}
+                    animate={{
+                      x: passwordChecks.length ? 0 : [-5, 5, -3, 3, 0],
+                    }}
+                    transition={{ duration: 0.5 }}
+                  >
+                    {passwordChecks.length ? "✓" : "✗"} At least 8 characters
+                  </motion.li>
+                  <motion.li
+                    className={passwordChecks.uppercase ? "valid" : "invalid"}
+                    animate={{
+                      x: passwordChecks.uppercase ? 0 : [-5, 5, -3, 3, 0],
+                    }}
+                    transition={{ duration: 0.5, delay: 0.1 }}
+                  >
+                    {passwordChecks.uppercase ? "✓" : "✗"} At least one uppercase letter
+                  </motion.li>
+                  <motion.li
+                    className={passwordChecks.lowercase ? "valid" : "invalid"}
+                    animate={{
+                      x: passwordChecks.lowercase ? 0 : [-5, 5, -3, 3, 0],
+                    }}
+                    transition={{ duration: 0.5, delay: 0.2 }}
+                  >
+                    {passwordChecks.lowercase ? "✓" : "✗"} At least one lowercase letter
+                  </motion.li>
+                  <motion.li
+                    className={passwordChecks.number ? "valid" : "invalid"}
+                    animate={{
+                      x: passwordChecks.number ? 0 : [-5, 5, -3, 3, 0],
+                    }}
+                    transition={{ duration: 0.5, delay: 0.3 }}
+                  >
+                    {passwordChecks.number ? "✓" : "✗"} At least one number
+                  </motion.li>
+                </motion.ul>
+              </motion.div>
+            )}
+
+            {/* Password strength indicator */}
+            {password && (
+              <motion.div
+                initial={{ opacity: 0, height: 0 }}
+                animate={{
+                  opacity: 1,
+                  height: "auto",
+                  transition: { duration: 0.3 },
+                }}
+                className="signup-password-strength"
+              >
+                <div className="signup-strength-bar-container">
+                  <motion.div
+                    className={`signup-strength-bar ${
+                      isPasswordValid ? "strong" : password.length > 0 ? "weak" : ""
+                    }`}
+                    initial={{ scaleX: 0 }}
+                    animate={{
+                      scaleX: isPasswordValid ? 1 : Math.min(password.length / 8, 1),
+                      backgroundColor: isPasswordValid
+                        ? "#10B981" // green
+                        : password.length > 5
+                        ? "#F59E0B" // yellow
+                        : "#EF4444", // red
+                    }}
+                    transition={{ type: "spring", stiffness: 300, damping: 20 }}
+                  />
+                </div>
+                <motion.span
+                  className="signup-strength-text"
+                  animate={{
+                    color: isPasswordValid
+                      ? "#10B981"
+                      : password.length > 5
+                      ? "#F59E0B"
+                      : "#EF4444",
+                  }}
+                >
+                  {isPasswordValid
+                    ? "Strong password"
+                    : password.length > 5
+                    ? "Moderate password"
+                    : "Weak password"}
+                </motion.span>
+              </motion.div>
             )}
           </motion.div>
 
