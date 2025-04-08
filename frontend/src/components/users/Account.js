@@ -228,7 +228,7 @@ const Account = () => {
   const handleEditProfileSubmit = async (e) => {
     e.preventDefault();
     setUpdateLoading(true);
-
+  
     try {
       const token = localStorage.getItem("token");
       if (!token) {
@@ -236,40 +236,31 @@ const Account = () => {
         setUpdateLoading(false);
         return;
       }
-
-      // Create FormData object for sending files
-      const formData = new FormData();
-      formData.append("username", editProfile.username);
-      formData.append("phone", editProfile.phone);
-      formData.append("address", editProfile.address);
-      formData.append("notification_preferences", editProfile.notification_preferences);
-      
-      if (avatarFile) {
-        formData.append("avatar", avatarFile);
-      }
-
+  
       const response = await axios.put(
         `${API_URL}/auth/profile/update`,
-        formData,
+        {
+          username: editProfile.username,
+          email: editProfile.email,
+          phone: editProfile.phone
+        },
         {
           headers: { 
             Authorization: `Bearer ${token}`,
-            "Content-Type": "multipart/form-data"
+            "Content-Type": "application/json"
           },
         }
       );
-
+  
       if (response.data?.user) {
         const updatedUser = response.data.user;
         setUser((prev) => ({
           ...prev,
           username: updatedUser.username,
-          phone: updatedUser.phone,
-          address: updatedUser.address,
-          avatar: updatedUser.avatar,
-          notification_preferences: updatedUser.notification_preferences,
+          email: updatedUser.email,
+          phone: updatedUser.phone
         }));
-
+  
         toast.success("Profile updated successfully");
         handleEditDialogClose();
       }
