@@ -16,20 +16,10 @@ import {
   X,
 } from "lucide-react";
 
-const HostSection = ({ owner }) => {
-  const [isHovering, setIsHovering] = useState(false);
-  const [isVisible, setIsVisible] = useState(false);
-  const [listing, setListing] = useState([]);
-  const [contactDialogOpen, setContactDialogOpen] = useState(false);
+// Contact Host Dialog Component
+const ContactHostDialog = ({ isOpen, onClose, owner }) => {
   const [copiedField, setCopiedField] = useState(null);
   const [dialogAnimation, setDialogAnimation] = useState("enter");
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setIsVisible(true);
-    }, 300);
-    return () => clearTimeout(timer);
-  }, []);
 
   // Reset copied status after 2 seconds
   useEffect(() => {
@@ -41,18 +31,184 @@ const HostSection = ({ owner }) => {
     }
   }, [copiedField]);
 
-  // Handle dialog open/close with animations
-  const handleOpenDialog = () => {
-    setContactDialogOpen(true);
-    setDialogAnimation("enter");
-  };
-
-  const handleCloseDialog = () => {
+  // Handle dialog close with animation
+  const handleClose = () => {
     setDialogAnimation("exit");
     setTimeout(() => {
-      setContactDialogOpen(false);
-    }, 300); // Match animation duration
+      onClose();
+    }, 300);
   };
+
+  // Copy text to clipboard
+  const copyToClipboard = (text, field) => {
+    navigator.clipboard.writeText(text);
+    setCopiedField(field);
+  };
+
+  // Get first letter of username for avatar fallback
+  const getInitial = () => {
+    if (!owner?.username) return "J";
+    return owner.username.charAt(0).toUpperCase();
+  };
+
+  // Contact information
+  const contactInfo = {
+    name: owner?.username || "Joel",
+    email: owner?.email || "joel@example.com",
+    phone: owner?.phone || "+1 (555) 123-4567",
+    preferredContact: owner?.preferredContact || "Email",
+    responseTime: owner?.responseTime || "within an hour"
+  };
+
+  if (!isOpen) return null;
+
+  return (
+    <div 
+      className="fixed inset-0 bg-black z-50 flex items-center justify-center p-4 transition-opacity duration-300 ease-in-out"
+      style={{ backgroundColor: "rgba(0, 0, 0, 0.5)" }}
+      onClick={(e) => {
+        if (e.target === e.currentTarget) handleClose();
+      }}
+    >
+      <div 
+        className={`
+          bg-white rounded-lg w-full max-w-md
+          transition-all duration-300 ease-out
+          ${dialogAnimation === "enter" 
+            ? "opacity-100 scale-100 translate-y-0" 
+            : "opacity-0 scale-95 translate-y-8"
+          }
+          shadow-xl overflow-hidden
+        `}
+      >
+        {/* Dialog Header - Simplified */}
+        <div className="flex items-center justify-between p-4 border-b">
+          <h3 className="text-lg font-medium text-gray-800">Contact Host</h3>
+          <button 
+            onClick={handleClose}
+            className="text-gray-400 hover:text-gray-600 transition-colors p-1 rounded-full hover:bg-gray-100"
+          >
+            <X className="h-5 w-5" />
+          </button>
+        </div>
+        
+        {/* Dialog Content */}
+        <div className="p-5">
+          {/* Host Avatar and Name */}
+          <div className="flex items-center mb-6">
+            <div className="mr-4">
+              {owner?.profilePic ? (
+                <img
+                  src={owner.profilePic}
+                  alt={contactInfo.name}
+                  className="h-12 w-12 rounded-full object-cover"
+                />
+              ) : (
+                <div className="flex items-center justify-center h-12 w-12 rounded-full bg-rose-500 text-white">
+                  <span className="text-lg font-bold">{getInitial()}</span>
+                </div>
+              )}
+            </div>
+            <div>
+              <h4 className="text-lg font-medium">{contactInfo.name}</h4>
+              <p className="text-sm text-gray-500">New host</p>
+            </div>
+          </div>
+          
+          {/* Contact Info */}
+          <div className="space-y-4">
+            {/* Email */}
+            <div className="bg-white border border-gray-200 rounded-md">
+              <div className="flex items-center p-4">
+                <div className="mr-3">
+                  <Mail className="h-5 w-5 text-blue-500" />
+                </div>
+                <div className="flex-1">
+                  <p className="text-xs text-gray-500 font-medium">Email</p>
+                  <p className="font-medium">{contactInfo.email}</p>
+                </div>
+                <button 
+                  onClick={() => copyToClipboard(contactInfo.email, 'email')}
+                  className="flex items-center justify-center h-8 w-8"
+                >
+                  {copiedField === 'email' ? (
+                    <span className="text-green-500 text-xs font-medium">Copied!</span>
+                  ) : (
+                    <Copy className="h-4 w-4 text-gray-500" />
+                  )}
+                </button>
+              </div>
+            </div>
+            
+            {/* Phone */}
+            <div className="bg-white border border-gray-200 rounded-md">
+              <div className="flex items-center p-4">
+                <div className="mr-3">
+                  <Phone className="h-5 w-5 text-green-500" />
+                </div>
+                <div className="flex-1">
+                  <p className="text-xs text-gray-500 font-medium">Phone</p>
+                  <p className="font-medium">{contactInfo.phone}</p>
+                </div>
+                <button 
+                  onClick={() => copyToClipboard(contactInfo.phone, 'phone')}
+                  className="flex items-center justify-center h-8 w-8"
+                >
+                  {copiedField === 'phone' ? (
+                    <span className="text-green-500 text-xs font-medium">Copied!</span>
+                  ) : (
+                    <Copy className="h-4 w-4 text-gray-500" />
+                  )}
+                </button>
+              </div>
+            </div>
+            
+            {/* Preferred Contact Method */}
+            <div className="bg-rose-50 p-4 rounded-md border border-rose-100">
+              <div className="flex items-center">
+                <MessageCircle className="h-5 w-5 text-rose-500 mr-2" />
+                <p className="text-sm">
+                  <span className="font-medium">{contactInfo.name}</span> prefers to be contacted via <span className="font-medium text-rose-600">{contactInfo.preferredContact}</span>
+                </p>
+              </div>
+            </div>
+            
+            {/* Response Time */}
+            <div className="bg-blue-50 p-4 rounded-md flex items-center border border-blue-100">
+              <Clock className="h-5 w-5 text-blue-500 mr-2" />
+              <p className="text-sm text-blue-700">
+                Usually responds {contactInfo.responseTime}
+              </p>
+            </div>
+          </div>
+        </div>
+        
+        {/* Dialog Footer */}
+        <div className="p-4 border-t">
+          <button
+            onClick={handleClose}
+            className="w-full py-3 bg-rose-500 text-white rounded-md hover:bg-rose-600 transition-colors font-medium"
+          >
+            Close
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+const HostSection = ({ owner }) => {
+  const [isHovering, setIsHovering] = useState(false);
+  const [isVisible, setIsVisible] = useState(false);
+  const [listing, setListing] = useState([]);
+  const [contactDialogOpen, setContactDialogOpen] = useState(false);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsVisible(true);
+    }, 300);
+    return () => clearTimeout(timer);
+  }, []);
 
   // Get first letter of username for avatar fallback
   const getInitial = () => {
@@ -116,20 +272,6 @@ const HostSection = ({ owner }) => {
   const responseTime = owner?.responseTime || "within an hour";
   const totalGuests = owner?.totalGuests || 120;
 
-  // Copy text to clipboard
-  const copyToClipboard = (text, field) => {
-    navigator.clipboard.writeText(text);
-    setCopiedField(field);
-  };
-
-  // Contact information
-  const contactInfo = {
-    name: owner?.username || "Joel",
-    email: owner?.email || "joel@example.com",
-    phone: owner?.phone || "+1 (555) 123-4567",
-    preferredContact: owner?.preferredContact || "Email"
-  };
-
   return (
     <div
       className={`pb-8 border-t border-gray-200 pt-6 transition-all duration-700 ease-out ${
@@ -140,7 +282,7 @@ const HostSection = ({ owner }) => {
       <div className="flex flex-col md:flex-row items-center md:items-start mb-8">
         <div 
           className="relative mb-4 md:mb-0 md:mr-6 cursor-pointer"
-          onClick={handleOpenDialog}
+          onClick={() => setContactDialogOpen(true)}
         >
           <div
             className={`
@@ -181,7 +323,7 @@ const HostSection = ({ owner }) => {
         <div className="text-center md:text-left md:flex-1">
           <h2 
             className="text-3xl font-bold mb-3 relative inline-block group cursor-pointer"
-            onClick={handleOpenDialog}
+            onClick={() => setContactDialogOpen(true)}
           >
             {/* Text with shimmer gradient */}
             <span
@@ -329,7 +471,7 @@ const HostSection = ({ owner }) => {
       >
         <button 
           className="flex-1 px-5 py-4 bg-rose-500 text-white rounded-xl hover:bg-rose-600 transition-all duration-300 flex items-center justify-center transform hover:-translate-y-1 active:translate-y-0 active:scale-95 shadow-md hover:shadow-xl"
-          onClick={handleOpenDialog}
+          onClick={() => setContactDialogOpen(true)}
         >
           <MessageCircle className="h-5 w-5 mr-2 transition-transform duration-300 hover:rotate-12" />
           Contact Host
@@ -340,143 +482,12 @@ const HostSection = ({ owner }) => {
         </button>
       </div>
 
-      {/* Contact Host Dialog - Improved animation */}
-      {contactDialogOpen && (
-        <div 
-          className={`fixed inset-0 bg-black z-50 flex items-center justify-center p-4 transition-opacity duration-300 ease-in-out ${dialogAnimation === "enter" ? "bg-opacity-50" : "bg-opacity-0"}`}
-          onClick={(e) => {
-            if (e.target === e.currentTarget) handleCloseDialog();
-          }}
-        >
-          <div 
-            className={`
-              bg-white rounded-2xl w-full max-w-md
-              transition-all duration-300 ease-out
-              ${dialogAnimation === "enter" 
-                ? "opacity-100 scale-100 translate-y-0" 
-                : "opacity-0 scale-95 translate-y-8"
-              }
-              shadow-2xl overflow-hidden
-            `}
-          >
-            {/* Dialog Header */}
-            <div className="flex items-center justify-between p-5 border-b relative">
-              <div className="absolute -top-32 left-0 right-0 h-32 bg-gradient-to-br from-rose-400 to-rose-600 opacity-20"></div>
-              <h3 className="text-xl font-bold text-gray-800">Contact Host</h3>
-              <button 
-                onClick={handleCloseDialog}
-                className="text-gray-400 hover:text-gray-600 transition-colors p-2 rounded-full hover:bg-gray-100"
-              >
-                <X className="h-5 w-5" />
-              </button>
-            </div>
-            
-            {/* Dialog Content */}
-            <div className="p-5 max-h-[70vh] overflow-y-auto">
-              {/* Host Avatar and Name */}
-              <div className="flex items-center mb-6">
-                <div className="mr-4 relative">
-                  <div className="absolute inset-0 bg-gradient-to-br from-rose-400 to-rose-600 opacity-20 rounded-full animate-pulse"></div>
-                  {owner?.profilePic ? (
-                    <img
-                      src={owner.profilePic}
-                      alt={owner?.username || "Host"}
-                      className="h-16 w-16 rounded-full object-cover border-2 border-white relative z-10 shadow-md"
-                    />
-                  ) : (
-                    <div className={`flex items-center justify-center h-16 w-16 rounded-full ${getInitialBackgroundColor()} text-white shadow-md relative z-10`}>
-                      <span className="text-xl font-bold">{getInitial()}</span>
-                    </div>
-                  )}
-                </div>
-                <div>
-                  <h4 className="text-lg font-semibold">{contactInfo.name}</h4>
-                  <p className="text-sm text-gray-500">
-                    {owner?.superHost ? "Superhost • " : ""}{getHostingDuration()}
-                  </p>
-                </div>
-              </div>
-              
-              {/* Contact Info List */}
-              <div className="space-y-4">
-                {/* Email */}
-                <div className="bg-white border border-gray-200 p-4 rounded-xl flex items-center justify-between hover:shadow-md transition-all duration-300 hover:border-blue-200">
-                  <div className="flex items-center">
-                    <div className="p-2 bg-blue-50 rounded-full mr-3">
-                      <Mail className="h-5 w-5 text-blue-500" />
-                    </div>
-                    <div>
-                      <p className="text-xs font-medium text-gray-500">Email</p>
-                      <p className="font-medium">{contactInfo.email}</p>
-                    </div>
-                  </div>
-                  <button 
-                    onClick={() => copyToClipboard(contactInfo.email, 'email')}
-                    className={`p-2 rounded-full transition-all duration-300 ${copiedField === 'email' ? 'bg-green-100' : 'hover:bg-gray-100'}`}
-                  >
-                    {copiedField === 'email' ? (
-                      <span className="text-green-500 text-xs font-medium px-2">Copied!</span>
-                    ) : (
-                      <Copy className="h-4 w-4 text-gray-500" />
-                    )}
-                  </button>
-                </div>
-                
-                {/* Phone */}
-                <div className="bg-white border border-gray-200 p-4 rounded-xl flex items-center justify-between hover:shadow-md transition-all duration-300 hover:border-green-200">
-                  <div className="flex items-center">
-                    <div className="p-2 bg-green-50 rounded-full mr-3">
-                      <Phone className="h-5 w-5 text-green-500" />
-                    </div>
-                    <div>
-                      <p className="text-xs font-medium text-gray-500">Phone</p>
-                      <p className="font-medium">{contactInfo.phone}</p>
-                    </div>
-                  </div>
-                  <button 
-                    onClick={() => copyToClipboard(contactInfo.phone, 'phone')}
-                    className={`p-2 rounded-full transition-all duration-300 ${copiedField === 'phone' ? 'bg-green-100' : 'hover:bg-gray-100'}`}
-                  >
-                    {copiedField === 'phone' ? (
-                      <span className="text-green-500 text-xs font-medium px-2">Copied!</span>
-                    ) : (
-                      <Copy className="h-4 w-4 text-gray-500" />
-                    )}
-                  </button>
-                </div>
-                
-                {/* Preferred Contact Method */}
-                <div className="bg-rose-50 p-4 rounded-xl border border-rose-100">
-                  <div className="flex items-center">
-                    <MessageCircle className="h-5 w-5 text-rose-500 mr-2" />
-                    <p className="text-sm">
-                      <span className="font-medium">{contactInfo.name}</span> prefers to be contacted via <span className="font-semibold text-rose-600">{contactInfo.preferredContact}</span>
-                    </p>
-                  </div>
-                </div>
-              </div>
-              
-              {/* Response Time */}
-              <div className="mt-6 bg-blue-50 p-4 rounded-xl flex items-center border border-blue-100">
-                <Clock className="h-5 w-5 text-blue-500 mr-2" />
-                <p className="text-sm text-blue-700">
-                  Usually responds {responseTime}
-                </p>
-              </div>
-            </div>
-            
-            {/* Dialog Footer */}
-            <div className="p-5 border-t">
-              <button
-                onClick={handleCloseDialog}
-                className="w-full py-3 bg-rose-500 text-white rounded-lg hover:bg-rose-600 transition-colors font-medium shadow-md hover:shadow-lg"
-              >
-                Close
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      {/* Contact Host Dialog Component */}
+      <ContactHostDialog 
+        isOpen={contactDialogOpen}
+        onClose={() => setContactDialogOpen(false)}
+        owner={owner}
+      />
     </div>
   );
 };

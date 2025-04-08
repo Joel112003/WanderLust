@@ -89,7 +89,7 @@ const Account = () => {
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [editProfile, setEditProfile] = useState({
     username: "",
-    phone: "",
+    phoneNumber: "", // Change from phone to phoneNumber to match backend
     address: "",
     avatar: "",
     notification_preferences: true,
@@ -225,52 +225,53 @@ const Account = () => {
     }
   };
 
-  const handleEditProfileSubmit = async (e) => {
-    e.preventDefault();
-    setUpdateLoading(true);
-  
-    try {
-      const token = localStorage.getItem("token");
-      if (!token) {
-        toast.error("Authentication required");
-        setUpdateLoading(false);
-        return;
+ // Remove any avatar-related code and just focus on username and phone updates
+// Add console.log to see what's being sent
+const handleEditProfileSubmit = async (e) => {
+  e.preventDefault();
+  setUpdateLoading(true);
+
+  try {
+    const token = localStorage.getItem("token");
+    console.log('Attempting to update profile with:', {
+      url: `${API_URL}/auth/profile-update`,
+      data: {
+        username: editProfile.username,
+        phoneNumber: editProfile.phoneNumber
+      },
+      token
+    });
+
+    const response = await axios.put(
+      `${API_URL}/auth/profile-update`,
+      {
+        username: editProfile.username,
+        phoneNumber: editProfile.phoneNumber
+      },
+      {
+        headers: { 
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
       }
-  // Inside handleEditProfileSubmit function
-const response = await axios.patch(
-  `${API_URL}/auth/profile/update`,
-  {
-    username: editProfile.username,
-    email: editProfile.email,
-    phone: editProfile.phone
-  },
-  {
-    headers: { 
-      Authorization: `Bearer ${token}`,
-      "Content-Type": "application/json"
-    },
-  }
-);
-  
-      if (response.data?.user) {
-        const updatedUser = response.data.user;
-        setUser((prev) => ({
-          ...prev,
-          username: updatedUser.username,
-          email: updatedUser.email,
-          phone: updatedUser.phone
-        }));
-  
-        toast.success("Profile updated successfully");
-        handleEditDialogClose();
-      }
-    } catch (error) {
-      console.error("Error updating profile:", error);
-      toast.error(error.response?.data?.message || "Error updating profile");
-    } finally {
-      setUpdateLoading(false);
+    );
+    if (response.data?.user) {
+      setUser((prev) => ({
+        ...prev,
+        username: response.data.user.username,
+        phoneNumber: response.data.user.phoneNumber
+      }));
+
+      toast.success("Profile updated successfully");
+      handleEditDialogClose();
     }
-  };
+  } catch (error) {
+    toast.error(error.response?.data?.message || "Error updating profile");
+  } finally {
+    setUpdateLoading(false);
+  }
+};
+
 
   const markNotificationAsRead = async (id) => {
     try {
