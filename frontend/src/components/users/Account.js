@@ -116,7 +116,7 @@ const Account = () => {
           setUser({
             email: userData.email,
             username: userData.username,
-            phoneNumber: userData.phone || "",
+            phoneNumber: userData.phoneNumber || "", // Changed from phone to phoneNumber
             notification_preferences:
               userData.notification_preferences !== false,
             verified: userData.verified || false,
@@ -125,13 +125,13 @@ const Account = () => {
               : "Unknown",
             role: userData.role || "User",
           });
-          
+
           // Initialize edit profile state
           setEditProfile({
             username: userData.username,
-            phoneNumber: userData.phone || "",
-        
-            notification_preferences: userData.notification_preferences !== false,
+            phoneNumber: userData.phoneNumber || "", // Changed from phone to phoneNumber
+            notification_preferences:
+              userData.notification_preferences !== false,
           });
         }
 
@@ -219,53 +219,47 @@ const Account = () => {
     }
   };
 
- // Remove any avatar-related code and just focus on username and phone updates
-// Add console.log to see what's being sent
-const handleEditProfileSubmit = async (e) => {
-  e.preventDefault();
-  setUpdateLoading(true);
+  // Remove any avatar-related code and just focus on username and phone updates
+  // Add console.log to see what's being sent
+  const handleEditProfileSubmit = async (e) => {
+    e.preventDefault();
+    setUpdateLoading(true);
 
-  try {
-    const token = localStorage.getItem("token");
-    console.log('Attempting to update profile with:', {
-      url: `${API_URL}/auth/profile-update`,
-      data: {
-        username: editProfile.username,
-        phoneNumber: editProfile.phoneNumber
-      },
-      token
-    });
-
-    const response = await axios.put(
-      `${API_URL}/auth/profile-update`,
-      {
-        username: editProfile.username,
-        phoneNumber: editProfile.phoneNumber
-      },
-      {
-        headers: { 
-          Authorization: `Bearer ${token}`,
-          'Content-Type': 'application/json'
+    try {
+      const token = localStorage.getItem("token");
+      const response = await axios.put(
+        `${API_URL}/auth/profile-update`,
+        {
+          username: editProfile.username,
+          phoneNumber: editProfile.phoneNumber,
+          notification_preferences: editProfile.notification_preferences,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
         }
+      );
+
+      if (response.data?.user) {
+        setUser((prev) => ({
+          ...prev,
+          username: response.data.user.username,
+          phoneNumber: response.data.user.phoneNumber,
+          notification_preferences: response.data.user.notification_preferences,
+        }));
+
+        toast.success("Profile updated successfully");
+        handleEditDialogClose();
       }
-    );
-    if (response.data?.user) {
-      setUser((prev) => ({
-        ...prev,
-        username: response.data.user.username,
-        phoneNumber: response.data.user.phoneNumber
-      }));
-
-      toast.success("Profile updated successfully");
-      handleEditDialogClose();
+    } catch (error) {
+      console.error("Error updating profile:", error);
+      toast.error(error.response?.data?.message || "Error updating profile");
+    } finally {
+      setUpdateLoading(false);
     }
-  } catch (error) {
-    toast.error(error.response?.data?.message || "Error updating profile");
-  } finally {
-    setUpdateLoading(false);
-  }
-};
-
+  };
 
   const markNotificationAsRead = async (id) => {
     try {
@@ -791,7 +785,12 @@ const handleEditProfileSubmit = async (e) => {
               <>
                 <Box className="bg-blue-50 p-4 rounded-lg mb-6 ">
                   <Grid container spacing={2}>
-                    <Grid item xs={12} md={4} className="flex justify-center items-center">
+                    <Grid
+                      item
+                      xs={12}
+                      md={4}
+                      className="flex justify-center items-center"
+                    >
                       <Avatar
                         src={user.avatar}
                         alt={user.username}
@@ -898,7 +897,7 @@ const handleEditProfileSubmit = async (e) => {
                             Phone
                           </Typography>
                           <Typography>
-                            {user.phone || "Not provided"}
+                            {user.phoneNumber || "Not provided"}
                           </Typography>
                         </Box>
                       </Paper>
@@ -967,7 +966,7 @@ const handleEditProfileSubmit = async (e) => {
             className="text-gray-600 hover:text-gray-900 transition-colors duration-300"
           >
             Back to Home
-            </Button>
+          </Button>
         </Box>
 
         <motion.div
@@ -1014,7 +1013,10 @@ const handleEditProfileSubmit = async (e) => {
             <Tab
               label={
                 <div className="flex items-center">
-                  <Badge badgeContent={notifications.filter(n => !n.isRead).length} color="error">
+                  <Badge
+                    badgeContent={notifications.filter((n) => !n.isRead).length}
+                    color="error"
+                  >
                     <Notifications className="mr-1" />
                   </Badge>
                   <span>Notifications</span>
@@ -1113,8 +1115,8 @@ const handleEditProfileSubmit = async (e) => {
             <TextField
               fullWidth
               label="Phone"
-              name="phone"
-              value={editProfile.phoneNumber}
+              name="phoneNumber" // Change from "phone" to "phoneNumber"
+              value={editProfile.phoneNumber || ""}
               onChange={handleEditProfileChange}
               variant="outlined"
               margin="normal"
@@ -1164,9 +1166,9 @@ const handleEditProfileSubmit = async (e) => {
           <Button onClick={handleEditDialogClose} color="inherit">
             Cancel
           </Button>
-          <Button 
-            onClick={handleEditProfileSubmit} 
-            color="primary" 
+          <Button
+            onClick={handleEditProfileSubmit}
+            color="primary"
             variant="contained"
             disabled={updateLoading}
           >

@@ -55,11 +55,10 @@ const ContactHostDialog = ({ isOpen, onClose, owner }) => {
   const contactInfo = {
     name: owner?.username || "Joel",
     email: owner?.email || "joel@example.com",
-    phone: owner?.phone || "+1 (555) 123-4567",
+    phoneNumber: owner?.phoneNumber || "+1 (555) 123-4567",  // Change from phone to phoneNumber
     preferredContact: owner?.preferredContact || "Email",
     responseTime: owner?.responseTime || "within an hour"
   };
-
   if (!isOpen) return null;
 
   return (
@@ -148,10 +147,10 @@ const ContactHostDialog = ({ isOpen, onClose, owner }) => {
                 </div>
                 <div className="flex-1">
                   <p className="text-xs text-gray-500 font-medium">Phone</p>
-                  <p className="font-medium">{contactInfo.phone}</p>
+                  <p className="font-medium">{contactInfo.phoneNumber}</p>
                 </div>
                 <button 
-                  onClick={() => copyToClipboard(contactInfo.phone, 'phone')}
+                  onClick={() => copyToClipboard(contactInfo.phoneNumber, 'phone')}
                   className="flex items-center justify-center h-8 w-8"
                 >
                   {copiedField === 'phone' ? (

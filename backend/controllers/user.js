@@ -152,12 +152,12 @@ exports.Profile = async (req, res) => {
 // Update Profile Controller
 exports.UpdateProfile = async (req, res) => {
   try {
-    const { username, phoneNumber } = req.body; // Changed from phone to phoneNumber
-    const updates = {};
+    const { username, phoneNumber } = req.body;
+    console.log('Update data received:', { username, phoneNumber }); // Debug log
 
-    // Only update fields that are provided
+    const updates = {};
     if (username) updates.username = username;
-    if (phoneNumber) updates.phoneNumber = phoneNumber; // Changed from phone to phoneNumber
+    if (phoneNumber) updates.phoneNumber = phoneNumber;
 
     const user = await User.findByIdAndUpdate(
       req.user.id,
@@ -171,6 +171,8 @@ exports.UpdateProfile = async (req, res) => {
         message: "User not found"
       });
     }
+
+    console.log('Updated user:', user); // Debug log
 
     res.json({
       success: true,

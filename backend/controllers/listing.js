@@ -105,10 +105,10 @@ exports.getListingById = async (req, res) => {
         path: "reviews",
         populate: {
           path: "author",
-          select: 'username'
+          select: 'username phoneNumber email'
         }
       })
-      .populate("owner", 'username email');
+      .populate("owner", 'username email phoneNumber');
 
     if (!listing) {
       return res.status(404).json({
