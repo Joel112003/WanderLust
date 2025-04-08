@@ -11,7 +11,7 @@ import Terms from "./components/extras/Terms";
 import HelpCenter from "./components/extras/HelpCenter";
 import Privacy from "./components/extras/Privacy";
 import Login from "./components/users/Login";
-import Signup from "./components/users/signup";
+import Signup from "./components/users/Signup";
 import Account from "./components/users/Account";
 import Spinner from "./components/views/Spinner";
 import ProtectedAdminRoute from './components/Admin/ProtectedAdminRoute';
