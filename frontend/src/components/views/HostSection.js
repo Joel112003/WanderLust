@@ -16,7 +16,7 @@ import {
   X,
 } from "lucide-react";
 
-// Contact Host Dialog Component
+// Contact Host Dialog Component - Moved outside HostSection
 const ContactHostDialog = ({ isOpen, onClose, owner }) => {
   const [copiedField, setCopiedField] = useState(null);
   const [dialogAnimation, setDialogAnimation] = useState("enter");
@@ -30,6 +30,13 @@ const ContactHostDialog = ({ isOpen, onClose, owner }) => {
       return () => clearTimeout(timer);
     }
   }, [copiedField]);
+
+  // Reset animation state when dialog opens
+  useEffect(() => {
+    if (isOpen) {
+      setDialogAnimation("enter");
+    }
+  }, [isOpen]);
 
   // Handle dialog close with animation
   const handleClose = () => {
@@ -59,6 +66,8 @@ const ContactHostDialog = ({ isOpen, onClose, owner }) => {
     preferredContact: owner?.preferredContact || "Email",
     responseTime: owner?.responseTime || "within an hour"
   };
+  
+  // Don't render anything if not open
   if (!isOpen) return null;
 
   return (
@@ -272,222 +281,224 @@ const HostSection = ({ owner }) => {
   const totalGuests = owner?.totalGuests || 120;
 
   return (
-    <div
-      className={`pb-8 border-t border-gray-200 pt-6 transition-all duration-700 ease-out ${
-        isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
-      }`}
-    >
-      {/* Top Section with Avatar and Name */}
-      <div className="flex flex-col md:flex-row items-center md:items-start mb-8">
-        <div 
-          className="relative mb-4 md:mb-0 md:mr-6 cursor-pointer"
-          onClick={() => setContactDialogOpen(true)}
-        >
-          <div
-            className={`
-              h-28 w-28 rounded-full overflow-hidden shadow-lg 
-              transform transition-all duration-500 ease-out
-              ${isHovering ? "scale-110 shadow-xl" : "scale-100"}
-              border-4 border-white
-            `}
-            style={{
-              boxShadow: isHovering
-                ? "0 10px 25px rgba(236, 72, 153, 0.3)"
-                : "0 4px 12px rgba(0, 0, 0, 0.1)",
-            }}
-            onMouseEnter={() => setIsHovering(true)}
-            onMouseLeave={() => setIsHovering(false)}
-          >
-            {owner?.profilePic ? (
-              <img
-                src={owner.profilePic}
-                alt={owner?.username || "Host"}
-                className="h-full w-full object-cover transition-transform duration-700 ease-out hover:scale-110"
-              />
-            ) : (
-              <div
-                className={`flex items-center justify-center h-full w-full ${getInitialBackgroundColor()} text-white`}
-              >
-                <span className="text-4xl font-bold">{getInitial()}</span>
-              </div>
-            )}
-          </div>
-          {owner?.superHost && (
-            <div className="absolute -bottom-2 -right-2 bg-rose-500 text-white px-2 py-1 rounded-full text-xs font-bold shadow-md transform rotate-12 animate-pulse">
-              Superhost
-            </div>
-          )}
-        </div>
-
-        <div className="text-center md:text-left md:flex-1">
-          <h2 
-            className="text-3xl font-bold mb-3 relative inline-block group cursor-pointer"
+    <>
+      <div
+        className={`pb-8 border-t border-gray-200 pt-6 transition-all duration-700 ease-out ${
+          isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
+        }`}
+      >
+        {/* Top Section with Avatar and Name */}
+        <div className="flex flex-col md:flex-row items-center md:items-start mb-8">
+          <div 
+            className="relative mb-4 md:mb-0 md:mr-6 cursor-pointer"
             onClick={() => setContactDialogOpen(true)}
           >
-            {/* Text with shimmer gradient */}
-            <span
+            <div
+              className={`
+                h-28 w-28 rounded-full overflow-hidden shadow-lg 
+                transform transition-all duration-500 ease-out
+                ${isHovering ? "scale-110 shadow-xl" : "scale-100"}
+                border-4 border-white
+              `}
               style={{
-                position: 'relative',
-                color: 'transparent',
-                backgroundClip: 'text',
-                WebkitBackgroundClip: 'text',
-                backgroundImage: 'linear-gradient(to right, #111827, #f43f5e, #111827)',
-                backgroundSize: '200% 100%',
-                transition: 'background-position 2s ease-in-out',
+                boxShadow: isHovering
+                  ? "0 10px 25px rgba(236, 72, 153, 0.3)"
+                  : "0 4px 12px rgba(0, 0, 0, 0.1)",
               }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.backgroundPosition = '100% 0';
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.backgroundPosition = '0 0';
-              }}
+              onMouseEnter={() => setIsHovering(true)}
+              onMouseLeave={() => setIsHovering(false)}
             >
-              Hosted by {owner?.username || "Joel"}
-            </span>
-
-            {/* Underline that works */}
-            <span
-              className="
-                absolute left-0 bottom-0 
-                w-0 h-0.5 bg-rose-500 
-                transition-all duration-300 ease-out 
-                group-hover:w-full
-              "
-            ></span>
-          </h2>
-          <p className="text-gray-600 mb-2 flex items-center justify-center md:justify-start">
-            <Calendar className="h-4 w-4 mr-2 text-rose-500" />
-            <span className="font-medium">Joined:&nbsp;</span>{" "}
-            {new Date(owner?.createdAt || Date.now()).toLocaleDateString(
-              "en-US",
-              {
-                month: "long",
-                year: "numeric",
-              }
+              {owner?.profilePic ? (
+                <img
+                  src={owner.profilePic}
+                  alt={owner?.username || "Host"}
+                  className="h-full w-full object-cover transition-transform duration-700 ease-out hover:scale-110"
+                />
+              ) : (
+                <div
+                  className={`flex items-center justify-center h-full w-full ${getInitialBackgroundColor()} text-white`}
+                >
+                  <span className="text-4xl font-bold">{getInitial()}</span>
+                </div>
+              )}
+            </div>
+            {owner?.superHost && (
+              <div className="absolute -bottom-2 -right-2 bg-rose-500 text-white px-2 py-1 rounded-full text-xs font-bold shadow-md transform rotate-12 animate-pulse">
+                Superhost
+              </div>
             )}
-          </p>
-          <div className="flex items-center justify-center md:justify-start text-gray-600 mb-3">
-            <Shield className="h-5 w-5 mr-2 text-green-600" />
-            <span className="font-medium">Verified Host</span>
           </div>
 
-          <div className="hidden md:flex items-center space-x-4 text-sm text-gray-500">
-            <span className="flex items-center">
-              <Clock className="h-4 w-4 mr-1 text-blue-500" />
-              Responds {responseTime}
-            </span>
-            <span className="flex items-center">
-              <Award className="h-4 w-4 mr-1 text-purple-500" />
-              {getHostingDuration()}
-            </span>
+          <div className="text-center md:text-left md:flex-1">
+            <h2 
+              className="text-3xl font-bold mb-3 relative inline-block group cursor-pointer"
+              onClick={() => setContactDialogOpen(true)}
+            >
+              {/* Text with shimmer gradient */}
+              <span
+                style={{
+                  position: 'relative',
+                  color: 'transparent',
+                  backgroundClip: 'text',
+                  WebkitBackgroundClip: 'text',
+                  backgroundImage: 'linear-gradient(to right, #111827, #f43f5e, #111827)',
+                  backgroundSize: '200% 100%',
+                  transition: 'background-position 2s ease-in-out',
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.backgroundPosition = '100% 0';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.backgroundPosition = '0 0';
+                }}
+              >
+                Hosted by {owner?.username || "Joel"}
+              </span>
+
+              {/* Underline that works */}
+              <span
+                className="
+                  absolute left-0 bottom-0 
+                  w-0 h-0.5 bg-rose-500 
+                  transition-all duration-300 ease-out 
+                  group-hover:w-full
+                "
+              ></span>
+            </h2>
+            <p className="text-gray-600 mb-2 flex items-center justify-center md:justify-start">
+              <Calendar className="h-4 w-4 mr-2 text-rose-500" />
+              <span className="font-medium">Joined:&nbsp;</span>{" "}
+              {new Date(owner?.createdAt || Date.now()).toLocaleDateString(
+                "en-US",
+                {
+                  month: "long",
+                  year: "numeric",
+                }
+              )}
+            </p>
+            <div className="flex items-center justify-center md:justify-start text-gray-600 mb-3">
+              <Shield className="h-5 w-5 mr-2 text-green-600" />
+              <span className="font-medium">Verified Host</span>
+            </div>
+
+            <div className="hidden md:flex items-center space-x-4 text-sm text-gray-500">
+              <span className="flex items-center">
+                <Clock className="h-4 w-4 mr-1 text-blue-500" />
+                Responds {responseTime}
+              </span>
+              <span className="flex items-center">
+                <Award className="h-4 w-4 mr-1 text-purple-500" />
+                {getHostingDuration()}
+              </span>
+            </div>
           </div>
+        </div>
+
+        {/* Host Details Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+          {[
+            {
+              icon: <MapPin className="h-5 w-5 text-rose-500" />,
+              title: "Location",
+              value: owner?.location || "San Francisco, USA",
+              delay: 100,
+            },
+            {
+              icon: <Languages className="h-5 w-5 text-blue-500" />,
+              title: "Languages",
+              value: owner?.languages?.join(", ") || "English, Spanish",
+              delay: 200,
+            },
+            {
+              icon: <Clock className="h-5 w-5 text-green-500" />,
+              title: "Response Rate",
+              value: responseRate,
+              delay: 300,
+            },
+            {
+              icon: <Users className="h-5 w-5 text-amber-500" />,
+              title: "Total Guests",
+              value: totalGuests,
+              delay: 400,
+            },
+          ].map((item, index) => (
+            <div
+              key={index}
+              className={`
+                bg-white rounded-xl p-4 shadow-md hover:shadow-lg transition-all duration-500
+                transform hover:-translate-y-1 border border-gray-100
+                ${
+                  isVisible
+                    ? "opacity-100 translate-x-0"
+                    : "opacity-0 translate-x-10"
+                }
+              `}
+              style={{ transitionDelay: `${item.delay}ms` }}
+            >
+              <div className="flex items-start">
+                <div className="p-2 bg-gray-50 rounded-lg mr-3">{item.icon}</div>
+                <div>
+                  <h3 className="font-medium text-gray-500 text-sm">
+                    {item.title}
+                  </h3>
+                  <p className="font-semibold text-gray-800">{item.value}</p>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Host Bio */}
+        <div
+          className={`
+            bg-gray-50 rounded-xl p-6 mb-8 transition-all duration-700 ease-out
+            ${
+              isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
+            }
+          `}
+          style={{ transitionDelay: "500ms" }}
+        >
+          <h3 className="text-xl font-semibold mb-3">
+            About {owner?.username || "Host"}
+          </h3>
+          <p className="text-gray-700 leading-relaxed">
+            {owner?.bio ||
+              "Hello! I'm a passionate host who loves to share my space with travelers from around the world. I enjoy hiking, photography, and exploring new cultures. I'm always available to help make your stay comfortable and memorable."}
+          </p>
+        </div>
+
+        {/* Contact & Save Buttons */}
+        <div
+          className={`
+            flex flex-col sm:flex-row space-y-3 sm:space-y-0 sm:space-x-4
+            transition-all duration-700 ease-out
+            ${
+              isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
+            }
+          `}
+          style={{ transitionDelay: "600ms" }}
+        >
+          <button 
+            className="flex-1 px-5 py-4 bg-rose-500 text-white rounded-xl hover:bg-rose-600 transition-all duration-300 flex items-center justify-center transform hover:-translate-y-1 active:translate-y-0 active:scale-95 shadow-md hover:shadow-xl"
+            onClick={() => setContactDialogOpen(true)}
+          >
+            <MessageCircle className="h-5 w-5 mr-2 transition-transform duration-300 hover:rotate-12" />
+            Contact Host
+          </button>
+          <button className="flex-1 px-5 py-4 border-2 border-gray-300 rounded-xl hover:border-rose-300 hover:bg-rose-50 transition-all duration-300 flex items-center justify-center transform hover:-translate-y-1 active:translate-y-0 active:scale-95">
+            <Heart className="h-5 w-5 mr-2 text-gray-500 transition-all duration-300 ease-in-out hover:text-rose-500 hover:scale-110" />
+            Save to Favorites
+          </button>
         </div>
       </div>
 
-      {/* Host Details Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-        {[
-          {
-            icon: <MapPin className="h-5 w-5 text-rose-500" />,
-            title: "Location",
-            value: owner?.location || "San Francisco, USA",
-            delay: 100,
-          },
-          {
-            icon: <Languages className="h-5 w-5 text-blue-500" />,
-            title: "Languages",
-            value: owner?.languages?.join(", ") || "English, Spanish",
-            delay: 200,
-          },
-          {
-            icon: <Clock className="h-5 w-5 text-green-500" />,
-            title: "Response Rate",
-            value: responseRate,
-            delay: 300,
-          },
-          {
-            icon: <Users className="h-5 w-5 text-amber-500" />,
-            title: "Total Guests",
-            value: totalGuests,
-            delay: 400,
-          },
-        ].map((item, index) => (
-          <div
-            key={index}
-            className={`
-              bg-white rounded-xl p-4 shadow-md hover:shadow-lg transition-all duration-500
-              transform hover:-translate-y-1 border border-gray-100
-              ${
-                isVisible
-                  ? "opacity-100 translate-x-0"
-                  : "opacity-0 translate-x-10"
-              }
-            `}
-            style={{ transitionDelay: `${item.delay}ms` }}
-          >
-            <div className="flex items-start">
-              <div className="p-2 bg-gray-50 rounded-lg mr-3">{item.icon}</div>
-              <div>
-                <h3 className="font-medium text-gray-500 text-sm">
-                  {item.title}
-                </h3>
-                <p className="font-semibold text-gray-800">{item.value}</p>
-              </div>
-            </div>
-          </div>
-        ))}
-      </div>
-
-      {/* Host Bio */}
-      <div
-        className={`
-          bg-gray-50 rounded-xl p-6 mb-8 transition-all duration-700 ease-out
-          ${
-            isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
-          }
-        `}
-        style={{ transitionDelay: "500ms" }}
-      >
-        <h3 className="text-xl font-semibold mb-3">
-          About {owner?.username || "Host"}
-        </h3>
-        <p className="text-gray-700 leading-relaxed">
-          {owner?.bio ||
-            "Hello! I'm a passionate host who loves to share my space with travelers from around the world. I enjoy hiking, photography, and exploring new cultures. I'm always available to help make your stay comfortable and memorable."}
-        </p>
-      </div>
-
-      {/* Contact & Save Buttons */}
-      <div
-        className={`
-          flex flex-col sm:flex-row space-y-3 sm:space-y-0 sm:space-x-4
-          transition-all duration-700 ease-out
-          ${
-            isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
-          }
-        `}
-        style={{ transitionDelay: "600ms" }}
-      >
-        <button 
-          className="flex-1 px-5 py-4 bg-rose-500 text-white rounded-xl hover:bg-rose-600 transition-all duration-300 flex items-center justify-center transform hover:-translate-y-1 active:translate-y-0 active:scale-95 shadow-md hover:shadow-xl"
-          onClick={() => setContactDialogOpen(true)}
-        >
-          <MessageCircle className="h-5 w-5 mr-2 transition-transform duration-300 hover:rotate-12" />
-          Contact Host
-        </button>
-        <button className="flex-1 px-5 py-4 border-2 border-gray-300 rounded-xl hover:border-rose-300 hover:bg-rose-50 transition-all duration-300 flex items-center justify-center transform hover:-translate-y-1 active:translate-y-0 active:scale-95">
-          <Heart className="h-5 w-5 mr-2 text-gray-500 transition-all duration-300 ease-in-out hover:text-rose-500 hover:scale-110" />
-          Save to Favorites
-        </button>
-      </div>
-
-      {/* Contact Host Dialog Component */}
+      {/* Contact Host Dialog Component - Now rendered outside but controlled by HostSection */}
       <ContactHostDialog 
         isOpen={contactDialogOpen}
         onClose={() => setContactDialogOpen(false)}
         owner={owner}
       />
-    </div>
+    </>
   );
 };
 
