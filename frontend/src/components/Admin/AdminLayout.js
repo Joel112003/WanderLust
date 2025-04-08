@@ -7,6 +7,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 const AdminLayout = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [notifications, setNotifications] = useState(3); // Example notification count
+  const [user, setUser] = useState(null); // Example user state
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -152,8 +153,8 @@ const AdminLayout = () => {
               <FaUser className="text-white text-sm" />
             </div>
             <div>
-              <p className="text-sm font-medium text-white">Admin User</p>
-              <p className="text-xs text-indigo-200">admin@wanderlust.com</p>
+              <p className="text-sm font-medium text-white">{user.username}</p>
+              <p className="text-xs text-indigo-200">{user.email}</p>
             </div>
           </div>
         </div>

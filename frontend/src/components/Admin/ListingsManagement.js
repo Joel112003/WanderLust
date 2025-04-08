@@ -22,11 +22,13 @@ const ListingsManagement = () => {
       const response = await axios.get(`${API_URL}/admin/listings`, {
         headers: { Authorization: `Bearer ${localStorage.getItem('adminToken')}` }
       });
-      setListings(response.data);
+      setListings(response.data || []); // Ensure we always set an array
     } catch (error) {
+      console.error('Error fetching listings:', error);
       toast.error('Error fetching listings', {
         className: 'bg-red-100 text-red-900'
       });
+      setListings([]); // Set empty array on error
     } finally {
       setLoading(false);
     }
@@ -44,6 +46,7 @@ const ListingsManagement = () => {
         className: 'bg-green-100 text-green-900'
       });
     } catch (error) {
+      console.error('Error updating listing status:', error);
       toast.error('Error updating listing status', {
         className: 'bg-red-100 text-red-900'
       });
@@ -62,13 +65,16 @@ const ListingsManagement = () => {
         className: 'bg-purple-100 text-purple-900'
       });
     } catch (error) {
+      console.error('Error updating featured status:', error);
       toast.error('Error updating featured status');
     }
   };
 
-  const filteredListings = listings.filter(listing => {
-    const matchesSearch = listing.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                          listing.location.toLowerCase().includes(searchTerm.toLowerCase());
+  // Ensure filteredListings is an array even if listings is undefined
+  const filteredListings = (listings || []).filter(listing => {
+    if (!listing) return false; // Skip if listing is undefined
+    const matchesSearch = (listing.title || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+                          (listing.location || '').toLowerCase().includes(searchTerm.toLowerCase());
     const matchesFilter = filter === 'all' ? true : listing.status === filter;
     return matchesSearch && matchesFilter;
   });
@@ -92,8 +98,11 @@ const ListingsManagement = () => {
   };
 
   const ListingModal = ({ listing, onClose }) => {
+    if (!listing) return null; // Guard against null listing
+    
     const statusColor = statusColors[listing.status] || statusColors.pending;
     
+    // Add null checks for all listing properties
     return (
       <motion.div
         initial={{ opacity: 0 }}
@@ -113,7 +122,7 @@ const ListingsManagement = () => {
         >
           <div className="space-y-5">
             <div className="flex justify-between items-start">
-              <h3 className="text-2xl font-bold text-gray-900">{listing.title}</h3>
+              <h3 className="text-2xl font-bold text-gray-900">{listing.title || 'Untitled Listing'}</h3>
               <motion.button
                 whileHover={{ rotate: 90 }}
                 transition={{ duration: 0.2 }}
@@ -130,36 +139,39 @@ const ListingsManagement = () => {
               className="rounded-xl overflow-hidden shadow-md"
             >
               <img
-                src={listing.images[0]}
-                alt={listing.title}
+                src={(listing.images && listing.images.length > 0) ? listing.images[0] : '/placeholder-image.jpg'}
+                alt={listing.title || 'Listing image'}
                 className="object-cover w-full h-64"
+                onError={(e) => {
+                  e.target.src = '/placeholder-image.jpg';
+                }}
               />
             </motion.div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
               <div className="space-y-1">
                 <p className="text-sm font-medium text-gray-500">Location</p>
-                <p className="font-medium text-gray-900">{listing.location}</p>
+                <p className="font-medium text-gray-900">{listing.location || 'No location specified'}</p>
               </div>
               <div className="space-y-1">
                 <p className="text-sm font-medium text-gray-500">Price</p>
-                <p className="font-medium text-gray-900">${listing.price}/night</p>
+                <p className="font-medium text-gray-900">${listing.price || '0'}/night</p>
               </div>
               <div className="space-y-1">
                 <p className="text-sm font-medium text-gray-500">Owner</p>
-                <p className="font-medium text-gray-900">{listing.owner?.username}</p>
+                <p className="font-medium text-gray-900">{(listing.owner && listing.owner.username) || 'Unknown'}</p>
               </div>
               <div className="space-y-1">
                 <p className="text-sm font-medium text-gray-500">Status</p>
                 <span className={`px-3 py-1 text-sm rounded-full inline-block ${statusColor.bg} ${statusColor.text}`}>
-                  {listing.status.charAt(0).toUpperCase() + listing.status.slice(1)}
+                  {(listing.status && listing.status.charAt(0).toUpperCase() + listing.status.slice(1)) || 'Unknown'}
                 </span>
               </div>
             </div>
 
             <div className="space-y-2">
               <p className="text-sm font-medium text-gray-500">Description</p>
-              <p className="text-gray-700 leading-relaxed">{listing.description}</p>
+              <p className="text-gray-700 leading-relaxed">{listing.description || 'No description available'}</p>
             </div>
 
             <div className="flex flex-wrap justify-end gap-3 pt-4 border-t border-gray-100">
@@ -327,11 +339,14 @@ const ListingsManagement = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           <AnimatePresence mode="popLayout">
             {filteredListings.map((listing, index) => {
+              // Skip rendering if listing is undefined
+              if (!listing) return null;
+              
               const statusColor = statusColors[listing.status] || statusColors.pending;
               
               return (
                 <motion.div
-                  key={listing._id}
+                  key={listing._id || index}
                   layout
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
@@ -344,9 +359,12 @@ const ListingsManagement = () => {
                 >
                   <div className="relative aspect-w-16 aspect-h-9">
                     <img
-                      src={listing.images[0]}
-                      alt={listing.title}
+                      src={(listing.images && listing.images.length > 0) ? listing.images[0] : '/placeholder-image.jpg'}
+                      alt={listing.title || 'Listing image'}
                       className="object-cover w-full h-52"
+                      onError={(e) => {
+                        e.target.src = '/placeholder-image.jpg';
+                      }}
                     />
                     {listing.featured && (
                       <motion.div 
@@ -366,15 +384,15 @@ const ListingsManagement = () => {
                   <div className="p-5 space-y-4">
                     <div className="flex justify-between items-start">
                       <h3 className="font-semibold text-gray-900 truncate">
-                        {listing.title}
+                        {listing.title || 'Untitled Listing'}
                       </h3>
                       <span className={`px-2.5 py-1 text-xs font-medium rounded-full ${statusColor.bg} ${statusColor.text}`}>
-                        {listing.status.charAt(0).toUpperCase() + listing.status.slice(1)}
+                        {(listing.status && listing.status.charAt(0).toUpperCase() + listing.status.slice(1)) || 'Unknown'}
                       </span>
                     </div>
                     
                     <p className="text-sm text-gray-500 truncate">
-                      {listing.location}
+                      {listing.location || 'No location specified'}
                     </p>
                     
                     <div className="flex justify-between items-center pt-3 border-t border-gray-100">
