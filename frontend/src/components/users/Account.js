@@ -236,21 +236,21 @@ const Account = () => {
         setUpdateLoading(false);
         return;
       }
-  
-      const response = await axios.put(
-        `${API_URL}/auth/profile/update`,
-        {
-          username: editProfile.username,
-          email: editProfile.email,
-          phone: editProfile.phone
-        },
-        {
-          headers: { 
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json"
-          },
-        }
-      );
+  // Inside handleEditProfileSubmit function
+const response = await axios.patch(
+  `${API_URL}/auth/profile/update`,
+  {
+    username: editProfile.username,
+    email: editProfile.email,
+    phone: editProfile.phone
+  },
+  {
+    headers: { 
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json"
+    },
+  }
+);
   
       if (response.data?.user) {
         const updatedUser = response.data.user;

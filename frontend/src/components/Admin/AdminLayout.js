@@ -149,13 +149,9 @@ const AdminLayout = () => {
         </div>
 
         <div className="px-4 mb-8">
-          <div className="flex items-center space-x-3 bg-indigo-800/30 p-4 rounded-xl">
+          <div className="flex items-center justify-center bg-indigo-800/30 p-4 rounded-xl">
             <div className="h-10 w-10 rounded-full bg-gradient-to-r from-indigo-500 to-violet-500 flex items-center justify-center shadow-md">
               <FaUser className="text-white text-sm" />
-            </div>
-            <div>
-              <p className="text-sm font-medium text-white">{adminData.username}</p>
-              <p className="text-xs text-indigo-200">{adminData.email}</p>
             </div>
           </div>
         </div>
