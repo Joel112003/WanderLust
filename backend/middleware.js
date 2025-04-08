@@ -140,3 +140,66 @@ exports.authorize = (roles) => (req, res, next) => {
   }
   next();
 };
+
+exports.isAdmin = (req, res, next) => {
+  if (!req.user.isAdmin) {
+    return res.status(403).json({ error: "Access denied. Admin only." });
+  }
+  next();
+};
+
+exports.authenticateAdmin = async (req, res, next) => {
+  try {
+    // Get token from header
+    const token = req.header('x-auth-token');
+    if (!token) {
+      return res.status(401).json({ message: 'No token, authorization denied' });
+    }
+    
+    // Verify token
+    const decoded = jwt.verify(token, process.env.ADMIN_JWT_SECRET);
+    
+    // Check if user is admin
+    const user = await User.findById(decoded.id);
+    if (!user || !user.isAdmin) {
+      return res.status(403).json({ message: 'Admin access required' });
+    }
+    
+    req.user = user;
+    next();
+  } catch (err) {
+    res.status(401).json({ message: 'Token is not valid' });
+  }
+};
+
+exports.adminAuth = async (req, res, next) => {
+  try {
+      // Check for token in both formats
+      const token = req.header('x-auth-token') || req.header('Authorization')?.replace('Bearer ', '');
+      
+      if (!token) {
+          return res.status(401).json({ message: 'No token, authorization denied' });
+      }
+
+      // Verify token using JWT_SECRET
+      const decoded = jwt.verify(token, process.env.JWT_SECRET);
+      
+      // Find admin user
+      const user = await User.findOne({ 
+          _id: decoded.id, 
+          isAdmin: true 
+      });
+
+      if (!user) {
+          return res.status(403).json({ message: 'Admin access required' });
+      }
+
+      // Attach user and token to request
+      req.user = user;
+      req.token = token;
+      next();
+  } catch (error) {
+      res.status(401).json({ message: 'Invalid token, authorization denied' });
+  }
+};
+

@@ -15,6 +15,8 @@ const methodOverride = require("method-override");
 const cookieParser = require("cookie-parser");
 const passport = require("./config/passport");
 const Booking = require("./models/Booking");
+const adminRoutes = require('./routes/adminRoutes');
+
 
 const app = express();
 
@@ -140,6 +142,8 @@ app.use("/listings/:listingId/reviews", reviewRoutes);
 app.use("/auth", userRoutes);
 app.use("/bookings", bookingRoutes);
 app.use("/notifications", notificationRoutes);
+app.use('/admin', adminRoutes);
+
 
 // Global Error Handler
 app.use((err, req, res, next) => {
