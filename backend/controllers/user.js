@@ -152,12 +152,13 @@ exports.Profile = async (req, res) => {
 // Update Profile Controller
 exports.UpdateProfile = async (req, res) => {
   try {
-    const { username, email } = req.body;
+    const { username, email, phoneNumber } = req.body;
     const updates = {};
 
     // Only update fields that are provided
     if (username) updates.username = username;
     if (email) updates.email = email;
+    if (phoneNumber) updates.phoneNumber = phoneNumber;
 
     // Use findByIdAndUpdate with options
     const user = await User.findByIdAndUpdate(

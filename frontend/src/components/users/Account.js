@@ -19,6 +19,15 @@ import {
   ListItemText,
   ListItemAvatar,
   Badge,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  TextField,
+  IconButton,
+  FormControlLabel,
+  Switch,
+  InputAdornment,
 } from "@mui/material";
 import {
   Edit,
@@ -36,6 +45,8 @@ import {
   Cancel,
   Star,
   Download,
+  Close,
+  PhotoCamera,
 } from "@mui/icons-material";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
@@ -75,6 +86,17 @@ const Account = () => {
   const [listings, setListings] = useState([]);
   const [notifications, setNotifications] = useState([]);
   const [transactions, setTransactions] = useState([]);
+  const [editDialogOpen, setEditDialogOpen] = useState(false);
+  const [editProfile, setEditProfile] = useState({
+    username: "",
+    phone: "",
+    address: "",
+    avatar: "",
+    notification_preferences: true,
+  });
+  const [avatarFile, setAvatarFile] = useState(null);
+  const [avatarPreview, setAvatarPreview] = useState("");
+  const [updateLoading, setUpdateLoading] = useState(false);
 
   const navigate = useNavigate();
 
@@ -107,6 +129,15 @@ const Account = () => {
               ? new Date(userData.created_at).toLocaleDateString()
               : "Unknown",
             role: userData.role || "User",
+          });
+          
+          // Initialize edit profile state
+          setEditProfile({
+            username: userData.username,
+            phone: userData.phone || "",
+            address: userData.address || "",
+            avatar: userData.avatar || "/default-avatar.png",
+            notification_preferences: userData.notification_preferences !== false,
           });
         }
 
@@ -161,6 +192,93 @@ const Account = () => {
   const handleLogout = () => {
     localStorage.removeItem("token");
     window.location.href = "/auth/login";
+  };
+
+  const handleEditDialogOpen = () => {
+    setEditDialogOpen(true);
+  };
+
+  const handleEditDialogClose = () => {
+    setEditDialogOpen(false);
+    // Reset avatar preview when closing dialog
+    setAvatarPreview("");
+    setAvatarFile(null);
+  };
+
+  const handleEditProfileChange = (e) => {
+    const { name, value, type, checked } = e.target;
+    setEditProfile((prev) => ({
+      ...prev,
+      [name]: type === "checkbox" ? checked : value,
+    }));
+  };
+
+  const handleAvatarChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setAvatarFile(file);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setAvatarPreview(reader.result);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleEditProfileSubmit = async (e) => {
+    e.preventDefault();
+    setUpdateLoading(true);
+
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        toast.error("Authentication required");
+        setUpdateLoading(false);
+        return;
+      }
+
+      // Create FormData object for sending files
+      const formData = new FormData();
+      formData.append("username", editProfile.username);
+      formData.append("phone", editProfile.phone);
+      formData.append("address", editProfile.address);
+      formData.append("notification_preferences", editProfile.notification_preferences);
+      
+      if (avatarFile) {
+        formData.append("avatar", avatarFile);
+      }
+
+      const response = await axios.put(
+        `${API_URL}/auth/profile/update`,
+        formData,
+        {
+          headers: { 
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "multipart/form-data"
+          },
+        }
+      );
+
+      if (response.data?.user) {
+        const updatedUser = response.data.user;
+        setUser((prev) => ({
+          ...prev,
+          username: updatedUser.username,
+          phone: updatedUser.phone,
+          address: updatedUser.address,
+          avatar: updatedUser.avatar,
+          notification_preferences: updatedUser.notification_preferences,
+        }));
+
+        toast.success("Profile updated successfully");
+        handleEditDialogClose();
+      }
+    } catch (error) {
+      console.error("Error updating profile:", error);
+      toast.error(error.response?.data?.message || "Error updating profile");
+    } finally {
+      setUpdateLoading(false);
+    }
   };
 
   const markNotificationAsRead = async (id) => {
@@ -687,7 +805,7 @@ const Account = () => {
               <>
                 <Box className="bg-blue-50 p-4 rounded-lg mb-6 ">
                   <Grid container spacing={2}>
-                    <Grid item xs={12} md={4} className="flex justify-center">
+                    <Grid item xs={12} md={4} className="flex justify-center items-center">
                       <Avatar
                         src={user.avatar}
                         alt={user.username}
@@ -722,6 +840,16 @@ const Account = () => {
                               ? new Date(user.createdAt).toLocaleDateString()
                               : user.joined_date || "N/A"}
                           </Typography>
+                        </motion.div>
+                        <motion.div variants={itemVariants} className="mt-3">
+                          <Button
+                            variant="outlined"
+                            color="primary"
+                            startIcon={<Edit />}
+                            onClick={handleEditDialogOpen}
+                          >
+                            Edit Profile
+                          </Button>
                         </motion.div>
                       </motion.div>
                     </Grid>
@@ -853,72 +981,213 @@ const Account = () => {
             className="text-gray-600 hover:text-gray-900 transition-colors duration-300"
           >
             Back to Home
-          </Button>
+            </Button>
         </Box>
 
-        <Tabs
-          value={tabValue}
-          onChange={handleTabChange}
-          variant="scrollable"
-          scrollButtons="auto"
-          className="border-b border-gray-200"
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
         >
-          <Tab
-            icon={<Home />}
-            label="Bookings"
-            component={motion.div}
-            variants={tabVariants}
-            initial="hidden"
-            animate="visible"
-            className="min-w-0"
-          />
-          <Tab
-            icon={<Visibility />}
-            label="Listings"
-            component={motion.div}
-            variants={tabVariants}
-            initial="hidden"
-            animate="visible"
-            className="min-w-0"
-          />
-          <Tab
-            icon={
-              <Badge
-                badgeContent={notifications.filter((n) => !n.isRead).length}
-                color="error"
-              >
-                <Notifications />
-              </Badge>
-            }
-            label="Notifications"
-            component={motion.div}
-            variants={tabVariants}
-            initial="hidden"
-            animate="visible"
-            className="min-w-0"
-          />
-          <Tab
-            icon={<Payment />}
-            label="Transactions"
-            component={motion.div}
-            variants={tabVariants}
-            initial="hidden"
-            animate="visible"
-            className="min-w-0"
-          />
-          <Tab
-            icon={<Person />}
-            label="Profile"
-            component={motion.div}
-            variants={tabVariants}
-            initial="hidden"
-            animate="visible"
-            className="min-w-0"
-          />
-        </Tabs>
+          <Tabs
+            value={tabValue}
+            onChange={handleTabChange}
+            variant="scrollable"
+            scrollButtons="auto"
+            className="mb-6"
+            TabIndicatorProps={{
+              style: {
+                backgroundColor: "#3b82f6",
+              },
+            }}
+          >
+            <Tab
+              label={
+                <div className="flex items-center">
+                  <Receipt className="mr-1" />
+                  <span>Bookings</span>
+                </div>
+              }
+              component={motion.div}
+              variants={tabVariants}
+              initial="hidden"
+              animate="visible"
+            />
+            <Tab
+              label={
+                <div className="flex items-center">
+                  <Home className="mr-1" />
+                  <span>Listings</span>
+                </div>
+              }
+              component={motion.div}
+              variants={tabVariants}
+              initial="hidden"
+              animate="visible"
+            />
+            <Tab
+              label={
+                <div className="flex items-center">
+                  <Badge badgeContent={notifications.filter(n => !n.isRead).length} color="error">
+                    <Notifications className="mr-1" />
+                  </Badge>
+                  <span>Notifications</span>
+                </div>
+              }
+              component={motion.div}
+              variants={tabVariants}
+              initial="hidden"
+              animate="visible"
+            />
+            <Tab
+              label={
+                <div className="flex items-center">
+                  <Payment className="mr-1" />
+                  <span>Transactions</span>
+                </div>
+              }
+              component={motion.div}
+              variants={tabVariants}
+              initial="hidden"
+              animate="visible"
+            />
+            <Tab
+              label={
+                <div className="flex items-center">
+                  <Person className="mr-1" />
+                  <span>Profile</span>
+                </div>
+              }
+              component={motion.div}
+              variants={tabVariants}
+              initial="hidden"
+              animate="visible"
+            />
+          </Tabs>
+        </motion.div>
 
         {renderTabContent()}
       </Paper>
+
+      {/* Edit Profile Dialog */}
+      <Dialog
+        open={editDialogOpen}
+        onClose={handleEditDialogClose}
+        fullWidth
+        maxWidth="sm"
+      >
+        <DialogTitle>
+          <Box className="flex justify-between items-center">
+            <Typography variant="h6" className="font-bold">
+              Edit Profile
+            </Typography>
+            <IconButton onClick={handleEditDialogClose} size="small">
+              <Close />
+            </IconButton>
+          </Box>
+        </DialogTitle>
+        <DialogContent dividers>
+          <form onSubmit={handleEditProfileSubmit}>
+            <Box className="flex flex-col items-center mb-6">
+              <Avatar
+                src={avatarPreview || editProfile.avatar}
+                className="w-24 h-24 mb-4"
+              />
+              <input
+                accept="image/*"
+                className="hidden"
+                id="avatar-upload"
+                type="file"
+                onChange={handleAvatarChange}
+              />
+              <label htmlFor="avatar-upload">
+                <Button
+                  component="span"
+                  variant="outlined"
+                  color="primary"
+                  startIcon={<PhotoCamera />}
+                  className="mt-2"
+                >
+                  Change Avatar
+                </Button>
+              </label>
+            </Box>
+
+            <TextField
+              fullWidth
+              label="Username"
+              name="username"
+              value={editProfile.username}
+              onChange={handleEditProfileChange}
+              variant="outlined"
+              margin="normal"
+              required
+            />
+
+            <TextField
+              fullWidth
+              label="Phone"
+              name="phone"
+              value={editProfile.phone}
+              onChange={handleEditProfileChange}
+              variant="outlined"
+              margin="normal"
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <Phone fontSize="small" />
+                  </InputAdornment>
+                ),
+              }}
+            />
+
+            <TextField
+              fullWidth
+              label="Address"
+              name="address"
+              value={editProfile.address}
+              onChange={handleEditProfileChange}
+              variant="outlined"
+              margin="normal"
+              multiline
+              rows={3}
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <LocationOn fontSize="small" />
+                  </InputAdornment>
+                ),
+              }}
+            />
+
+            <FormControlLabel
+              control={
+                <Switch
+                  checked={editProfile.notification_preferences}
+                  onChange={handleEditProfileChange}
+                  name="notification_preferences"
+                  color="primary"
+                />
+              }
+              label="Receive email notifications"
+              className="mt-4"
+            />
+          </form>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleEditDialogClose} color="inherit">
+            Cancel
+          </Button>
+          <Button 
+            onClick={handleEditProfileSubmit} 
+            color="primary" 
+            variant="contained"
+            disabled={updateLoading}
+          >
+            {updateLoading ? <CircularProgress size={24} /> : "Save Changes"}
+          </Button>
+        </DialogActions>
+      </Dialog>
     </div>
   );
 };
