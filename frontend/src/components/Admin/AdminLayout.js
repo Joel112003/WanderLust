@@ -3,19 +3,41 @@ import { Outlet, Link, useNavigate, useLocation } from 'react-router-dom';
 import { FaChartBar, FaUsers, FaList, FaComments, FaSignOutAlt, FaBars, FaTimes, FaBell, FaUser } from 'react-icons/fa';
 import { toast } from 'react-toastify';
 import { motion, AnimatePresence } from 'framer-motion';
+import axios from 'axios';
+
+const API_URL = process.env.REACT_APP_API_URL || "http://localhost:8000";
 
 const AdminLayout = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
-  const [notifications, setNotifications] = useState(3); // Example notification count
-  const [user, setUser] = useState(null); // Example user state
+  const [notifications, setNotifications] = useState(3);
+  const [isLoading, setIsLoading] = useState(true);
+  const [adminData, setAdminData] = useState(null);
   const navigate = useNavigate();
   const location = useLocation();
 
   useEffect(() => {
-    const adminToken = localStorage.getItem('adminToken');
-    if (!adminToken) {
-      navigate('/admin/login');
-    }
+    const fetchAdminData = async () => {
+      try {
+        const adminToken = localStorage.getItem('adminToken');
+        if (!adminToken) {
+          navigate('/admin/login');
+          return;
+        }
+
+        const response = await axios.get(`${API_URL}/admin/profile`, {
+          headers: { Authorization: `Bearer ${adminToken}` }
+        });
+
+        setAdminData(response.data);
+        setIsLoading(false);
+      } catch (error) {
+        console.error('Error fetching admin data:', error);
+        localStorage.removeItem('adminToken');
+        navigate('/admin/login');
+      }
+    };
+
+    fetchAdminData();
   }, [navigate]);
 
   const handleLogout = () => {
@@ -34,7 +56,6 @@ const AdminLayout = () => {
     { path: '/admin/reviews', icon: <FaComments className="text-xl" />, label: 'Reviews' }
   ];
 
-  // Enhanced animation variants
   const sidebarVariants = {
     open: {
       x: 0,
@@ -82,30 +103,20 @@ const AdminLayout = () => {
     }
   };
 
-  const pageTransitionVariants = {
-    initial: { opacity: 0, y: 20 },
-    animate: { 
-      opacity: 1, 
-      y: 0,
-      transition: {
-        duration: 0.4,
-        ease: "easeOut"
-      }
-    },
-    exit: { 
-      opacity: 0,
-      y: -20,
-      transition: {
-        duration: 0.2
-      }
-    }
-  };
-
-  const activeMenuGradient = "bg-gradient-to-r from-indigo-600 to-violet-600";
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center h-screen bg-slate-50">
+        <motion.div
+          animate={{ rotate: 360 }}
+          transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+          className="w-16 h-16 border-4 border-indigo-500 border-t-transparent rounded-full"
+        />
+      </div>
+    );
+  }
 
   return (
     <div className="flex h-screen bg-gradient-to-br from-slate-50 to-slate-100">
-      {/* Backdrop for mobile */}
       <AnimatePresence>
         {isSidebarOpen && (
           <motion.div
@@ -119,7 +130,6 @@ const AdminLayout = () => {
         )}
       </AnimatePresence>
 
-      {/* Sidebar */}
       <motion.div
         initial={false}
         animate={isSidebarOpen ? "open" : "closed"}
@@ -147,24 +157,25 @@ const AdminLayout = () => {
           </button>
         </div>
 
-        <div className="px-4 mb-8">
-          <div className="flex items-center space-x-3 bg-indigo-800/30 p-4 rounded-xl">
-            <div className="h-10 w-10 rounded-full bg-gradient-to-r from-indigo-500 to-violet-500 flex items-center justify-center shadow-md">
-              <FaUser className="text-white text-sm" />
-            </div>
-            <div>
-              <p className="text-sm font-medium text-white">{user.username}</p>
-              <p className="text-xs text-indigo-200">{user.email}</p>
+        {adminData && (
+          <div className="px-4 mb-8">
+            <div className="flex items-center space-x-3 bg-indigo-800/30 p-4 rounded-xl">
+              <div className="h-10 w-10 rounded-full bg-gradient-to-r from-indigo-500 to-violet-500 flex items-center justify-center shadow-md">
+                <FaUser className="text-white text-sm" />
+              </div>
+              <div>
+                <p className="text-sm font-medium text-white">{adminData.username}</p>
+                <p className="text-xs text-indigo-200">{adminData.email}</p>
+              </div>
             </div>
           </div>
-        </div>
+        )}
 
         <div className="px-3 mb-6">
           <p className="text-xs font-medium uppercase tracking-wider text-indigo-300 mb-2 pl-3">Main Menu</p>
           <nav className="space-y-1">
             {menuItems.map((item) => {
               const isActive = location.pathname === item.path;
-              
               return (
                 <motion.div
                   key={item.path}
@@ -177,15 +188,14 @@ const AdminLayout = () => {
                     to={item.path}
                     className={`flex items-center space-x-3 px-4 py-3.5 rounded-xl transition-all duration-200 ${
                       isActive
-                        ? `${activeMenuGradient} text-white shadow-lg shadow-indigo-600/30`
+                        ? 'bg-gradient-to-r from-indigo-600 to-violet-600 text-white shadow-lg shadow-indigo-600/30'
                         : 'hover:bg-white/10 text-slate-200'
                     }`}
                   >
-                    <span className={`${isActive ? 'text-white' : 'text-indigo-300'}`}>
+                    <span className={isActive ? 'text-white' : 'text-indigo-300'}>
                       {item.icon}
                     </span>
                     <span className="font-medium">{item.label}</span>
-                    
                     {isActive && (
                       <motion.div 
                         layoutId="activeIndicator"
@@ -201,7 +211,7 @@ const AdminLayout = () => {
             })}
           </nav>
         </div>
-        
+
         <div className="px-3 mt-auto">
           <p className="text-xs font-medium uppercase tracking-wider text-indigo-300 mb-2 pl-3">Account</p>
           <motion.div
@@ -222,9 +232,7 @@ const AdminLayout = () => {
         </div>
       </motion.div>
 
-      {/* Main Content */}
       <div className="flex-1 flex flex-col overflow-hidden">
-        {/* Top Bar */}
         <header className="bg-white shadow-md z-10">
           <div className="flex items-center justify-between p-4">
             <div className="flex items-center space-x-4">
@@ -263,46 +271,12 @@ const AdminLayout = () => {
                   </motion.span>
                 )}
               </motion.div>
-              
-              <motion.div 
-                className="flex items-center space-x-3 border-l pl-4 border-slate-200"
-                whileHover={{ x: 2 }}
-              >
-                <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-indigo-500 to-violet-500 flex items-center justify-center shadow-md">
-                  <FaUser className="text-white text-xs" />
-                </div>
-                <span className="text-slate-700 font-medium text-sm hidden sm:block">Admin User</span>
-              </motion.div>
             </div>
-          </div>
-          
-          {/* Page Path Indicator */}
-          <div className="px-6 py-2 bg-gradient-to-r from-slate-50 to-indigo-50 border-t border-slate-100">
-            <p className="text-sm text-slate-500">
-              {location.pathname.split('/').filter(Boolean).map((path, index, arr) => (
-                <span key={index}>
-                  <span className="capitalize">{path}</span>
-                  {index < arr.length - 1 && <span className="mx-2 text-slate-400">/</span>}
-                </span>
-              ))}
-            </p>
           </div>
         </header>
 
-        {/* Main Content Area */}
-        <main className="flex-1 overflow-x-hidden overflow-y-auto bg-slate-50 p-6">
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={location.pathname}
-              initial="initial"
-              animate="animate"
-              exit="exit"
-              variants={pageTransitionVariants}
-              className="container mx-auto"
-            >
-              <Outlet />
-            </motion.div>
-          </AnimatePresence>
+        <main className="flex-1 overflow-y-auto p-6">
+          <Outlet />
         </main>
       </div>
     </div>
