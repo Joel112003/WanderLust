@@ -90,8 +90,6 @@ const Account = () => {
   const [editProfile, setEditProfile] = useState({
     username: "",
     phoneNumber: "", // Change from phone to phoneNumber to match backend
-    address: "",
-    avatar: "",
     notification_preferences: true,
   });
   const [avatarFile, setAvatarFile] = useState(null);
@@ -118,10 +116,7 @@ const Account = () => {
           setUser({
             email: userData.email,
             username: userData.username,
-            avatar: userData.avatar || "/default-avatar.png",
-            phone: userData.phone || "",
-            address: userData.address || "",
-            language: userData.language || "English",
+            phoneNumber: userData.phone || "",
             notification_preferences:
               userData.notification_preferences !== false,
             verified: userData.verified || false,
@@ -134,9 +129,8 @@ const Account = () => {
           // Initialize edit profile state
           setEditProfile({
             username: userData.username,
-            phone: userData.phone || "",
-            address: userData.address || "",
-            avatar: userData.avatar || "/default-avatar.png",
+            phoneNumber: userData.phone || "",
+        
             notification_preferences: userData.notification_preferences !== false,
           });
         }
@@ -1120,7 +1114,7 @@ const handleEditProfileSubmit = async (e) => {
               fullWidth
               label="Phone"
               name="phone"
-              value={editProfile.phone}
+              value={editProfile.phoneNumber}
               onChange={handleEditProfileChange}
               variant="outlined"
               margin="normal"
