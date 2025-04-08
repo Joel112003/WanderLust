@@ -110,7 +110,7 @@ const Review = ({ listingId }) => {
       setError("Please provide a comment with at least 10 characters.");
       return;
     }
-
+  
     try {
       setLoadingStates((prev) => ({ ...prev, submit: true }));
       const response = await axios.post(
@@ -123,18 +123,18 @@ const Review = ({ listingId }) => {
           },
         }
       );
-
+      
       let newReview = response.data.review;
       if (!newReview.author && user) {
         newReview.author = user;
       }
-
+      
       const updatedReviews = [newReview, ...reviews];
       setReviews(updatedReviews);
       setRating(0);
       setComment("");
       setError("");
-
+      
       // Recalculate overall rating
       const avgRating =
         updatedReviews.length > 0
@@ -143,13 +143,17 @@ const Review = ({ listingId }) => {
           : 0;
       setOverallRating(avgRating);
     } catch (err) {
-      setError(
-        err.response?.data?.errors?.comment ||
-          err.response?.data?.errors?.rating ||
-          err.response?.data?.message ||
-          "Failed to submit review. Please try again later."
-      );
       console.error("Submit review error:", err);
+      
+      // More comprehensive error handling
+      const errorMsg = 
+        err.response?.data?.errors?.comment ||
+        err.response?.data?.errors?.rating ||
+        err.response?.data?.message ||
+        err.response?.data?.error ||  // Added to catch the specific error we saw
+        "Failed to submit review. Please try again later.";
+      
+      setError(errorMsg);
     } finally {
       setLoadingStates((prev) => ({ ...prev, submit: false }));
     }

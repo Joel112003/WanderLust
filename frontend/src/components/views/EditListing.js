@@ -265,6 +265,19 @@ function EditListing() {
             Update Your Listing
           </motion.h1>
 
+            
+          {/* Important Note About Images */}
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.4 }}
+            className="mb-6 p-4 bg-yellow-50 border-l-4 border-yellow-400 rounded-md"
+          >
+            <p className="text-yellow-700 font-medium">
+              <span className="font-bold">⚠️ Important:</span> When updating your listing, please re-upload your images even if you don't want to change them. Otherwise, your listing images will be lost.
+            </p>
+          </motion.div>
+
           <form onSubmit={handleSubmit} className="space-y-6">
             {/* Title */}
             <motion.div whileHover={{ scale: 1.01 }} className="group">

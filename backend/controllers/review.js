@@ -76,28 +76,38 @@ module.exports.getAllReviews = async (req, res) => {
 };
 
 // 🚀 Add a Review
+// 🚀 Add a Review - FIXED VERSION
 module.exports.addReview = async (req, res) => {
   try {
     const { listingId } = req.params;
     const { rating, comment } = req.body;
+    
+    // Authentication check
     if (!req.user) {
       return res.status(401).json({ success: false, message: "Unauthorized" });
     }
+    
+    // Validate listing ID format
     if (!mongoose.Types.ObjectId.isValid(listingId)) {
       return res
         .status(400)
         .json({ success: false, message: "Invalid listing ID" });
     }
+    
+    // Validate review input
     const { isValid, errors } = validateReviewInput(req.body);
     if (!isValid) {
       return res.status(400).json({ success: false, errors });
     }
+    
+    // Check if listing exists
     const listing = await Listing.findById(listingId);
     if (!listing) {
       return res
         .status(404)
         .json({ success: false, message: "Listing not found" });
     }
+    
     // Prevent duplicate review by the same user
     const existingReview = await Review.findOne({
       author: req.user._id,
@@ -109,6 +119,8 @@ module.exports.addReview = async (req, res) => {
         message: "You have already reviewed this listing",
       });
     }
+    
+    // Create and save new review
     const newReview = new Review({
       comment: req.body.comment,
       rating: req.body.rating,
@@ -117,10 +129,17 @@ module.exports.addReview = async (req, res) => {
       authorName: req.user.username, // Store username as a backup
     });
     await newReview.save();
-    listing.reviews.push(newReview._id);
-    await listing.save();
+    
+    // Update listing without triggering full validation
+    await Listing.findByIdAndUpdate(
+      listingId,
+      { $push: { reviews: newReview._id } },
+      { runValidators: false }
+    );
+    
     // Populate author field so _id and username are available
     await newReview.populate("author", "username");
+    
     res.status(201).json({
       success: true,
       message: "Review added successfully",
@@ -135,6 +154,7 @@ module.exports.addReview = async (req, res) => {
     });
   }
 };
+
 
 // 🚀 Delete a Review
 module.exports.deleteReview = async (req, res) => {

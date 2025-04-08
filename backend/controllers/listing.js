@@ -131,6 +131,7 @@ exports.getListingById = async (req, res) => {
         
         // Update the local listing object to reflect the new view count
         listing.views = (listing.views || 0) + 1;
+        
         listing.uniqueViews = [...(listing.uniqueViews || []), clientIP];
       }
     }
