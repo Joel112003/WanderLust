@@ -3,45 +3,36 @@ import { Outlet, Link, useNavigate, useLocation } from 'react-router-dom';
 import { FaChartBar, FaUsers, FaList, FaComments, FaSignOutAlt, FaBars, FaTimes, FaBell, FaUser } from 'react-icons/fa';
 import { toast } from 'react-toastify';
 import { motion, AnimatePresence } from 'framer-motion';
-import axios from 'axios';
 
 const API_URL = process.env.REACT_APP_API_URL || "http://localhost:8000";
 
 const AdminLayout = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [notifications, setNotifications] = useState(3);
-  const [isLoading, setIsLoading] = useState(true);
   const [adminData, setAdminData] = useState(null);
   const navigate = useNavigate();
   const location = useLocation();
 
   useEffect(() => {
-    const fetchAdminData = async () => {
-      try {
-        const adminToken = localStorage.getItem('adminToken');
-        if (!adminToken) {
-          navigate('/admin/login');
-          return;
-        }
+    const adminToken = localStorage.getItem('adminToken');
+    const storedAdminData = localStorage.getItem('adminData');
 
-        const response = await axios.get(`${API_URL}/admin/profile`, {
-          headers: { Authorization: `Bearer ${adminToken}` }
-        });
+    if (!adminToken || !storedAdminData) {
+      navigate('/admin/login');
+      return;
+    }
 
-        setAdminData(response.data);
-        setIsLoading(false);
-      } catch (error) {
-        console.error('Error fetching admin data:', error);
-        localStorage.removeItem('adminToken');
-        navigate('/admin/login');
-      }
-    };
-
-    fetchAdminData();
+    try {
+      setAdminData(JSON.parse(storedAdminData));
+    } catch (error) {
+      console.error('Error parsing admin data:', error);
+      navigate('/admin/login');
+    }
   }, [navigate]);
 
   const handleLogout = () => {
     localStorage.removeItem('adminToken');
+    localStorage.removeItem('adminData');
     toast.success('Logged out successfully', {
       position: 'top-right',
       className: 'bg-indigo-100 text-indigo-900 font-medium'
@@ -103,7 +94,7 @@ const AdminLayout = () => {
     }
   };
 
-  if (isLoading) {
+  if (!adminData) {
     return (
       <div className="flex items-center justify-center h-screen bg-slate-50">
         <motion.div
@@ -157,19 +148,17 @@ const AdminLayout = () => {
           </button>
         </div>
 
-        {adminData && (
-          <div className="px-4 mb-8">
-            <div className="flex items-center space-x-3 bg-indigo-800/30 p-4 rounded-xl">
-              <div className="h-10 w-10 rounded-full bg-gradient-to-r from-indigo-500 to-violet-500 flex items-center justify-center shadow-md">
-                <FaUser className="text-white text-sm" />
-              </div>
-              <div>
-                <p className="text-sm font-medium text-white">{adminData.username}</p>
-                <p className="text-xs text-indigo-200">{adminData.email}</p>
-              </div>
+        <div className="px-4 mb-8">
+          <div className="flex items-center space-x-3 bg-indigo-800/30 p-4 rounded-xl">
+            <div className="h-10 w-10 rounded-full bg-gradient-to-r from-indigo-500 to-violet-500 flex items-center justify-center shadow-md">
+              <FaUser className="text-white text-sm" />
+            </div>
+            <div>
+              <p className="text-sm font-medium text-white">{adminData.username}</p>
+              <p className="text-xs text-indigo-200">{adminData.email}</p>
             </div>
           </div>
-        )}
+        </div>
 
         <div className="px-3 mb-6">
           <p className="text-xs font-medium uppercase tracking-wider text-indigo-300 mb-2 pl-3">Main Menu</p>

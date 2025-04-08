@@ -53,14 +53,15 @@ function AdminLogin() {
     try {
       const res = await axios.post(`${API_URL}/admin/login`, formData);
       localStorage.setItem('adminToken', res.data.token);
-      toast.success('Admin login successful!', {
-        className: 'bg-emerald-100 text-emerald-800 font-medium'
-      });
+      // Store admin data
+      localStorage.setItem('adminData', JSON.stringify({
+        username: res.data.username,
+        email: res.data.email
+      }));
+      toast.success('Admin login successful!');
       navigate('/admin');
     } catch (err) {
-      toast.error(err.response?.data?.message || 'Login failed', {
-        className: 'bg-rose-100 text-rose-800 font-medium'
-      });
+      toast.error(err.response?.data?.message || 'Login failed');
     } finally {
       setLoading(false);
     }
