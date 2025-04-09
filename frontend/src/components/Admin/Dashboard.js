@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { FaUsers, FaList, FaComments, FaClock } from 'react-icons/fa';
+import { FaUsers, FaList, FaComments, FaClock, FaDownload, FaSpinner } from 'react-icons/fa';
 import { motion } from 'framer-motion';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
 
@@ -16,6 +16,9 @@ const Dashboard = () => {
     recentListings: [],
     chartData: []
   });
+  const [isGeneratingReport, setIsGeneratingReport] = useState(false);
+  const [reportType, setReportType] = useState('all');
+  const [dateRange, setDateRange] = useState('week');
 
   useEffect(() => {
     const fetchStats = async () => {
@@ -59,6 +62,35 @@ const Dashboard = () => {
     const interval = setInterval(fetchStats, 60000); // Refresh every minute
     return () => clearInterval(interval);
   }, []);
+
+  const generateReport = async () => {
+    setIsGeneratingReport(true);
+    try {
+      const response = await axios.get(`${API_URL}/admin/reports/generate`, {
+        params: { type: reportType, dateRange },
+        headers: { 
+          Authorization: `Bearer ${localStorage.getItem('adminToken')}`
+        },
+        responseType: 'blob' // Important for handling file downloads
+      });
+
+      // Create a download link for the report
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement('a');
+      const fileName = `wanderlust_${reportType}_report_${new Date().toISOString().split('T')[0]}.pdf`;
+      link.href = url;
+      link.setAttribute('download', fileName);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      
+    } catch (error) {
+      console.error('Error generating report:', error);
+      alert('Failed to generate report. Please try again.');
+    } finally {
+      setIsGeneratingReport(false);
+    }
+  };
 
   const StatCard = ({ title, value, icon, color }) => (
     <motion.div
@@ -122,6 +154,46 @@ const Dashboard = () => {
     >
       <div className="flex justify-between items-center">
         <h2 className="text-2xl font-bold text-gray-800">Dashboard Overview</h2>
+        <div className="flex items-center gap-4">
+          <select
+            value={reportType}
+            onChange={(e) => setReportType(e.target.value)}
+            className="px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-500"
+          >
+            <option value="all">All Data</option>
+            <option value="users">Users</option>
+            <option value="listings">Listings</option>
+            <option value="reviews">Reviews</option>
+          </select>
+          <select
+            value={dateRange}
+            onChange={(e) => setDateRange(e.target.value)}
+            className="px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-500"
+          >
+            <option value="week">Last Week</option>
+            <option value="month">Last Month</option>
+            <option value="quarter">Last 3 Months</option>
+            <option value="year">Last Year</option>
+            <option value="all">All Time</option>
+          </select>
+          <button
+            onClick={generateReport}
+            disabled={isGeneratingReport}
+            className="flex items-center gap-2 bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg transition duration-200 disabled:bg-purple-400"
+          >
+            {isGeneratingReport ? (
+              <>
+                <FaSpinner className="animate-spin" />
+                Generating...
+              </>
+            ) : (
+              <>
+                <FaDownload />
+                Generate Report
+              </>
+            )}
+          </button>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -221,4 +293,4 @@ const Dashboard = () => {
   );
 };
 
-export default Dashboard;
+export default Dashboard;x

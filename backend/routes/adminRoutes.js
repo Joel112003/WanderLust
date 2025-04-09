@@ -1,6 +1,8 @@
 const express = require("express");
 const router = express.Router();
 const adminController = require("../controllers/adminController");
+const adminController = require('../controllers/adminController');
+const reportController = require('../controllers/adminReportController');
 const {adminAuth} = require('../middleware');
 
 // Public route - no auth required
@@ -11,6 +13,8 @@ router.use(adminAuth);
 
 // Dashboard
 router.get('/dashboard', adminController.getDashboardStats);
+router.get('/reports/generate', reportController.generateReport);
+
 
 // User Management
 router.get('/users', adminController.getAllUsers);
