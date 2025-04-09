@@ -359,7 +359,7 @@ const ListingsManagement = () => {
                 >
                   <div className="relative aspect-w-16 aspect-h-9">
                     <img
-                      src={(listing.images && listing.images.length > 0) ? listing.images[0] : '/placeholder-image.jpg'}
+                      src={(listing.image.url && listing.images.length > 0) ? listing.image.url[0] : '/placeholder-image.jpg'}
                       alt={listing.title || 'Listing image'}
                       className="object-cover w-full h-52"
                       onError={(e) => {
