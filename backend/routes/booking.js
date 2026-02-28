@@ -5,7 +5,30 @@ const Listing = require('../models/listing');
 const notificationController = require('../controllers/notification');
 const { isLoggedIn } = require('../middleware');
 
-// Apply authentication middleware to all booking routes
+// ─── Public booking routes (no auth required) ────────────────────────────────
+
+// Get bookings for a specific listing (PUBLIC - anyone can see availability)
+router.get('/listing/:listingId', async (req, res, next) => {
+  try {
+    const { listingId } = req.params;
+    
+    const bookings = await Booking.find({ 
+      listing: listingId,
+      status: { $in: ['pending', 'paid', 'confirmed'] }
+    })
+    .select('checkIn checkOut status')
+    .sort({ checkIn: 1 });
+    
+    res.json(bookings);
+  } catch (error) {
+    console.error('Error fetching listing bookings:', error);
+    res.status(500).json({ error: 'Failed to fetch bookings for this listing' });
+  }
+});
+
+// ─── Protected booking routes (auth required) ────────────────────────────────
+
+// Apply authentication middleware to remaining routes
 router.use(isLoggedIn);
 
 // Create new booking
@@ -28,10 +51,10 @@ router.post('/', async (req, res, next) => {
     const checkInDate = new Date(checkIn);
     const checkOutDate = new Date(checkOut);
 
-    // Check for existing bookings that conflict
+    // Check for existing bookings that conflict (only active bookings)
     const conflictingBookings = await Booking.find({
       listing: listingId,
-      status: { $ne: 'cancelled' },
+      status: { $in: ['pending', 'paid', 'confirmed'] },
       $or: [
         // Check if an existing booking overlaps with the new booking dates
         {
@@ -108,25 +131,6 @@ router.post('/', async (req, res, next) => {
     
   } catch (error) {
     next(error);
-  }
-});
-
-// Get bookings for a specific listing (no authentication required)
-router.get('/listing/:listingId', async (req, res, next) => {
-  try {
-    const { listingId } = req.params;
-    
-    const bookings = await Booking.find({ 
-      listing: listingId,
-      status: { $ne: 'cancelled' }
-    })
-    .select('checkIn checkOut status')
-    .sort({ checkIn: 1 });
-    
-    res.json(bookings);
-  } catch (error) {
-    console.error('Error fetching listing bookings:', error);
-    res.status(500).json({ error: 'Failed to fetch bookings for this listing' });
   }
 });
 

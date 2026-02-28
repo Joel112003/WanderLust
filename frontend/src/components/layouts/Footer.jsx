@@ -1,0 +1,194 @@
+import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import { motion, AnimatePresence } from "framer-motion";
+
+// ─── Icons ────────────────────────────────────────────────────────────────────
+const InstagramIcon = () => (
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+    strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
+    <rect x="2" y="2" width="20" height="20" rx="5"/>
+    <circle cx="12" cy="12" r="4"/>
+    <circle cx="17.5" cy="6.5" r="0.8" fill="currentColor" stroke="none"/>
+  </svg>
+);
+
+const FacebookIcon = () => (
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+    <path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z"/>
+  </svg>
+);
+
+const LinkedInIcon = () => (
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+    <path d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-4 0v7H10V9h4v1.765A4.5 4.5 0 0116 8zM2 9h4v12H2z"/>
+    <circle cx="4" cy="4" r="2"/>
+  </svg>
+);
+
+const ArrowUpIcon = () => (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+    strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M12 19V5M5 12l7-7 7 7"/>
+  </svg>
+);
+
+// ─── Data ─────────────────────────────────────────────────────────────────────
+const SOCIALS = [
+  {
+    label: "Instagram",
+    href: "https://www.instagram.com/airbnb/",
+    icon: <InstagramIcon />,
+    color: "#E4405F",
+    bg: "rgba(228,64,95,0.08)",
+    bgHover: "rgba(228,64,95,0.15)",
+  },
+  {
+    label: "Facebook",
+    href: "https://www.facebook.com/airbnb/",
+    icon: <FacebookIcon />,
+    color: "#4267B2",
+    bg: "rgba(66,103,178,0.08)",
+    bgHover: "rgba(66,103,178,0.15)",
+  },
+  {
+    label: "LinkedIn",
+    href: "https://www.linkedin.com/in/joelkunjumon",
+    icon: <LinkedInIcon />,
+    color: "#0A66C2",
+    bg: "rgba(10,102,194,0.08)",
+    bgHover: "rgba(10,102,194,0.15)",
+  },
+];
+
+const LINKS = [
+  { label: "Privacy Policy",   to: "/privacy"  },
+  { label: "Terms of Service", to: "/terms"    },
+  { label: "Contact Us",       to: "/contact"  },
+];
+
+// ─── Stagger variants ─────────────────────────────────────────────────────────
+const container = {
+  hidden: { opacity: 0 },
+  show: {
+    opacity: 1,
+    transition: { staggerChildren: 0.08, delayChildren: 0.1 },
+  },
+};
+const item = {
+  hidden: { opacity: 0, y: 14 },
+  show: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 120, damping: 14 } },
+};
+
+// ─── Footer ───────────────────────────────────────────────────────────────────
+export default function Footer() {
+  const [showTop, setShowTop] = useState(false);
+  const [hovered, setHovered] = useState(null);
+
+  useEffect(() => {
+    const onScroll = () => setShowTop(window.scrollY > 100);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  return (
+    <>
+      <footer
+        className="w-full mt-auto relative"
+        style={{
+          background: "linear-gradient(180deg, #f9f9fb 0%, #ffffff 100%)",
+          borderTop: "1px solid #ebebef",
+          boxShadow: "0 -4px 24px rgba(0,0,0,0.04)",
+        }}
+      >
+        <motion.div
+          variants={container}
+          initial="hidden"
+          whileInView="show"
+          viewport={{ once: true }}
+          className="mx-auto max-w-2xl px-6 py-8 flex flex-col items-center gap-5"
+        >
+
+          {/* Social label */}
+          <motion.p variants={item}
+            className="text-xs font-semibold uppercase tracking-widest text-gray-400">
+            Follow us on social media
+          </motion.p>
+
+          {/* Social icons */}
+          <motion.div variants={item} className="flex items-center gap-3">
+            {SOCIALS.map(({ label, href, icon, color, bg, bgHover }) => (
+              <motion.a
+                key={label}
+                href={href}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={label}
+                onHoverStart={() => setHovered(label)}
+                onHoverEnd={() => setHovered(null)}
+                whileHover={{ scale: 1.1, y: -2 }}
+                whileTap={{ scale: 0.92 }}
+                style={{
+                  width: 42, height: 42, borderRadius: 12,
+                  display: "flex", alignItems: "center", justifyContent: "center",
+                  color,
+                  backgroundColor: hovered === label ? bgHover : bg,
+                  transition: "background-color 0.2s ease",
+                }}
+              >
+                {icon}
+              </motion.a>
+            ))}
+          </motion.div>
+
+          {/* Divider */}
+          <motion.div variants={item}
+            className="w-3/4 border-t border-gray-100" />
+
+          {/* Nav links */}
+          <motion.nav variants={item} className="flex items-center gap-6 flex-wrap justify-center">
+            {LINKS.map(({ label, to }) => (
+              <motion.div key={to} whileHover={{ scale: 1.04 }}>
+                <Link
+                  to={to}
+                  className="text-sm font-medium text-indigo-500 hover:text-indigo-700 transition-colors duration-150"
+                  style={{ textDecoration: "none" }}
+                >
+                  {label}
+                </Link>
+              </motion.div>
+            ))}
+          </motion.nav>
+
+          {/* Copyright */}
+          <motion.p variants={item} className="text-xs text-gray-400 text-center">
+            &copy; {new Date().getFullYear()} WanderLust Private Limited. All rights reserved.
+          </motion.p>
+
+        </motion.div>
+      </footer>
+
+      {/* Scroll to top */}
+      <AnimatePresence>
+        {showTop && (
+          <motion.button
+            key="back-to-top"
+            initial={{ opacity: 0, scale: 0.6 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.6 }}
+            transition={{ type: "spring", stiffness: 300, damping: 22 }}
+            whileHover={{ scale: 1.12, y: -2 }}
+            whileTap={{ scale: 0.9 }}
+            onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+            aria-label="Scroll back to top"
+            className="fixed bottom-8 right-8 z-50 w-11 h-11 rounded-full
+              flex items-center justify-center text-white shadow-lg
+              transition-shadow hover:shadow-xl"
+            style={{ background: "linear-gradient(135deg, #6366f1, #4f46e5)" }}
+          >
+            <ArrowUpIcon />
+          </motion.button>
+        )}
+      </AnimatePresence>
+    </>
+  );
+}

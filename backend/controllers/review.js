@@ -75,8 +75,7 @@ module.exports.getAllReviews = async (req, res) => {
   }
 };
 
-// 🚀 Add a Review
-// 🚀 Add a Review - FIXED VERSION
+
 module.exports.addReview = async (req, res) => {
   try {
     const { listingId } = req.params;

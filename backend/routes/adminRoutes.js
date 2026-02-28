@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const adminController = require("../controllers/adminController");
 const reportController = require('../controllers/adminReportController');
-const {adminAuth} = require('../middleware');
+const { adminAuth } = require('../middleware');
 
 // Public route - no auth required
 router.post('/login', adminController.adminLogin);
@@ -10,10 +10,12 @@ router.post('/login', adminController.adminLogin);
 // Protected routes - require admin authentication
 router.use(adminAuth);
 
+// Token verification (used by ProtectedAdminRoute on the frontend)
+router.get('/verify', (req, res) => res.sendStatus(200));
+
 // Dashboard
 router.get('/dashboard', adminController.getDashboardStats);
 router.get('/reports/generate', reportController.generateReport);
-
 
 // User Management
 router.get('/users', adminController.getAllUsers);

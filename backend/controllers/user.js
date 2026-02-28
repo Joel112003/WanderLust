@@ -2,16 +2,34 @@ const User = require("../models/user");
 const passport = require("passport");
 const { generateToken } = require("../middleware");
 
+// Helper: Validate email format
+const isValidEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+
+// Helper: Validate password strength
+const isStrongPassword = (password) => typeof password === "string" && password.length >= 6;
+
 // Signup Controller
 exports.Signup = async (req, res) => {
   try {
     const { username, email, password } = req.body;
-    
+
     // Validate input
     if (!username || !email || !password) {
       return res.status(400).json({
         success: false,
         message: "Please provide username, email, and password"
+      });
+    }
+    if (!isValidEmail(email)) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid email format"
+      });
+    }
+    if (!isStrongPassword(password)) {
+      return res.status(400).json({
+        success: false,
+        message: "Password must be at least 6 characters"
       });
     }
 
@@ -25,38 +43,30 @@ exports.Signup = async (req, res) => {
     }
 
     const newUser = new User({ username, email });
-    try {
-      const registeredUser = await User.register(newUser, password);
-      
-      // Generate JWT token
-      const token = generateToken(registeredUser);
-      
-      // Auto-login after registration
-      req.login(registeredUser, (err) => {
-        if (err) {
-          return res.status(500).json({
-            success: false,
-            message: "Signup successful but auto-login failed"
-          });
-        }
-        res.status(201).json({
-          success: true,
-          message: "User registered successfully",
-          user: {
-            id: registeredUser._id,
-            username: registeredUser.username,
-            email: registeredUser.email
-          },
-          token
+    const registeredUser = await User.register(newUser, password);
+
+    // Generate JWT token
+    const token = generateToken(registeredUser);
+
+    // Auto-login after registration
+    req.login(registeredUser, (err) => {
+      if (err) {
+        return res.status(500).json({
+          success: false,
+          message: "Signup successful but auto-login failed"
         });
+      }
+      res.status(201).json({
+        success: true,
+        message: "User registered successfully",
+        user: {
+          id: registeredUser._id,
+          username: registeredUser.username,
+          email: registeredUser.email
+        },
+        token
       });
-    } catch (err) {
-      return res.status(500).json({
-        success: false,
-        message: "Error registering user",
-        error: err.message
-      });
-    }
+    });
   } catch (err) {
     console.error("Signup Error:", err);
     res.status(500).json({
@@ -69,6 +79,8 @@ exports.Signup = async (req, res) => {
 
 // Login Controller
 exports.Login = async (req, res, next) => {
+    console.log("LOGIN BODY:", req.body); // ← add this
+
   passport.authenticate('local', (err, user, info) => {
     if (err) {
       return res.status(500).json({
@@ -77,14 +89,12 @@ exports.Login = async (req, res, next) => {
         error: err.message
       });
     }
-
     if (!user) {
       return res.status(401).json({
         success: false,
-        message: info.message || "Invalid credentials"
+        message: info?.message || "Invalid credentials"
       });
     }
-
     req.login(user, (err) => {
       if (err) {
         return res.status(500).json({
@@ -93,10 +103,8 @@ exports.Login = async (req, res, next) => {
           error: err.message
         });
       }
-
       // Generate JWT token
       const token = generateToken(user);
-
       res.json({
         success: true,
         message: "Login successful",
@@ -113,7 +121,7 @@ exports.Login = async (req, res, next) => {
 
 // Logout Controller
 exports.Logout = (req, res) => {
-  req.logout((err) => {
+  req.logout(function(err) {
     if (err) {
       return res.status(500).json({
         success: false,
@@ -121,6 +129,8 @@ exports.Logout = (req, res) => {
         error: err.message
       });
     }
+    // Optionally destroy session if using sessions
+    if (req.session) req.session.destroy(() => {});
     res.json({ success: true, message: "Logged out successfully" });
   });
 };
@@ -153,8 +163,6 @@ exports.Profile = async (req, res) => {
 exports.UpdateProfile = async (req, res) => {
   try {
     const { username, phoneNumber } = req.body;
-    console.log('Update data received:', { username, phoneNumber }); // Debug log
-
     const updates = {};
     if (username) updates.username = username;
     if (phoneNumber) updates.phoneNumber = phoneNumber;
@@ -171,8 +179,6 @@ exports.UpdateProfile = async (req, res) => {
         message: "User not found"
       });
     }
-
-    console.log('Updated user:', user); // Debug log
 
     res.json({
       success: true,

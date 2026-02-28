@@ -20,3 +20,449 @@
   justify-content: space-between;
   margin-bottom: 1.5rem;
 }
+
+
+  @import url('https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap');
+
+  @keyframes ld-fadeUp   { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:translateY(0); } }
+  @keyframes ld-spin-anim { to { transform:rotate(360deg); } }
+  @keyframes ld-shimmer  { from { background-position:-400px 0; } to { background-position:400px 0; } }
+
+  /* ── page wrapper ── */
+  .ld-page {
+    max-width: 1160px;
+    margin: 0 auto;
+    padding: clamp(72px, 10vw, 100px) clamp(16px, 4vw, 40px) 80px;
+    font-family: 'DM Sans', sans-serif;
+  }
+
+  /* ── full spinner ── */
+  .ld-center {
+    display: flex; align-items: center; justify-content: center;
+    min-height: 100vh;
+  }
+  .ld-spinner {
+    color: #e03030;
+    animation: ld-spin-anim 0.9s linear infinite;
+  }
+
+  /* ── banner ── */
+  .ld-banner {
+    display: flex; align-items: center; gap: 10px;
+    margin: 24px auto; max-width: 600px;
+    padding: 16px 20px; border-radius: 12px;
+    font-family: 'DM Sans', sans-serif; font-size: 14px;
+  }
+  .ld-banner--error { background:#fff3f3; border-left:4px solid #e03030; color:#b91c1c; }
+  .ld-banner--warn  { background:#fffbeb; border-left:4px solid #d97706; color:#92400e; }
+
+  /* ── header ── */
+  .ld-header { margin-bottom: 22px; }
+  .ld-title {
+    font-family: 'Lora', serif;
+    font-size: clamp(1.6rem, 3vw, 2.2rem);
+    font-weight: 700;
+    color: #111;
+    margin: 0 0 14px;
+    line-height: 1.2;
+  }
+  .ld-meta { display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:10px; }
+  .ld-meta__left { display:flex; align-items:center; gap:6px; font-size:13.5px; color:#444; flex-wrap:wrap; }
+  .ld-meta__val  { font-weight:600; }
+  .ld-meta__dot  { color:#ccc; }
+  .ld-meta__link { color:#111; font-weight:600; text-decoration:underline; cursor:pointer; }
+  .ld-meta__link:hover { color:#e03030; }
+  .ld-meta__actions { display:flex; align-items:center; gap:14px; }
+
+  .ld-action-btn {
+    display:flex; align-items:center; gap:5px;
+    background:none; border:none; cursor:pointer;
+    font-family:'DM Sans',sans-serif; font-size:13px;
+    font-weight:500; color:#444; padding:6px 10px;
+    border-radius:8px; transition:background .2s, color .2s;
+  }
+  .ld-action-btn:hover          { background:#f5f5f5; color:#111; }
+  .ld-action-btn--active        { color:#e03030; }
+
+  .ld-views {
+    display:flex; align-items:center; gap:5px;
+    font-size:13px; color:#888;
+  }
+  .ld-star-icon { color:#e03030; flex-shrink:0; }
+  .ld-pin-icon  { color:#aaa; flex-shrink:0; }
+
+  /* ── gallery ── */
+  .ld-gallery {
+    display:grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr;
+    gap: 6px;
+    height: clamp(260px, 40vw, 440px);
+    border-radius: 18px;
+    overflow: hidden;
+    margin-bottom: 36px;
+  }
+  .ld-gallery__main { grid-row: span 2; overflow:hidden; }
+  .ld-gallery__side { display:grid; grid-template-columns:1fr 1fr; grid-template-rows:1fr 1fr; gap:6px; }
+  .ld-gallery__thumb { overflow:hidden; }
+  .ld-gallery__img {
+    width:100%; height:100%; object-fit:cover;
+    transition: transform .45s ease, opacity .3s ease;
+    display:block;
+  }
+  .ld-gallery__main:hover .ld-gallery__img,
+  .ld-gallery__thumb:hover .ld-gallery__img { transform:scale(1.06); }
+  .ld-gallery__placeholder {
+    width:100%; height:100%; background:#f0ebe8;
+    display:flex; align-items:center; justify-content:center; color:#ccc;
+  }
+
+  /* ── two-col body ── */
+  .ld-body {
+    display: grid;
+    grid-template-columns: 1fr 380px;
+    gap: 56px;
+    align-items: start;
+  }
+  @media (max-width: 1024px) {
+    .ld-body { grid-template-columns:1fr; gap:40px; }
+  }
+
+  /* ── host bar ── */
+  .ld-hostbar {
+    padding-bottom: 24px;
+    border-bottom: 1px solid #ececec;
+    margin-bottom: 28px;
+  }
+  .ld-hostbar__title {
+    font-family:'Lora',serif; font-size:1.25rem; font-weight:600;
+    color:#111; margin:0 0 6px;
+  }
+  .ld-hostbar__sub { font-size:14px; color:#777; margin:0; }
+
+  /* ── sections ── */
+  .ld-section {
+    padding-bottom: 32px;
+    border-bottom: 1px solid #ececec;
+    margin-bottom: 32px;
+  }
+  .ld-section__title {
+    font-family:'Lora',serif; font-size:1.15rem; font-weight:600;
+    color:#111; margin:0 0 20px; position:relative; display:inline-block;
+  }
+  .ld-section__title--lg { font-size:1.4rem; }
+  .ld-section__title-line {
+    display:block; position:absolute; bottom:-4px; left:0; right:0;
+    height:2px; background:linear-gradient(90deg,#e03030,#ff8f6b);
+    border-radius:2px;
+  }
+
+  /* ── highlights ── */
+  .ld-highlights {
+    display:grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap:14px;
+    margin-bottom:16px;
+  }
+  .ld-highlight {
+    display:flex; align-items:flex-start; gap:12px;
+    background:#fafafa; border:1px solid #f0eeee;
+    border-radius:12px; padding:14px 16px;
+    transition: box-shadow .25s ease, transform .25s ease;
+    cursor:default;
+  }
+  .ld-highlight__icon {
+    color:#e03030; flex-shrink:0;
+    background:#fff0ef; border-radius:8px; padding:6px;
+    display:flex;
+  }
+  .ld-highlight__title { font-size:13.5px; font-weight:600; color:#1a1a1a; margin-bottom:3px; }
+  .ld-highlight__desc  { font-size:12px; color:#888; line-height:1.4; }
+
+  .ld-toggle-btn {
+    display:flex; align-items:center; gap:6px;
+    background:none; border:1px solid #ddd; cursor:pointer;
+    font-family:'DM Sans',sans-serif; font-size:13px;
+    font-weight:600; color:#111; padding:9px 16px;
+    border-radius:8px; transition:border-color .2s, background .2s;
+    margin-top:4px;
+  }
+  .ld-toggle-btn:hover { border-color:#bbb; background:#f9f9f9; }
+
+  /* ── description ── */
+  .ld-description {
+    font-size:14.5px; line-height:1.75; color:#555;
+    white-space:pre-line; margin:0;
+  }
+
+  /* ── booking card ── */
+  .ld-aside { position:sticky; top:100px; }
+  .ld-booking-card {
+    background:#fff;
+    border:1px solid #e8e3e3;
+    border-radius:20px;
+    padding:26px;
+    box-shadow:
+      0 4px 16px rgba(0,0,0,0.06),
+      0 1px 4px rgba(0,0,0,0.04);
+  }
+  .ld-booking-card__header {
+    display:flex; align-items:center; justify-content:space-between;
+    margin-bottom:20px;
+  }
+  .ld-booking-card__price {
+    font-family:'Lora',serif; font-size:1.3rem; font-weight:700;
+    color:#111; margin:0;
+  }
+  .ld-booking-card__per { font-size:.85rem; font-weight:400; color:#999; }
+  .ld-booking-card__rating {
+    display:flex; align-items:center; gap:4px;
+    font-size:13px; font-weight:500; color:#555;
+  }
+
+  /* Date pickers */
+  .ld-dates {
+    display:grid; grid-template-columns:1fr auto 1fr;
+    align-items:stretch;
+    border:1.5px solid #e0dada; border-radius:12px;
+    overflow:visible; margin-bottom:14px;
+  }
+  .ld-dates__divider { width:1px; background:#e0dada; }
+  .ld-datefield { position:relative; }
+  .ld-datefield__btn {
+    display:flex; flex-direction:column; align-items:flex-start;
+    background:none; border:none; cursor:pointer; width:100%;
+    padding:12px 14px; gap:3px;
+    transition:background .2s;
+    border-radius:inherit;
+  }
+  .ld-datefield__btn:hover { background:#fdf7f7; }
+  .ld-datefield__label {
+    font-size:10px; font-weight:600; letter-spacing:.08em; color:#999;
+  }
+  .ld-datefield__value { font-size:13.5px; font-weight:500; color:#111; }
+  .ld-datefield__icon  { color:#bbb; margin-top:2px; }
+
+  .ld-datefield__popover {
+    position:absolute; top:calc(100% + 8px); left:50%;
+    transform:translateX(-50%);
+    background:#fff; border:1px solid #e8e3e3;
+    border-radius:16px; box-shadow:0 16px 48px rgba(0,0,0,0.14);
+    z-index:200; padding:10px;
+  }
+
+  /* react-day-picker overrides */
+  .rdp-sel .rdp-day_button { background:#e03030 !important; color:#fff !important; border-radius:50%; }
+  .rdp-tod .rdp-day_button { border:1.5px solid #e03030 !important; border-radius:50%; }
+  
+  /* Base booked dates styling - applies to fallback only */
+  .rdp-day-booked .rdp-day_button {
+    background: #fee2e2 !important;
+    color: #991b1b !important;
+    cursor: not-allowed !important;
+    font-weight: 600 !important;
+    border-radius: 4px !important;
+    position: relative !important;
+    border: 2px solid #f87171 !important;
+  }
+  
+  .rdp-day-booked .rdp-day_button:hover {
+    background: #fecaca !important;
+  }
+  
+  /* Booking Range Visualization - These override the base styling */
+  
+  /* Check-in date (start of booking) - HIGHEST PRIORITY */
+  .rdp-day-booked-start .rdp-day_button {
+    background: linear-gradient(135deg, #dc2626 0%, #ef4444 100%) !important;
+    color: #fff !important;
+    font-weight: 700 !important;
+    border-radius: 50% 6px 6px 50% !important;
+    box-shadow: 0 4px 14px rgba(220, 38, 38, 0.5) !important;
+    position: relative !important;
+    border: 3px solid #991b1b !important;
+    z-index: 10 !important;
+    opacity: 1 !important;
+  }
+  
+  .rdp-day-booked-start .rdp-day_button::after {
+    content: '▶' !important;
+    color: #fff !important;
+    font-size: 14px !important;
+    top: 50% !important;
+    left: 50% !important;
+    position: absolute !important;
+    transform: translate(-50%, -50%) !important;
+    font-weight: bold !important;
+    pointer-events: none !important;
+    z-index: 11 !important;
+  }
+  
+  .rdp-day-booked-start .rdp-day_button::before {
+    content: '🔴 CHECK-IN' !important;
+    position: absolute !important;
+    top: -24px !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    font-size: 10px !important;
+    font-weight: 800 !important;
+    color: #fff !important;
+    background: #dc2626 !important;
+    padding: 4px 8px !important;
+    border-radius: 6px !important;
+    white-space: nowrap !important;
+    z-index: 20 !important;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2) !important;
+  }
+  
+  /* Check-out date (end of booking) */
+  .rdp-day-booked-end .rdp-day_button {
+    background: linear-gradient(135deg, #dc2626 0%, #ef4444 100%) !important;
+    color: #fff !important;
+    font-weight: 700 !important;
+    border-radius: 6px 50% 50% 6px !important;
+    box-shadow: 0 4px 14px rgba(220, 38, 38, 0.5) !important;
+    position: relative !important;
+    border: 3px solid #991b1b !important;
+    z-index: 10 !important;
+    opacity: 1 !important;
+  }
+  
+  .rdp-day-booked-end .rdp-day_button::after {
+    content: '◀' !important;
+    color: #fff !important;
+    font-size: 14px !important;
+    top: 50% !important;
+    left: 50% !important;
+    position: absolute !important;
+    transform: translate(-50%, -50%) !important;
+    font-weight: bold !important;
+    pointer-events: none !important;
+    z-index: 11 !important;
+  }
+  
+  .rdp-day-booked-end .rdp-day_button::before {
+    content: 'CHECK-OUT 🔴' !important;
+    position: absolute !important;
+    top: -24px !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    font-size: 10px !important;
+    font-weight: 800 !important;
+    color: #fff !important;
+    background: #dc2626 !important;
+    padding: 4px 8px !important;
+    border-radius: 6px !important;
+    white-space: nowrap !important;
+    z-index: 20 !important;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2) !important;
+  }
+  
+  /* Middle dates (between check-in and check-out) */
+  .rdp-day-booked-middle .rdp-day_button {
+    background: linear-gradient(90deg, #fecaca 0%, #fca5a5 50%, #fecaca 100%) !important;
+    color: #7f1d1d !important;
+    border-radius: 4px !important;
+    font-weight: 700 !important;
+    border-top: 3px solid #dc2626 !important;
+    border-bottom: 3px solid #dc2626 !important;
+    border-left: 2px solid #f87171 !important;
+    border-right: 2px solid #f87171 !important;
+    position: relative !important;
+    z-index: 8 !important;
+    opacity: 1 !important;
+  }
+  
+  .rdp-day-booked-middle .rdp-day_button::after {
+    content: '━' !important;
+    color: #dc2626 !important;
+    font-size: 24px !important;
+    font-weight: 900 !important;
+    top: 48% !important;
+    left: 50% !important;
+    position: absolute !important;
+    transform: translate(-50%, -50%) !important;
+    pointer-events: none !important;
+    z-index: 9 !important;
+  }
+  
+  /* Past/disabled dates (without booked modifier) - subtle styling */
+  .rdp-day_button:disabled:not(.rdp-day-booked .rdp-day_button):not(.rdp-day-booked-start .rdp-day_button):not(.rdp-day-booked-end .rdp-day_button):not(.rdp-day-booked-middle .rdp-day_button) {
+    opacity: 0.3 !important;
+    color: #9ca3af !important;
+    cursor: not-allowed !important;
+  }
+  .rdp { --rdp-accent-color:#e03030; font-family:'DM Sans',sans-serif; font-size:13px; }
+
+  /* Guest selector */
+  .ld-guests {
+    display:flex; align-items:center; justify-content:space-between;
+    border:1.5px solid #e0dada; border-radius:12px;
+    padding:10px 14px; margin-bottom:16px;
+  }
+  .ld-guests__label {
+    display:flex; align-items:center; gap:6px;
+    font-size:10px; font-weight:600; letter-spacing:.08em; color:#999;
+  }
+  .ld-guests__select {
+    background:none; border:none; cursor:pointer; text-align:right;
+    font-family:'DM Sans',sans-serif; font-size:13.5px; font-weight:500;
+    color:#111; outline:none;
+  }
+
+  /* Availability */
+  .ld-avail {
+    display:flex; align-items:flex-start; gap:8px;
+    font-size:12.5px; padding:10px 13px; border-radius:10px;
+    margin-bottom:16px; line-height:1.5;
+  }
+  .ld-avail--ok      { background:#f0fdf4; color:#15803d; }
+  .ld-avail--warn    { background:#fffbeb; color:#92400e; }
+  .ld-avail--loading { background:#f9fafb; color:#888; }
+  .ld-avail__head    { font-weight:600; margin:0 0 4px; }
+  .ld-avail__list    { display:flex; flex-direction:column; gap:2px; font-size:11.5px; opacity:.8; }
+  .ld-avail__ok      { font-size:11.5px; color:#15803d; margin:6px 0 0; }
+
+  /* Price rows */
+  .ld-price-breakdown { margin-bottom:16px; }
+  .ld-price-row {
+    display:flex; justify-content:space-between; align-items:center;
+    font-size:13.5px; color:#555; padding:5px 0;
+  }
+  .ld-price-row--bold { font-weight:700; color:#111; font-size:15px; padding-top:8px; }
+  .ld-price-divider   { border:none; border-top:1px solid #ececec; margin:8px 0; }
+
+  /* Reserve button */
+  .ld-reserve-btn {
+    width:100%; padding:14px;
+    background:linear-gradient(135deg, #e03030, #c91a1a);
+    color:#fff; border:none; border-radius:12px;
+    font-family:'DM Sans',sans-serif; font-size:15px; font-weight:600;
+    cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px;
+    box-shadow:0 6px 20px rgba(201,26,26,0.28);
+    transition:box-shadow .25s, opacity .2s;
+    margin-bottom:10px;
+  }
+  .ld-reserve-btn:disabled { opacity:.7; cursor:not-allowed; }
+  .ld-reserve-btn:not(:disabled):hover {
+    box-shadow:0 10px 28px rgba(201,26,26,0.38);
+  }
+  .ld-booking-card__note {
+    text-align:center; font-size:12px; color:#aaa; margin:0;
+  }
+
+  /* Map */
+  .ld-map-section { border-bottom:none; }
+  .ld-map-wrap {
+    border-radius:16px; overflow:hidden;
+    box-shadow:0 4px 20px rgba(0,0,0,0.08);
+  }
+
+  /* Utility */
+  .ld-spin { animation:ld-spin-anim .8s linear infinite; }
+
+  @media (max-width:640px) {
+    .ld-gallery { grid-template-columns:1fr; height:240px; }
+    .ld-gallery__side { display:none; }
+    .ld-meta { flex-direction:column; align-items:flex-start; }
+  }
