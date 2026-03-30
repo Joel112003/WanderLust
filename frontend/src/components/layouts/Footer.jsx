@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 
-// ─── Icons ────────────────────────────────────────────────────────────────────
 const InstagramIcon = () => (
   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
     strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
@@ -32,7 +31,6 @@ const ArrowUpIcon = () => (
   </svg>
 );
 
-// ─── Data ─────────────────────────────────────────────────────────────────────
 const SOCIALS = [
   {
     label: "Instagram",
@@ -66,7 +64,6 @@ const LINKS = [
   { label: "Contact Us",       to: "/contact"  },
 ];
 
-// ─── Stagger variants ─────────────────────────────────────────────────────────
 const container = {
   hidden: { opacity: 0 },
   show: {
@@ -79,7 +76,6 @@ const item = {
   show: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 120, damping: 14 } },
 };
 
-// ─── Footer ───────────────────────────────────────────────────────────────────
 export default function Footer() {
   const [showTop, setShowTop] = useState(false);
   const [hovered, setHovered] = useState(null);
@@ -108,13 +104,13 @@ export default function Footer() {
           className="mx-auto max-w-2xl px-6 py-8 flex flex-col items-center gap-5"
         >
 
-          {/* Social label */}
+          {}
           <motion.p variants={item}
             className="text-xs font-semibold uppercase tracking-widest text-gray-400">
             Follow us on social media
           </motion.p>
 
-          {/* Social icons */}
+          {}
           <motion.div variants={item} className="flex items-center gap-3">
             {SOCIALS.map(({ label, href, icon, color, bg, bgHover }) => (
               <motion.a
@@ -140,11 +136,11 @@ export default function Footer() {
             ))}
           </motion.div>
 
-          {/* Divider */}
+          {}
           <motion.div variants={item}
             className="w-3/4 border-t border-gray-100" />
 
-          {/* Nav links */}
+          {}
           <motion.nav variants={item} className="flex items-center gap-6 flex-wrap justify-center">
             {LINKS.map(({ label, to }) => (
               <motion.div key={to} whileHover={{ scale: 1.04 }}>
@@ -159,7 +155,7 @@ export default function Footer() {
             ))}
           </motion.nav>
 
-          {/* Copyright */}
+          {}
           <motion.p variants={item} className="text-xs text-gray-400 text-center">
             &copy; {new Date().getFullYear()} WanderLust Private Limited. All rights reserved.
           </motion.p>
@@ -167,7 +163,7 @@ export default function Footer() {
         </motion.div>
       </footer>
 
-      {/* Scroll to top */}
+      {}
       <AnimatePresence>
         {showTop && (
           <motion.button

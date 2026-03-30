@@ -11,7 +11,6 @@ import "../../utilis/css/BookingConfirmation.css";
 const fmt = (n) =>
   (n ?? 0).toLocaleString("en-IN", { minimumFractionDigits: 0, maximumFractionDigits: 0 });
 
-/* ── Confetti burst (pure CSS, no library) ── */
 const Confetti = () => {
   const colors  = ["#e11d48", "#f59e0b", "#10b981", "#3b82f6", "#8b5cf6", "#f97316"];
   const pieces  = Array.from({ length: 48 }, (_, i) => i);
@@ -36,7 +35,6 @@ const Confetti = () => {
   );
 };
 
-/* ── Detail row ── */
 const DetailRow = ({ icon: Icon, label, value, sub }) => (
   <div className="bc-detail-row">
     <div className="bc-detail-row__icon"><Icon size={17} /></div>
@@ -48,7 +46,6 @@ const DetailRow = ({ icon: Icon, label, value, sub }) => (
   </div>
 );
 
-/* ── Main component ── */
 const BookingConfirmation = () => {
   const { state }  = useLocation();
   const navigate   = useNavigate();
@@ -69,7 +66,6 @@ const BookingConfirmation = () => {
     paymentId,
   } = state || {};
 
-  // Guard: direct navigation without state
   useEffect(() => {
     if (!state || !listing) navigate("/listings", { replace: true });
   }, []);
@@ -81,14 +77,13 @@ const BookingConfirmation = () => {
 
   const handlePrint = () => window.print();
 
-  /* ── render ── */
   return (
     <div className="bc-page" ref={printRef}>
       <Confetti />
 
       <div className="bc-container">
 
-        {/* ── Hero section ── */}
+        {}
         <motion.div
           className="bc-hero"
           initial={{ opacity: 0, scale: 0.92 }}
@@ -126,14 +121,14 @@ const BookingConfirmation = () => {
           </motion.p>
         </motion.div>
 
-        {/* ── Main card ── */}
+        {}
         <motion.div
           className="bc-card"
           initial={{ opacity: 0, y: 24 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.5, duration: 0.45 }}
         >
-          {/* Listing image strip */}
+          {}
           <div className="bc-listing-strip">
             {listing.image?.url
               ? <img src={listing.image.url} alt={listing.title} className="bc-listing-strip__img" />
@@ -149,7 +144,7 @@ const BookingConfirmation = () => {
             </div>
           </div>
 
-          {/* Booking details */}
+          {}
           <div className="bc-details">
             <h3 className="bc-details__title">Booking details</h3>
 
@@ -179,7 +174,7 @@ const BookingConfirmation = () => {
             />
           </div>
 
-          {/* Price breakdown */}
+          {}
           <div className="bc-breakdown">
             <h3 className="bc-breakdown__title">Price breakdown</h3>
             <div className="bc-breakdown__rows">
@@ -208,7 +203,7 @@ const BookingConfirmation = () => {
           </div>
         </motion.div>
 
-        {/* ── Action buttons ── */}
+        {}
         <motion.div
           className="bc-actions"
           initial={{ opacity: 0, y: 16 }}
@@ -227,7 +222,7 @@ const BookingConfirmation = () => {
           </Link>
         </motion.div>
 
-        {/* ── What's next info ── */}
+        {}
         <motion.div
           className="bc-next"
           initial={{ opacity: 0 }}

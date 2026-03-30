@@ -9,8 +9,19 @@ const notificationSchema = new Schema({
   },
   type: {
     type: String,
-    enum: ['booking_made', 'booking_received', 'booking_cancelled', 'booking_confirmed'],
+    enum: [
+      'booking_made',
+      'booking_received',
+      'booking_cancelled',
+      'booking_cancelled_by_owner',
+      'booking_confirmed',
+      'alternative_accommodation'
+    ],
     required: true
+  },
+  title: {
+    type: String,
+    required: false
   },
   message: {
     type: String,
@@ -34,7 +45,6 @@ const notificationSchema = new Schema({
   }
 });
 
-// Index for faster queries
 notificationSchema.index({ recipient: 1, isRead: 1 });
 notificationSchema.index({ createdAt: -1 });
 

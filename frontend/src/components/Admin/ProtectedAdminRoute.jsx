@@ -3,7 +3,7 @@ import { Navigate } from 'react-router-dom';
 import api from '../lib/api';
 
 const ProtectedAdminRoute = ({ children }) => {
-  const [status, setStatus] = useState('checking'); // 'checking' | 'ok' | 'fail'
+  const [status, setStatus] = useState('checking');
 
   useEffect(() => {
     const token = localStorage.getItem('adminToken');

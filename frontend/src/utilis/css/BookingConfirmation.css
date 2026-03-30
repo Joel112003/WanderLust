@@ -1,6 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=DM+Sans:wght@400;500;600&display=swap');
 
-/* ── Page ────────────────────────────────────────────────────────────────────── */
 .bc-page {
   min-height: 100vh;
   background: linear-gradient(160deg, #fff5f7 0%, #fafaf9 40%, #f0fdf4 100%);
@@ -15,7 +14,6 @@
   margin: 0 auto;
 }
 
-/* ── Confetti ────────────────────────────────────────────────────────────────── */
 .bc-confetti {
   position: fixed;
   inset: 0;
@@ -36,7 +34,6 @@
   100% { transform: translateY(110vh) rotate(540deg); opacity: 0; }
 }
 
-/* ── Hero ────────────────────────────────────────────────────────────────────── */
 .bc-hero {
   text-align: center;
   padding: 32px 20px 28px;
@@ -85,7 +82,6 @@
   margin-top: 6px;
 }
 
-/* ── Main card ───────────────────────────────────────────────────────────────── */
 .bc-card {
   background: #fff;
   border-radius: 24px;
@@ -97,7 +93,6 @@
   z-index: 1;
 }
 
-/* Listing image strip */
 .bc-listing-strip {
   position: relative;
   height: 200px;
@@ -158,7 +153,6 @@
   margin: 0;
 }
 
-/* Details section */
 .bc-details {
   padding: 24px 24px 0;
 }
@@ -225,7 +219,6 @@
   color: #9ca3af;
 }
 
-/* Price breakdown */
 .bc-breakdown {
   background: #f9fafb;
   margin: 20px 0 0;
@@ -272,7 +265,6 @@
   margin: 8px 0;
 }
 
-/* ── Action buttons ──────────────────────────────────────────────────────────── */
 .bc-actions {
   display: flex;
   gap: 12px;
@@ -321,7 +313,6 @@
   color: #374151;
 }
 
-/* ── What's next ─────────────────────────────────────────────────────────────── */
 .bc-next {
   background: #fff;
   border: 1.5px solid #e5e7eb;
@@ -374,7 +365,6 @@
   padding-top: 3px;
 }
 
-/* ── Print styles ────────────────────────────────────────────────────────────── */
 @media print {
   .bc-confetti,
   .bc-actions .bc-print-btn,

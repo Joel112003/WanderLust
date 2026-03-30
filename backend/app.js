@@ -1,14 +1,14 @@
 require("dotenv").config();
 require("./config/secretGenerator");
 
-console.log("[ENV] FRONTEND_URL:", process.env.FRONTEND_URL);
-console.log("[ENV] NODE_ENV:", process.env.NODE_ENV);
-console.log("GMAIL_USER:", process.env.GMAIL_USER);
-console.log("GMAIL_APP_PASS exists:", !!process.env.GMAIL_APP_PASS);
-console.log("GMAIL_APP_PASS length:", process.env.GMAIL_APP_PASS?.length);
+if (process.env.NODE_ENV !== "production") {
+  console.log("[ENV] FRONTEND_URL:", process.env.FRONTEND_URL);
+  console.log("[ENV] NODE_ENV:", process.env.NODE_ENV);
+}
 
 const express = require("express");
 const mongoose = require("mongoose");
+const dns = require("dns");
 const cors = require("cors");
 const path = require("path");
 const session = require("express-session");
@@ -19,19 +19,35 @@ const passport = require("./config/passport");
 const helmet = require("helmet");
 const morgan = require("morgan");
 const rateLimit = require("express-rate-limit");
+const compression = require("compression");
 
 const app = express();
-const email = require('./services/emailService');
 
+function configureMongoDns() {
+  const mongoUri = process.env.ATLAS_DB;
+  const isSrvUri = mongoUri?.startsWith("mongodb+srv://");
 
-// ===== CORS CONFIGURATION FIX =====
+  if (!isSrvUri) {
+    return;
+  }
+
+  const configuredDnsServers = process.env.MONGODB_DNS_SERVERS
+    ? process.env.MONGODB_DNS_SERVERS.split(",").map((server) => server.trim()).filter(Boolean)
+    : ["8.8.8.8", "1.1.1.1"];
+
+  dns.setServers(configuredDnsServers);
+  console.log("[MongoDB] Using DNS servers:", configuredDnsServers.join(", "));
+}
+
+configureMongoDns();
+
 const allowedOrigins = [
   process.env.FRONTEND_URL,
-  "http://localhost:5173", // Vite dev server
-  "http://localhost:3000", // Alternative frontend
+  "http://localhost:5173",
+  "http://localhost:3000",
   "http://127.0.0.1:5173",
   "http://127.0.0.1:3000",
-].filter(Boolean); // Remove undefined values
+].filter(Boolean);
 
 console.log("[CORS] Allowed origins:", allowedOrigins);
 
@@ -40,7 +56,6 @@ app.use(
     origin: function (origin, callback) {
       console.log("[CORS] Checking origin:", origin);
 
-      // Allow requests with no origin (like mobile apps, curl, postman)
       if (!origin) return callback(null, true);
 
       if (allowedOrigins.includes(origin)) {
@@ -53,35 +68,64 @@ app.use(
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
     allowedHeaders: ["Content-Type", "Authorization"],
-    maxAge: 86400, // 24 hours
+    maxAge: 86400,
   })
 );
 
-// Handle preflight requests
 app.options("*", cors());
 
-// ===== DATABASE CONNECTION =====
-mongoose
-  .connect(process.env.ATLAS_DB, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  })
-  .then(() => console.log("✅ MongoDB connected"))
-  .catch((err) => {
-    console.error("❌ MongoDB connection error:", err.message);
-    process.exit(1);
-  });
+const mongoUri = process.env.ATLAS_DB;
+const mongoConnectOptions = {};
 
-// ===== SECURITY MIDDLEWARE =====
+function isSrvDnsRefusedError(error) {
+  return (
+    error &&
+    error.code === "ECONNREFUSED" &&
+    error.syscall === "querySrv"
+  );
+}
+
+async function connectMongoWithDnsFallback() {
+  try {
+    await mongoose.connect(mongoUri, mongoConnectOptions);
+    console.log("✅ MongoDB connected");
+    return;
+  } catch (err) {
+    const shouldRetryWithCustomDns =
+      mongoUri?.startsWith("mongodb+srv://") && isSrvDnsRefusedError(err);
+
+    if (!shouldRetryWithCustomDns) {
+      throw err;
+    }
+
+    const configuredDnsServers = process.env.MONGODB_DNS_SERVERS
+      ? process.env.MONGODB_DNS_SERVERS.split(",").map((server) => server.trim()).filter(Boolean)
+      : ["8.8.8.8", "1.1.1.1"];
+
+    dns.setServers(configuredDnsServers);
+    console.warn(
+      "[MongoDB] SRV lookup failed with system DNS. Retrying with custom DNS servers:",
+      configuredDnsServers.join(", ")
+    );
+
+    await mongoose.connect(mongoUri, mongoConnectOptions);
+    console.log("✅ MongoDB connected (with DNS fallback)");
+  }
+}
+
+connectMongoWithDnsFallback().catch((err) => {
+  console.error("❌ MongoDB connection error:", err.message);
+  process.exit(1);
+});
+
 app.use(helmet());
+app.use(compression());
 
-// ===== REQUEST PARSING MIDDLEWARE =====
 app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ extended: true, limit: "10mb" }));
 app.use(methodOverride("_method"));
 app.use(cookieParser());
 
-// ===== LOGGING MIDDLEWARE =====
 app.use(morgan("dev"));
 
 const limiter = rateLimit({
@@ -95,13 +139,9 @@ const limiter = rateLimit({
 });
 app.use(limiter);
 
-
-
-// ===== STATIC FILES =====
 app.use("/dist", express.static(path.join(__dirname, "dist")));
 app.use(express.static(path.join(__dirname, "..", "frontend", "public")));
 
-// ===== SESSION CONFIGURATION =====
 app.use(
   session({
     secret: process.env.JWT_SECRET || "fallback-secret-key",
@@ -116,45 +156,49 @@ app.use(
       httpOnly: true,
       sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
       maxAge: 1000 * 60 * 60 * 24 * 7,
-      
+
     },
   })
 );
 
-// ===== PASSPORT AUTHENTICATION =====
 app.use(passport.initialize());
 app.use(passport.session());
 
-// ===== REQUEST LOGGING =====
-app.use((req, res, next) => {
-  console.log(`[${new Date().toISOString()}] ${req.method} ${req.path}`);
-  if (Object.keys(req.body).length > 0) {
-    console.log("Request Body:", req.body);
-  }
-  next();
-});
+if (process.env.NODE_ENV !== "production") {
+  app.use((req, res, next) => {
+    console.log(`[${new Date().toISOString()}] ${req.method} ${req.path}`);
+    next();
+  });
+}
 
-// ===== ROUTES =====
 const listingRoutes = require("./routes/listing");
 const reviewRoutes = require("./routes/review");
 const userRoutes = require("./routes/user");
 const bookingRoutes = require("./routes/booking");
 const notificationRoutes = require("./routes/notification");
 const adminRoutes = require("./routes/adminRoutes");
-const paymentRoutes = require("./routes/payment");     // NEW
+const paymentRoutes = require("./routes/payment");
+const wishlistRoutes = require("./routes/wishlist");
+const messageRoutes = require("./routes/message");
+const trustRoutes = require("./routes/trust");
+const cancellationRoutes = require("./routes/cancellation");
+const reportRoutes = require("./routes/report");
+const alternativeBookingRoutes = require("./routes/alternativeBooking");
 
-
-// Route registration
 app.use("/listings", listingRoutes);
 app.use("/listings/:listingId/reviews", reviewRoutes);
 app.use("/auth", userRoutes);
 app.use("/bookings", bookingRoutes);
 app.use("/notifications", notificationRoutes);
 app.use("/admin", adminRoutes);
-app.use("/api/payment", paymentRoutes);               // register payment routes
+app.use("/api/payment", paymentRoutes);
+app.use("/wishlist", wishlistRoutes);
+app.use("/messages", messageRoutes);
+app.use("/trust", trustRoutes);
+app.use("/api/cancellation", cancellationRoutes);
+app.use("/api/reports", reportRoutes);
+app.use("/api/alternative-bookings", alternativeBookingRoutes);
 
-
-// Health check endpoint
 app.get("/health", (req, res) => {
   res.json({
     status: "ok",
@@ -163,7 +207,6 @@ app.get("/health", (req, res) => {
   });
 });
 
-// ===== 404 HANDLER =====
 app.use((req, res, next) => {
   console.warn(`[404] Route not found: ${req.method} ${req.path}`);
   res.status(404).json({
@@ -172,7 +215,6 @@ app.use((req, res, next) => {
   });
 });
 
-// ===== ERROR HANDLERS =====
 app.use((err, req, res, next) => {
   if (err.message.includes("CORS")) {
     console.error("❌ CORS Error:", {
@@ -205,15 +247,37 @@ app.use((err, req, res, next) => {
   });
 });
 
-// ===== SERVER START =====
+const http = require('http');
+const { Server } = require('socket.io');
+const { initializeMessageSocket } = require('./socket/messageSocket');
+
+const server = http.createServer(app);
+
+const io = new Server(server, {
+  cors: {
+    origin: allowedOrigins,
+    methods: ['GET', 'POST'],
+    credentials: true
+  },
+  pingTimeout: 60000,
+  pingInterval: 25000
+});
+
+initializeMessageSocket(io);
+
+app.set('io', io);
+
+console.log('[Socket.IO] Real-time messaging initialized ✅');
+
 const PORT = process.env.PORT || 8000;
-app.listen(PORT, () => {
+server.listen(PORT, () => {
   console.log(`
 ╔════════════════════════════════════════╗
 ║    ✅ WanderLust Server Started        ║
-║    Port: ${PORT}                        
-║    Environment: ${process.env.NODE_ENV || "development"}     
+║    Port: ${PORT}
+║    Environment: ${process.env.NODE_ENV || "development"}
 ║    Frontend URL: ${process.env.FRONTEND_URL || "Not set"}
+║    Socket.IO: Enabled ✅               ║
 ╚════════════════════════════════════════╝
   `);
 });

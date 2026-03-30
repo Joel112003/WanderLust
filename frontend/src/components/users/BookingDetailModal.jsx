@@ -1,33 +1,29 @@
-// ─── INSTALL THESE if not already installed ───────────────────────────────────
-// npm install jspdf html2canvas
-
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
+import ReportListingModal from "../views/ReportListingModal";
 
-// ─── Helpers (copy these from your Account.jsx if not already present) ────────
 const fmt = (n) => (n ?? 0).toLocaleString("en-IN", { minimumFractionDigits: 0, maximumFractionDigits: 0 });
 const fmtDate = (d) => d ? new Date(d).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" }) : "—";
 
-// ✅ FIX 3: Correct image helper — tries every possible field your backend sends
 const getListingImg = (listing) => {
   if (!listing) return null;
-  // Cloudinary/multer single image object
+
   if (listing.image?.url) return listing.image.url;
-  // Array of image objects
+
   if (listing.images?.[0]?.url) return listing.images[0].url;
-  // Array of plain strings
+
   if (typeof listing.images?.[0] === "string") return listing.images[0];
-  // Plain string
+
   if (typeof listing.image === "string") return listing.image;
   return null;
 };
 
-// ─── SVG Icons (only what this component needs) ───────────────────────────────
 const Icon = {
   X: (p) => (<svg {...p} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>),
   Download: (p) => (<svg {...p} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>),
+  Alert: (p) => (<svg {...p} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>),
   Pin: (p) => (<svg {...p} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>),
   Calendar: (p) => (<svg {...p} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>),
   Users: (p) => (<svg {...p} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" /></svg>),
@@ -50,8 +46,6 @@ const StatusBadge = ({ status }) => {
   );
 };
 
-// ─── The receipt that gets rendered into the PDF ───────────────────────────────
-// This is a SEPARATE div that only exists for PDF capture — not shown in UI
 const ReceiptForPDF = React.forwardRef(({ booking, user }, ref) => {
   const listing = booking.listing || {};
   const nights = booking.nights || Math.ceil((new Date(booking.checkOut) - new Date(booking.checkIn)) / 86400000) || 1;
@@ -77,7 +71,7 @@ const ReceiptForPDF = React.forwardRef(({ booking, user }, ref) => {
         boxSizing: "border-box",
       }}
     >
-      {/* ── Listing Image ── */}
+      {}
       {imgSrc && (
         <div style={{ marginBottom: 24, borderRadius: 12, overflow: "hidden", height: 180 }}>
           <img
@@ -89,7 +83,7 @@ const ReceiptForPDF = React.forwardRef(({ booking, user }, ref) => {
         </div>
       )}
 
-      {/* ── Header ── */}
+      {}
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 28, paddingBottom: 18, borderBottom: "2px solid #c2633a" }}>
         <div>
           <h1 style={{ fontSize: 28, fontWeight: 700, color: "#c2633a", margin: "0 0 4px" }}>WanderLust</h1>
@@ -106,7 +100,7 @@ const ReceiptForPDF = React.forwardRef(({ booking, user }, ref) => {
         </div>
       </div>
 
-      {/* ── Guest + Property ── */}
+      {}
       <div style={{ display: "flex", gap: 40, marginBottom: 22 }}>
         <div style={{ flex: 1 }}>
           <p style={{ fontSize: 10, textTransform: "uppercase", letterSpacing: ".07em", color: "#b0a090", margin: "0 0 8px", fontWeight: 600 }}>Booked By</p>
@@ -126,7 +120,7 @@ const ReceiptForPDF = React.forwardRef(({ booking, user }, ref) => {
         </div>
       </div>
 
-      {/* ── Stay Info ── */}
+      {}
       <div style={{ background: "#faf8f4", borderRadius: 10, padding: "14px 18px", marginBottom: 22, display: "flex", gap: 0 }}>
         {[
           ["Check-in",  fmtDate(booking.checkIn)],
@@ -140,7 +134,7 @@ const ReceiptForPDF = React.forwardRef(({ booking, user }, ref) => {
         ))}
       </div>
 
-      {/* ── Price Breakdown ── */}
+      {}
       <div style={{ marginBottom: 22 }}>
         <p style={{ fontSize: 10, textTransform: "uppercase", letterSpacing: ".07em", color: "#b0a090", margin: "0 0 10px", fontWeight: 600 }}>Price Breakdown</p>
         {[
@@ -159,7 +153,7 @@ const ReceiptForPDF = React.forwardRef(({ booking, user }, ref) => {
         </div>
       </div>
 
-      {/* ── Payment Confirmation ── */}
+      {}
       {booking.razorpay_payment_id && (
         <div style={{ background: "#edf7f1", borderRadius: 8, padding: "10px 14px", marginBottom: 20 }}>
           <p style={{ margin: "0 0 3px", fontSize: 11, color: "#2d7a4f", fontWeight: 700 }}>✓ Payment Verified via Razorpay</p>
@@ -167,7 +161,7 @@ const ReceiptForPDF = React.forwardRef(({ booking, user }, ref) => {
         </div>
       )}
 
-      {/* ── Footer ── */}
+      {}
       <div style={{ borderTop: "1px solid #e0d8cc", paddingTop: 14, display: "flex", justifyContent: "space-between", fontSize: 10, color: "#b0a090" }}>
         <span>WanderLust · wanderlust.com</span>
         <span>Computer-generated receipt</span>
@@ -176,25 +170,24 @@ const ReceiptForPDF = React.forwardRef(({ booking, user }, ref) => {
   );
 });
 
-// ─── Main Modal Component ──────────────────────────────────────────────────────
 const BookingDetailModal = ({ booking, onClose, user }) => {
   if (!booking) return null;
 
   const receiptRef = useRef(null);
   const [downloading, setDownloading] = React.useState(false);
+  const [reportModalOpen, setReportModalOpen] = React.useState(false);
 
   const nights = booking.nights || Math.ceil((new Date(booking.checkOut) - new Date(booking.checkIn)) / 86400000) || 1;
   const total = booking.totalAmount || booking.total || 0;
   const listing = booking.listing || {};
 
-  // ✅ FIX 1 + 2: Real PDF generation using jsPDF + html2canvas
   const handleDownloadReceipt = async () => {
     if (!receiptRef.current) return;
     setDownloading(true);
     try {
       const canvas = await html2canvas(receiptRef.current, {
-        scale: 2,           // high resolution
-        useCORS: true,      // needed for listing images from Cloudinary etc.
+        scale: 2,
+        useCORS: true,
         backgroundColor: "#ffffff",
         logging: false,
       });
@@ -216,12 +209,11 @@ const BookingDetailModal = ({ booking, onClose, user }) => {
     }
   };
 
-  // ✅ FIX 3: Use getListingImg helper for correct image
   const imgSrc = getListingImg(listing) || "https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=600";
 
   return (
     <>
-      {/* Hidden receipt div — only used for PDF capture */}
+      {}
       <ReceiptForPDF ref={receiptRef} booking={booking} user={user} />
 
       <AnimatePresence>
@@ -235,7 +227,7 @@ const BookingDetailModal = ({ booking, onClose, user }) => {
             transition={{ type: "spring", stiffness: 280, damping: 26 }}
             style={{ background: "#fff", borderRadius: 24, width: "100%", maxWidth: 580, maxHeight: "90vh", overflowY: "auto", boxShadow: "0 30px 80px rgba(0,0,0,0.22)" }}
           >
-            {/* ── Listing Image (correct one from booking) ── */}
+            {}
             <div style={{ position: "relative", height: 220, flexShrink: 0 }}>
               <img
                 src={imgSrc}
@@ -258,10 +250,10 @@ const BookingDetailModal = ({ booking, onClose, user }) => {
               </div>
             </div>
 
-            {/* ── Content ── */}
+            {}
             <div style={{ padding: "24px 26px" }}>
 
-              {/* Stay info */}
+              {}
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 12, marginBottom: 22 }}>
                 {[
                   { icon: Icon.Calendar, label: "Check-in",  val: fmtDate(booking.checkIn) },
@@ -278,7 +270,7 @@ const BookingDetailModal = ({ booking, onClose, user }) => {
                 ))}
               </div>
 
-              {/* Price Breakdown */}
+              {}
               <div style={{ background: "#faf8f4", borderRadius: 14, padding: "16px 18px", marginBottom: 20 }}>
                 <p style={{ margin: "0 0 12px", fontSize: 12, fontWeight: 600, color: "#7c7060", textTransform: "uppercase", letterSpacing: ".06em" }}>Price Breakdown</p>
                 {(() => {
@@ -300,7 +292,7 @@ const BookingDetailModal = ({ booking, onClose, user }) => {
                 </div>
               </div>
 
-              {/* Razorpay confirmation */}
+              {}
               {booking.razorpay_payment_id && (
                 <div style={{ background: "#edf7f1", border: "1px solid #a7d9ba", borderRadius: 10, padding: "10px 14px", marginBottom: 20 }}>
                   <p style={{ margin: "0 0 3px", fontSize: 11, fontWeight: 700, color: "#2d7a4f", textTransform: "uppercase", letterSpacing: ".06em" }}>✓ Payment Confirmed</p>
@@ -308,31 +300,52 @@ const BookingDetailModal = ({ booking, onClose, user }) => {
                 </div>
               )}
 
-              {/* Action Buttons */}
-              <div style={{ display: "flex", gap: 10 }}>
+              {}
+              <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+                <div style={{ display: "flex", gap: 10 }}>
+                  <button
+                    onClick={handleDownloadReceipt}
+                    disabled={downloading}
+                    style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", gap: 7, padding: "12px", background: downloading ? "#d4c9b8" : "#c2633a", border: "none", borderRadius: 12, color: "#fff", fontSize: 14, fontWeight: 600, cursor: downloading ? "not-allowed" : "pointer", transition: "background .15s", fontFamily: "inherit" }}
+                    onMouseEnter={(e) => { if (!downloading) e.currentTarget.style.background = "#a8522e"; }}
+                    onMouseLeave={(e) => { if (!downloading) e.currentTarget.style.background = "#c2633a"; }}
+                  >
+                    <Icon.Download style={{ width: 15, height: 15 }} />
+                    {downloading ? "Generating PDF…" : "Download Receipt"}
+                  </button>
+                  <button
+                    onClick={onClose}
+                    style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", gap: 7, padding: "12px", background: "#fff", border: "1.5px solid #e0d8cc", borderRadius: 12, color: "#7c7060", fontSize: 14, fontWeight: 500, cursor: "pointer", transition: "all .15s", fontFamily: "inherit" }}
+                    onMouseEnter={(e) => (e.currentTarget.style.background = "#faf8f4")}
+                    onMouseLeave={(e) => (e.currentTarget.style.background = "#fff")}
+                  >
+                    Close
+                  </button>
+                </div>
+
+                {}
                 <button
-                  onClick={handleDownloadReceipt}
-                  disabled={downloading}
-                  style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", gap: 7, padding: "12px", background: downloading ? "#d4c9b8" : "#c2633a", border: "none", borderRadius: 12, color: "#fff", fontSize: 14, fontWeight: 600, cursor: downloading ? "not-allowed" : "pointer", transition: "background .15s", fontFamily: "inherit" }}
-                  onMouseEnter={(e) => { if (!downloading) e.currentTarget.style.background = "#a8522e"; }}
-                  onMouseLeave={(e) => { if (!downloading) e.currentTarget.style.background = "#c2633a"; }}
+                  onClick={() => setReportModalOpen(true)}
+                  style={{ width: "100%", display: "flex", alignItems: "center", justifyContent: "center", gap: 7, padding: "11px", background: "#fdf0ef", border: "1.5px solid #f5b8b4", borderRadius: 12, color: "#c0392b", fontSize: 13, fontWeight: 600, cursor: "pointer", transition: "all .15s", fontFamily: "inherit" }}
+                  onMouseEnter={(e) => (e.currentTarget.style.background = "#fce4e2")}
+                  onMouseLeave={(e) => (e.currentTarget.style.background = "#fdf0ef")}
                 >
-                  <Icon.Download style={{ width: 15, height: 15 }} />
-                  {downloading ? "Generating PDF…" : "Download Receipt"}
-                </button>
-                <button
-                  onClick={onClose}
-                  style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", gap: 7, padding: "12px", background: "#fff", border: "1.5px solid #e0d8cc", borderRadius: 12, color: "#7c7060", fontSize: 14, fontWeight: 500, cursor: "pointer", transition: "all .15s", fontFamily: "inherit" }}
-                  onMouseEnter={(e) => (e.currentTarget.style.background = "#faf8f4")}
-                  onMouseLeave={(e) => (e.currentTarget.style.background = "#fff")}
-                >
-                  Close
+                  <Icon.Alert style={{ width: 15, height: 15 }} />
+                  Report an Issue with this Listing
                 </button>
               </div>
             </div>
           </motion.div>
         </motion.div>
       </AnimatePresence>
+
+      {}
+      <ReportListingModal
+        isOpen={reportModalOpen}
+        onClose={() => setReportModalOpen(false)}
+        booking={booking}
+        listing={booking.listing}
+      />
     </>
   );
 };

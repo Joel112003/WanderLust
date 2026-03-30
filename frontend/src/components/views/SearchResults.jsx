@@ -1,20 +1,14 @@
-
-
 import React, { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { MapPin, Calendar, Users, ArrowLeft, Search, Loader2 } from "lucide-react";
 import toast, { Toaster } from "react-hot-toast";
 
-/* ─── helpers ─────────────────────────────────────────────── */
 const fmtPrice = (price) =>
   new Intl.NumberFormat("en-IN", { style: "currency", currency: "INR", maximumFractionDigits: 0 })
     .format(price ?? 0)
     .replace("₹", "₹ ");
 
-/* ─── sub-components ─────────────────────────────────────── */
-
-/** Pill chip for the search summary bar */
 const Chip = ({ icon: Icon, label }) => (
   <div className="sr-chip">
     <Icon size={14} className="sr-chip__icon" />
@@ -22,7 +16,6 @@ const Chip = ({ icon: Icon, label }) => (
   </div>
 );
 
-/** Single listing card */
 const ListingCard = ({ listing, index }) => {
   const navigate   = useNavigate();
   const [loaded, setLoaded] = useState(false);
@@ -36,7 +29,7 @@ const ListingCard = ({ listing, index }) => {
       transition={{ duration: 0.4, delay: index * 0.06, ease: "easeOut" }}
       whileHover={{ y: -7, boxShadow: "0 22px 44px rgba(0,0,0,0.11)" }}
     >
-      {/* Image */}
+      {}
       <div className="sr-card__img-wrap">
         {!loaded && <div className="sr-card__skeleton" />}
         <img
@@ -51,7 +44,7 @@ const ListingCard = ({ listing, index }) => {
         <div className="sr-card__price-badge">{fmtPrice(listing.price)}<span className="sr-card__per">/night</span></div>
       </div>
 
-      {/* Body */}
+      {}
       <div className="sr-card__body">
         <h3 className="sr-card__title">{listing.title || "Untitled property"}</h3>
 
@@ -72,13 +65,12 @@ const ListingCard = ({ listing, index }) => {
         </button>
       </div>
 
-      {/* Hover accent bar */}
+      {}
       <div className="sr-card__accent" />
     </motion.article>
   );
 };
 
-/** Empty state */
 const EmptyState = ({ onReset }) => (
   <motion.div
     className="sr-empty"
@@ -95,7 +87,6 @@ const EmptyState = ({ onReset }) => (
   </motion.div>
 );
 
-/** Full-page loading state */
 const LoadingState = () => (
   <div className="sr-loading">
     <Loader2 size={34} strokeWidth={1.5} className="sr-spin" />
@@ -103,7 +94,6 @@ const LoadingState = () => (
   </div>
 );
 
-/* ─── main component ─────────────────────────────────────── */
 const SearchResults = () => {
   const navigate = useNavigate();
   const [listings,       setListings]       = useState([]);
@@ -146,7 +136,7 @@ const SearchResults = () => {
 
       <div className="sr-page">
 
-        {/* ── Search summary bar ── */}
+        {}
         <AnimatePresence>
           {searchCriteria && (
             <motion.div
@@ -181,7 +171,7 @@ const SearchResults = () => {
           )}
         </AnimatePresence>
 
-        {/* ── Result count ── */}
+        {}
         {listings.length > 0 && (
           <motion.p
             className="sr-count"
@@ -194,7 +184,7 @@ const SearchResults = () => {
           </motion.p>
         )}
 
-        {/* ── Grid or empty state ── */}
+        {}
         {listings.length === 0 ? (
           <EmptyState onReset={() => navigate("/")} />
         ) : (
@@ -209,7 +199,6 @@ const SearchResults = () => {
   );
 };
 
-/* ─── CSS ─────────────────────────────────────────────────── */
 const CSS = `
   @import url('https://fonts.googleapis.com/css2?family=Lora:wght@400;600;700&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap');
 

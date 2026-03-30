@@ -11,7 +11,6 @@ import "../../utilis/css/BookingPage.css";
 
 const API_URL = import.meta?.env?.VITE_APP_API_URL || "http://localhost:8000";
 
-/* ── Load Razorpay script once ── */
 const loadRazorpayScript = () =>
   new Promise((resolve) => {
     if (document.getElementById("razorpay-script")) return resolve(true);
@@ -26,7 +25,6 @@ const loadRazorpayScript = () =>
 const fmt = (n) =>
   (n ?? 0).toLocaleString("en-IN", { minimumFractionDigits: 0, maximumFractionDigits: 0 });
 
-/* ── Price row helper ── */
 const PriceRow = ({ label, value, bold, muted }) => (
   <div className={`bp-price-row ${bold ? "bp-price-row--bold" : ""} ${muted ? "bp-price-row--muted" : ""}`}>
     <span>{label}</span>
@@ -34,14 +32,12 @@ const PriceRow = ({ label, value, bold, muted }) => (
   </div>
 );
 
-/* ── Main component ── */
 const BookingPage = () => {
   const { id }      = useParams();
   const { state }   = useLocation();
   const navigate    = useNavigate();
   const { user }    = useContext(AuthContext) || {};
 
-  // Pull booking data passed via navigate() state from ListingDetail
   const {
     listing,
     checkIn,
@@ -55,11 +51,10 @@ const BookingPage = () => {
     totalPrice,
   } = state || {};
 
-  const [status,       setStatus]       = useState("idle"); // idle | loading | success | error
+  const [status,       setStatus]       = useState("idle");
   const [errorMsg,     setErrorMsg]     = useState("");
   const [showBreakdown,setShowBreakdown]= useState(true);
 
-  // Guard: if navigated directly without state, go back
   useEffect(() => {
     if (!state || !listing) {
       navigate(`/listings/${id}`, { replace: true });
@@ -71,7 +66,6 @@ const BookingPage = () => {
   const checkInDate  = new Date(checkIn);
   const checkOutDate = new Date(checkOut);
 
-  /* ── Razorpay payment flow ── */
   const handlePay = async () => {
     setStatus("loading");
     setErrorMsg("");
@@ -82,7 +76,6 @@ const BookingPage = () => {
       return;
     }
 
-    // 1. Load Razorpay script
     const scriptLoaded = await loadRazorpayScript();
     if (!scriptLoaded) {
       setStatus("error");
@@ -91,7 +84,7 @@ const BookingPage = () => {
     }
 
     try {
-      // 2. Create order on backend
+
       const orderRes = await fetch(`${API_URL}/api/payment/create-order`, {
         method:  "POST",
         headers: {
@@ -108,11 +101,11 @@ const BookingPage = () => {
 
       const orderData = await orderRes.json();
       if (!orderRes.ok || !orderData.success) {
-        // Special handling for booking conflicts
+
         if (orderData.message && orderData.message.includes("already booked")) {
           setStatus("error");
           setErrorMsg("❌ These dates are already booked! Someone else just booked them. Please go back and select different dates.");
-          // Auto-redirect back to listing after 3 seconds
+
           setTimeout(() => {
             navigate(`/listings/${id}`, { replace: true });
           }, 3000);
@@ -123,7 +116,6 @@ const BookingPage = () => {
 
       const { order, bookingId } = orderData;
 
-      // 3. Open Razorpay modal
       const options = {
         key:         import.meta.env.VITE_RAZORPAY_KEY_ID,
         amount:      order.amount,
@@ -140,7 +132,7 @@ const BookingPage = () => {
         theme: { color: "#E11D48" },
 
         handler: async (response) => {
-          // 4. Verify payment on backend
+
           try {
             const verifyRes = await fetch(`${API_URL}/api/payment/verify`, {
               method:  "POST",
@@ -154,7 +146,7 @@ const BookingPage = () => {
             const verifyData = await verifyRes.json();
 
             if (verifyRes.ok && verifyData.success) {
-              // 5. Navigate to confirmation page
+
               navigate("/booking-confirmation", {
                 replace: true,
                 state: {
@@ -184,7 +176,7 @@ const BookingPage = () => {
 
         modal: {
           ondismiss: () => {
-            setStatus("idle"); // user closed modal — reset
+            setStatus("idle");
           },
         },
       };
@@ -202,11 +194,10 @@ const BookingPage = () => {
     }
   };
 
-  /* ── render ── */
   return (
     <div className="bp-page">
 
-      {/* Back link */}
+      {}
       <motion.div
         className="bp-back"
         initial={{ opacity: 0, x: -12 }}
@@ -221,7 +212,7 @@ const BookingPage = () => {
 
       <div className="bp-layout">
 
-        {/* ── LEFT: Booking summary + pay button ── */}
+        {}
         <motion.div
           className="bp-left"
           initial={{ opacity: 0, y: 20 }}
@@ -231,7 +222,7 @@ const BookingPage = () => {
           <h1 className="bp-title">Confirm and pay</h1>
           <p className="bp-subtitle">Review your booking details before payment</p>
 
-          {/* Trip info */}
+          {}
           <div className="bp-card">
             <h3 className="bp-card__title">Your trip</h3>
 
@@ -255,7 +246,7 @@ const BookingPage = () => {
             </div>
           </div>
 
-          {/* Price breakdown */}
+          {}
           <div className="bp-card">
             <button
               className="bp-card__title bp-card__title--toggle"
@@ -288,7 +279,7 @@ const BookingPage = () => {
             </AnimatePresence>
           </div>
 
-          {/* Cancellation policy */}
+          {}
           <div className="bp-card bp-card--policy">
             <ShieldCheck size={18} className="bp-policy-icon" />
             <div>
@@ -299,7 +290,7 @@ const BookingPage = () => {
             </div>
           </div>
 
-          {/* Error banner */}
+          {}
           <AnimatePresence>
             {status === "error" && (
               <motion.div
@@ -345,7 +336,7 @@ const BookingPage = () => {
             )}
           </AnimatePresence>
 
-          {/* Pay button */}
+          {}
           <motion.button
             className={`bp-pay-btn ${status === "loading" ? "bp-pay-btn--loading" : ""}`}
             onClick={handlePay}
@@ -371,7 +362,7 @@ const BookingPage = () => {
           </p>
         </motion.div>
 
-        {/* ── RIGHT: Listing summary card ── */}
+        {}
         <motion.div
           className="bp-right"
           initial={{ opacity: 0, y: 20 }}
@@ -399,7 +390,7 @@ const BookingPage = () => {
             </div>
           </div>
 
-          {/* Trust badges */}
+          {}
           <div className="bp-trust">
             <div className="bp-trust__item">
               <span className="bp-trust__icon">🔒</span>

@@ -6,14 +6,10 @@ import "mapbox-gl/dist/mapbox-gl.css";
 
 mapboxgl.accessToken = import.meta.env.VITE_APP_MAPBOX_TOKEN;
 
-// ─── Constants ────────────────────────────────────────────────────────────────
-
-const DEFAULT_CENTER = [78.9629, 20.5937]; // India
+const DEFAULT_CENTER = [78.9629, 20.5937];
 const CLUSTER_LAYERS = ["clusters", "unclustered-point"];
 const MAP_STYLE      = "mapbox://styles/mapbox/streets-v12";
 const DEM_SOURCE_URL = "mapbox://mapbox.mapbox-terrain-dem-v1";
-
-// ─── Helpers ──────────────────────────────────────────────────────────────────
 
 const getCoords = (listing) =>
   listing.geometry?.coordinates ?? [listing.longitude, listing.latitude];
@@ -27,14 +23,12 @@ const formatPrice = (price) => {
 const getLocationLabel = (listing) => {
   const city = listing.city || "";
   const state = listing.state || "";
-  
+
   if (city && state) return `${city}, ${state}`;
   if (city) return city;
   if (state) return state;
   return listing.location || listing.country || "";
 };
-
-// ─── Inline styles (avoids stylesheet dependency) ────────────────────────────
 
 const GLOBAL_CSS = `
   @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap');
@@ -161,8 +155,6 @@ const GLOBAL_CSS = `
   @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
 `;
 
-// ─── Map Component ────────────────────────────────────────────────────────────
-
 const Map = React.forwardRef((
   {
     listings          = [],
@@ -188,7 +180,6 @@ const Map = React.forwardRef((
   const [loadError,  setLoadError]  = useState(false);
   const [selectedId, setSelectedId] = useState(null);
 
-  // ── Inject global CSS once ──────────────────────────────────────────────────
   useEffect(() => {
     const id = "map-global-styles";
     if (!document.getElementById(id)) {
@@ -198,8 +189,6 @@ const Map = React.forwardRef((
       document.head.appendChild(style);
     }
   }, []);
-
-  // ── Derived data ────────────────────────────────────────────────────────────
 
   const validListings = useMemo(() =>
     listings.filter((l) => {
@@ -239,12 +228,8 @@ const Map = React.forwardRef((
     })),
   }), [validListings]);
 
-  // ── Cleanup ─────────────────────────────────────────────────────────────────
-
   const clearPopups  = useCallback(() => { popupsRef.current.forEach(p => p.remove()); popupsRef.current = []; }, []);
   const clearMarkers = useCallback(() => { markersRef.current.forEach(m => m.remove()); markersRef.current = []; }, []);
-
-  // ── Fly ──────────────────────────────────────────────────────────────────────
 
   const flyTo = useCallback((coords, zoom = 14) => {
     mapRef.current?.flyTo({ center: coords, zoom, essential: true, duration: 800 });
@@ -256,8 +241,6 @@ const Map = React.forwardRef((
     flyTo(coords);
   }, [onMarkerClick, flyTo]);
 
-  // ── Popup HTML ───────────────────────────────────────────────────────────────
-
   const buildPopupHTML = useCallback((props) => {
     const img = props.image
       ? `<img src="${props.image}" alt="${props.title}" style="width:100%;height:140px;object-fit:cover;display:block;" />`
@@ -266,8 +249,7 @@ const Map = React.forwardRef((
     const city = props.city || "";
     const state = props.state || "";
     const country = props.country || "";
-    
-    // Build location display with city and state prominently
+
     const primaryLocation = city && state ? `${city}, ${state}` : city || state || props.location || "Unknown location";
     const fullLocation = [city, state, country].filter(Boolean).join(", ") || props.location || "Unknown location";
     const showFullLocation = fullLocation !== primaryLocation;
@@ -294,8 +276,6 @@ const Map = React.forwardRef((
         </div>
       </div>`;
   }, []);
-
-  // ── Clustering ───────────────────────────────────────────────────────────────
 
   const setupClustering = useCallback((map) => {
     if (map.getSource("listings")) return;
@@ -376,8 +356,6 @@ const Map = React.forwardRef((
     });
   }, [geojson, buildPopupHTML, handleMarkerClick, clearPopups]);
 
-  // ── Map init ─────────────────────────────────────────────────────────────────
-
   useEffect(() => {
     if (mapRef.current || !containerRef.current) return;
 
@@ -443,10 +421,8 @@ const Map = React.forwardRef((
       map.remove();
       mapRef.current = null;
     };
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
-  // ── Non-clustered markers with location labels ────────────────────────────
+  }, []);
 
   useEffect(() => {
     if (!mapRef.current || !mapLoaded || enableClustering || !showMarkers) return;
@@ -459,11 +435,9 @@ const Map = React.forwardRef((
       const isSelected = listing._id === selectedId;
       const label      = getLocationLabel(listing);
 
-      // Wrapper element (label + pin)
       const wrap = document.createElement("div");
       wrap.className = `mapbox-marker-wrap${isSelected ? " selected" : ""}`;
 
-      // Location label pill
       if (label) {
         const labelEl = document.createElement("div");
         labelEl.className = "mapbox-marker-label";
@@ -471,7 +445,6 @@ const Map = React.forwardRef((
         wrap.appendChild(labelEl);
       }
 
-      // Pin dot
       const dot = document.createElement("div");
       dot.className = "mapbox-marker-dot";
       wrap.appendChild(dot);
@@ -512,8 +485,6 @@ const Map = React.forwardRef((
     }
   }, [validListings, mapLoaded, selectedId, enableClustering, showMarkers, buildPopupHTML, handleMarkerClick, clearMarkers, clearPopups]);
 
-  // ── Imperative handle ────────────────────────────────────────────────────────
-
   useImperativeHandle(ref, () => ({
     getMap:      () => mapRef.current,
     flyTo,
@@ -529,8 +500,6 @@ const Map = React.forwardRef((
     },
   }));
 
-  // ── Render ───────────────────────────────────────────────────────────────────
-
   return (
     <div style={{
       position: "relative", width: "100%", height,
@@ -539,7 +508,7 @@ const Map = React.forwardRef((
     }}>
       <div ref={containerRef} style={{ width: "100%", height: "100%" }} />
 
-      {/* Loading */}
+      {}
       {isLoading && (
         <div style={{
           position: "absolute", inset: 0,
@@ -561,7 +530,7 @@ const Map = React.forwardRef((
         </div>
       )}
 
-      {/* Error */}
+      {}
       {loadError && (
         <div style={{
           position: "absolute", inset: 0,
@@ -575,7 +544,7 @@ const Map = React.forwardRef((
         </div>
       )}
 
-      {/* Count badge */}
+      {}
       {!isLoading && !loadError && validListings.length > 0 && (
         <div style={{
           position: "absolute", bottom: "40px", right: "14px",

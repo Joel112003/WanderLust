@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef, useCallback } from "react";
+import React, { useEffect, useState, useRef , useCallback  } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import toast, { Toaster } from "react-hot-toast";
 import { DayPicker } from "react-day-picker";
@@ -14,9 +14,10 @@ import {
 import Review      from "./Review";
 import Map         from "./Map";
 import HostSection from "./HostSection";
+import RealTimeMessagingWidget from "./RealTimeMessagingWidget";
+import ShareButton from "./ShareButton";
 import "../../utilis/css/ListingDetail.css";
 
-/* ─── constants ─────────────────────────────────────────── */
 const API_URL = import.meta?.env?.VITE_APP_API_URL || "http://localhost:8000";
 
 const HIGHLIGHTS = [
@@ -28,7 +29,6 @@ const HIGHLIGHTS = [
   { icon: Wifi,          title: "High-speed WiFi",     desc: "100+ Mbps for streaming and video calls" },
 ];
 
-/* ─── helpers ─────────────────────────────────────────────── */
 const fmt = (n) =>
   (n ?? 0).toLocaleString("en-IN", { minimumFractionDigits: 0, maximumFractionDigits: 0 });
 
@@ -49,11 +49,10 @@ const resolveListingCoords = async (listing) => {
     const json  = await res.json();
     const coords = json.features?.[0]?.center;
     if (coords) return { ...listing, geometry: { type: "Point", coordinates: coords } };
-  } catch { /* silent */ }
+  } catch {  }
   return { ...listing, geometry: { type: "Point", coordinates: [78.9629, 20.5937] } };
 };
 
-/* ─── sub-components ─────────────────────────────────────── */
 const FullSpinner = () => (
   <div className="ld-center">
     <Loader2 className="ld-spinner" size={36} strokeWidth={1.5} />
@@ -112,23 +111,18 @@ const DateField = ({ label, value, onChange, disabledDays, minDate, existingBook
     return () => document.removeEventListener("mousedown", handler);
   }, []);
 
-  // Helper to normalize date to midnight for accurate comparison
   const normalizeDate = (dateInput) => {
     const d = new Date(dateInput);
     d.setHours(0, 0, 0, 0);
     return d;
   };
 
-  // Create custom matcher for booked dates only (not past dates)
   const bookedDatesOnly = disabledDays || [];
-  
-  // Identify check-in dates (start of booking range) - normalized to midnight
+
   const bookedStartDates = existingBookings.map(b => normalizeDate(b.checkIn));
-  
-  // Identify check-out dates (end of booking range) - normalized to midnight
+
   const bookedEndDates = existingBookings.map(b => normalizeDate(b.checkOut));
-  
-  // Identify middle dates (between check-in and check-out) - normalized to midnight
+
   const bookedMiddleDates = [];
   existingBookings.forEach(booking => {
     const start = normalizeDate(booking.checkIn);
@@ -140,7 +134,6 @@ const DateField = ({ label, value, onChange, disabledDays, minDate, existingBook
     }
   });
 
-  // Process owner-blocked dates the same way
   const ownerBlockedStartDates = ownerBlockedDates.map(b => normalizeDate(b.from));
   const ownerBlockedEndDates = ownerBlockedDates.map(b => normalizeDate(b.to));
   const ownerBlockedMiddleDates = [];
@@ -153,17 +146,13 @@ const DateField = ({ label, value, onChange, disabledDays, minDate, existingBook
       current = addDays(current, 1);
     }
   });
-  
-  // Combine booking dates and owner-blocked dates
+
   const allStartDates = [...bookedStartDates, ...ownerBlockedStartDates];
   const allEndDates = [...bookedEndDates, ...ownerBlockedEndDates];
   const allMiddleDates = [...bookedMiddleDates, ...ownerBlockedMiddleDates];
-  
-  // ⚠️ FIX: Create array of ALL individual booked dates for the "booked" modifier
-  // This was the missing piece - DayPicker needs individual date objects, not ranges!
+
   const allBookedDates = [...allStartDates, ...allMiddleDates, ...allEndDates];
 
-  // Debug logging
   console.log('📅 Calendar Debug:', {
     existingBookings: existingBookings.length,
     ownerBlockedRanges: ownerBlockedDates.length,
@@ -215,16 +204,16 @@ const DateField = ({ label, value, onChange, disabledDays, minDate, existingBook
               selected={value}
               onSelect={(d) => { onChange(d); setOpen(false); }}
               disabled={[{ before: minDate || new Date() }, ...bookedDatesOnly]}
-              modifiers={{ 
-                booked: allBookedDates,          // ✅ FIX: Use individual date objects
-                bookedStart: allStartDates,      // Check-in dates
-                bookedEnd: allEndDates,          // Check-out dates
-                bookedMiddle: allMiddleDates     // Middle dates
+              modifiers={{
+                booked: allBookedDates,
+                bookedStart: allStartDates,
+                bookedEnd: allEndDates,
+                bookedMiddle: allMiddleDates
               }}
               showOutsideDays
               fixedWeeks
-              modifiersClassNames={{ 
-                selected: "rdp-sel", 
+              modifiersClassNames={{
+                selected: "rdp-sel",
                 today: "rdp-tod",
                 booked: "rdp-day-booked",
                 bookedStart: "rdp-day-booked-start",
@@ -246,7 +235,6 @@ const PriceRow = ({ label, value, bold }) => (
   </div>
 );
 
-/* ─── main component ─────────────────────────────────────── */
 const ListingDetail = () => {
   const { id }   = useParams();
   const navigate = useNavigate();
@@ -270,7 +258,6 @@ const ListingDetail = () => {
   const { scrollY }    = useScroll();
   const bookingOpacity = useTransform(scrollY, [0, 900, 1400], [1, 1, 0]);
 
-  /* ── fetch listing ── */
   useEffect(() => {
     if (!id || !/^[0-9a-fA-F]{24}$/.test(id)) {
       setError("Invalid listing ID");
@@ -288,6 +275,7 @@ const ListingDetail = () => {
           const processed = await resolveListingCoords(result.data);
           setListing(processed);
           fetchBookings(processed._id);
+          checkIfWishlisted(processed._id);
         }
       } catch (err) {
         if (!cancelled) setError(err.message);
@@ -298,37 +286,99 @@ const ListingDetail = () => {
     return () => { cancelled = true; };
   }, [id]);
 
-  /* ── Re-fetch bookings when page becomes visible (handles browser back) ── */
+  const checkIfWishlisted = async (listingId) => {
+    try {
+      const token = localStorage.getItem("authToken");
+      if (!token) return;
+
+      const res = await fetch(`${API_URL}/wishlist/check/${listingId}`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+
+      if (res.ok) {
+        const data = await res.json();
+        setIsWishlisted(data.isWishlisted || false);
+      }
+    } catch (err) {
+      console.error("Error checking wishlist:", err);
+    }
+  };
+
+  const toggleWishlist = async () => {
+    try {
+      const token = localStorage.getItem("authToken");
+      if (!token) {
+        toast.error("Please login to save favorites");
+        navigate("/auth/login");
+        return;
+      }
+
+      if (isWishlisted) {
+        const res = await fetch(`${API_URL}/wishlist/${listing._id}`, {
+          method: "DELETE",
+          headers: { Authorization: `Bearer ${token}` }
+        });
+
+        if (res.ok) {
+          setIsWishlisted(false);
+          toast.success("Removed from favorites!");
+        } else {
+          const errorData = await res.json();
+          toast.error(errorData.message || "Failed to remove from favorites");
+        }
+      } else {
+        const res = await fetch(`${API_URL}/wishlist`, {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({ listingId: listing._id })
+        });
+
+        if (res.ok) {
+          setIsWishlisted(true);
+          toast.success("Added to favorites!");
+        } else {
+          const errorData = await res.json();
+          toast.error(errorData.message || "Failed to add to favorites");
+        }
+      }
+    } catch (err) {
+      console.error("Wishlist error:", err);
+      toast.error("Network error. Please check if backend is running.");
+    }
+  };
+
   useEffect(() => {
     const handleVisibilityChange = () => {
       if (!document.hidden && listing?._id) {
         fetchBookings(listing._id);
       }
     };
-    
+
     document.addEventListener('visibilitychange', handleVisibilityChange);
     window.addEventListener('focus', handleVisibilityChange);
-    
+
     return () => {
       document.removeEventListener('visibilitychange', handleVisibilityChange);
       window.removeEventListener('focus', handleVisibilityChange);
     };
   }, [listing?._id]);
 
-  /* ── fetch existing bookings ── */
   const fetchBookings = async (listingId) => {
     setLoadingBookings(true);
     try {
-      // Add cache busting to ensure fresh data
+
       const timestamp = Date.now();
       const res  = await fetch(`${API_URL}/bookings/listing/${listingId}?t=${timestamp}`);
       const data = await res.json();
-      
+
       const allBookings = Array.isArray(data) ? data : [];
       const active = allBookings.filter(
         (b) => ["pending", "paid", "confirmed"].includes(b?.status) && b.checkIn && b.checkOut
       );
-      
+
       console.log('✅ Found active bookings:', active.length);
       setExistingBookings(active);
     } catch (err) {
@@ -339,7 +389,6 @@ const ListingDetail = () => {
     }
   };
 
-  /* ── owner check ── */
   useEffect(() => {
     if (!listing) return;
     const token = localStorage.getItem("authToken");
@@ -350,18 +399,17 @@ const ListingDetail = () => {
         const result = await res.json();
         if (result.success && result.data && listing.owner)
           setIsOwner(result.data._id === listing.owner._id);
-      } catch { /* silent */ }
+      } catch {  }
     })();
   }, [listing]);
 
-  /* ── disabled date ranges (bookings + owner-blocked dates) ── */
   const bookingRanges = existingBookings
     .filter((b) => b.checkIn && b.checkOut)
     .map((b) => ({ from: new Date(b.checkIn), to: new Date(b.checkOut), type: 'booking' }));
-  
+
   const ownerBlockedRanges = (listing?.unavailableDates || [])
     .map((range) => ({ from: new Date(range.from), to: new Date(range.to), type: 'owner-blocked' }));
-  
+
   const disabledRanges = [...bookingRanges, ...ownerBlockedRanges];
 
   const isDateBooked = useCallback((date) => {
@@ -383,17 +431,15 @@ const ListingDetail = () => {
     return false;
   };
 
-  /* ── owner block dates handler ── */
   const handleBlockDates = async () => {
-    // Validation checks
+
     if (!blockFrom || !blockTo) {
       return toast.error("⚠️ Please select both start and end dates");
     }
     if (blockTo <= blockFrom) {
       return toast.error("⚠️ End date must be after start date");
     }
-    
-    // Check for overlaps with existing bookings
+
     const hasOverlap = existingBookings.some(booking => {
       const bookingStart = new Date(booking.checkIn);
       const bookingEnd = new Date(booking.checkOut);
@@ -403,7 +449,7 @@ const ListingDetail = () => {
         (blockFrom <= bookingStart && blockTo >= bookingEnd)
       );
     });
-    
+
     if (hasOverlap) {
       return toast.error("⚠️ Cannot block dates that overlap with existing bookings. Cancel those bookings first.", { duration: 5000 });
     }
@@ -414,7 +460,7 @@ const ListingDetail = () => {
       if (!token) {
         throw new Error("Please log in to manage your listing");
       }
-      
+
       const res = await fetch(`${API_URL}/listings/${listing._id}/unavailable-dates`, {
         method: "PATCH",
         headers: {
@@ -424,10 +470,10 @@ const ListingDetail = () => {
         body: JSON.stringify({
           unavailableDates: [
             ...(listing.unavailableDates || []),
-            { 
-              from: blockFrom.toISOString(), 
+            {
+              from: blockFrom.toISOString(),
               to: blockTo.toISOString(),
-              reason: "maintenance" // Can be extended for custom reasons
+              reason: "maintenance"
             },
           ],
         }),
@@ -437,13 +483,13 @@ const ListingDetail = () => {
         const error = await res.json();
         throw new Error(error.error || "Failed to block dates");
       }
-      
+
       const result = await res.json();
       setListing(result.data || result);
       setBlockFrom(null);
       setBlockTo(null);
       setShowBlockDates(false);
-      
+
       const nights = Math.ceil((blockTo - blockFrom) / (1000 * 60 * 60 * 24));
       toast.success(`✅ Successfully blocked ${nights} day${nights > 1 ? 's' : ''} for maintenance!`, { duration: 4000 });
     } catch (err) {
@@ -459,16 +505,15 @@ const ListingDetail = () => {
     if (!token) {
       return toast.error("⚠️ Please log in to manage your listing");
     }
-    
+
     const dateRange = listing.unavailableDates[index];
     if (!dateRange) {
       return toast.error("⚠️ Date range not found");
     }
-    
-    // Confirm before unblocking
+
     const fromDate = format(new Date(dateRange.from), "d MMM yyyy");
     const toDate = format(new Date(dateRange.to), "d MMM yyyy");
-    
+
     try {
       const updatedDates = listing.unavailableDates.filter((_, i) => i !== index);
       const res = await fetch(`${API_URL}/listings/${listing._id}/unavailable-dates`, {
@@ -484,7 +529,7 @@ const ListingDetail = () => {
         const error = await res.json();
         throw new Error(error.error || "Failed to unblock dates");
       }
-      
+
       const result = await res.json();
       setListing(result.data || result);
       toast.success(`✅ Unblocked dates: ${fromDate} - ${toDate}`, { duration: 3000 });
@@ -494,7 +539,6 @@ const ListingDetail = () => {
     }
   };
 
-  /* ── fee calc ── */
   const nights      = checkIn && checkOut ? Math.max(0, differenceInCalendarDays(checkOut, checkIn)) : 0;
   const basePrice   = listing?.price || 0;
   const subtotal    = basePrice * nights;
@@ -503,7 +547,6 @@ const ListingDetail = () => {
   const tax         = Math.round(subtotal * 0.12);
   const totalPrice  = subtotal + cleaningFee + serviceFee + tax;
 
-  /* ── reserve handler — navigates to /book/:id with state ── */
   const handleReserve = () => {
     if (!checkIn || !checkOut)
       return toast.error("Select check-in and check-out dates");
@@ -519,7 +562,6 @@ const ListingDetail = () => {
       return;
     }
 
-    // Navigate to the dedicated booking page — pass all data via state
     navigate(`/book/${id}`, {
       state: {
         listing,
@@ -536,14 +578,12 @@ const ListingDetail = () => {
     });
   };
 
-  /* ── early returns ── */
   if (loading)  return <FullSpinner />;
   if (error)    return <Banner variant="error">{error}</Banner>;
   if (!listing) return <Banner variant="warn">Listing not found</Banner>;
 
   const visibleHighlights = showAllAmenities ? HIGHLIGHTS : HIGHLIGHTS.slice(0, 3);
 
-  /* ── render ── */
   return (
     <>
       <Toaster
@@ -553,7 +593,7 @@ const ListingDetail = () => {
 
       <div className="ld-page">
 
-        {/* ── Title row ── */}
+        {}
         <motion.header
           className="ld-header"
           initial={{ opacity: 0, y: 18 }}
@@ -574,12 +614,10 @@ const ListingDetail = () => {
               <span>{listing.location}{listing.country ? `, ${listing.country}` : ""}</span>
             </div>
             <div className="ld-meta__actions">
-              <button className="ld-action-btn">
-                <Share2 size={15} /> Share
-              </button>
+              <ShareButton listing={listing} buttonStyle="button" />
               <button
                 className={`ld-action-btn${isWishlisted ? " ld-action-btn--active" : ""}`}
-                onClick={() => setIsWishlisted((w) => !w)}
+                onClick={toggleWishlist}
               >
                 <Heart size={15} fill={isWishlisted ? "currentColor" : "none"} /> Save
               </button>
@@ -592,15 +630,15 @@ const ListingDetail = () => {
           </div>
         </motion.header>
 
-        {/* ── Gallery ── */}
+        {}
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.6, delay: 0.1 }}>
           <Gallery src={listing.image?.url} title={listing.title} />
         </motion.div>
 
-        {/* ── Two-column layout ── */}
+        {}
         <div className="ld-body">
 
-          {/* LEFT */}
+          {}
           <div className="ld-main">
 
             <motion.div
@@ -655,7 +693,7 @@ const ListingDetail = () => {
             </section>
           </div>
 
-          {/* RIGHT — booking card */}
+          {}
           <motion.aside
             className="ld-aside"
             style={{ opacity: bookingOpacity }}
@@ -675,7 +713,7 @@ const ListingDetail = () => {
                 </div>
               </div>
 
-              {/* Date pickers */}
+              {}
               <div className="ld-dates">
                 <DateField
                   label="CHECK-IN"
@@ -698,7 +736,7 @@ const ListingDetail = () => {
                 />
               </div>
 
-              {/* Guest selector */}
+              {}
               <div className="ld-guests">
                 <div className="ld-guests__label">
                   <Users size={14} /><span>GUESTS</span>
@@ -714,28 +752,28 @@ const ListingDetail = () => {
                 </select>
               </div>
 
-              {/* Blocked Dates Notice for Guests */}
+              {}
               {listing?.unavailableDates && listing.unavailableDates.length > 0 && (
                 <motion.div
                   initial={{ opacity: 0, y: -8 }}
                   animate={{ opacity: 1, y: 0 }}
-                  style={{ 
-                    background: "linear-gradient(135deg, #fff5f0 0%, #ffe8dc 100%)", 
-                    border: "1.5px solid #fdb98e", 
-                    borderRadius: "10px", 
-                    padding: "12px 14px", 
+                  style={{
+                    background: "linear-gradient(135deg, #fff5f0 0%, #ffe8dc 100%)",
+                    border: "1.5px solid #fdb98e",
+                    borderRadius: "10px",
+                    padding: "12px 14px",
                     marginTop: "12px",
                     marginBottom: "12px"
                   }}
                 >
                   <div style={{ display: "flex", alignItems: "flex-start", gap: "8px", marginBottom: "8px" }}>
-                    <div style={{ 
-                      background: "#ea580c", 
-                      borderRadius: "50%", 
-                      width: "20px", 
-                      height: "20px", 
-                      display: "flex", 
-                      alignItems: "center", 
+                    <div style={{
+                      background: "#ea580c",
+                      borderRadius: "50%",
+                      width: "20px",
+                      height: "20px",
+                      display: "flex",
+                      alignItems: "center",
                       justifyContent: "center",
                       flexShrink: 0,
                       marginTop: "1px"
@@ -748,9 +786,9 @@ const ListingDetail = () => {
                       </p>
                       <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
                         {listing.unavailableDates.map((range, idx) => (
-                          <div key={idx} style={{ 
-                            fontSize: "11px", 
-                            color: "#7c2d12", 
+                          <div key={idx} style={{
+                            fontSize: "11px",
+                            color: "#7c2d12",
                             background: "rgba(255,255,255,0.6)",
                             padding: "6px 8px",
                             borderRadius: "6px",
@@ -760,7 +798,7 @@ const ListingDetail = () => {
                           }}>
                             <span style={{ fontWeight: 600 }}>📅</span>
                             <span>
-                              <strong>From:</strong> {format(new Date(range.from), "d MMM yyyy")} 
+                              <strong>From:</strong> {format(new Date(range.from), "d MMM yyyy")}
                               <span style={{ margin: "0 4px" }}>→</span>
                               <strong>To:</strong> {format(new Date(range.to), "d MMM yyyy")}
                             </span>
@@ -775,7 +813,7 @@ const ListingDetail = () => {
                 </motion.div>
               )}
 
-              {/* Availability notice */}
+              {}
               {isOwner && (
                 <motion.div
                   initial={{ opacity: 0, y: -8 }}
@@ -789,7 +827,7 @@ const ListingDetail = () => {
                   >
                     🔒 {showBlockDates ? "Hide" : "Block Dates (Owner)"}
                   </button>
-                  
+
                   {showBlockDates && (
                     <motion.div
                       initial={{ opacity: 0, height: 0 }}
@@ -797,7 +835,7 @@ const ListingDetail = () => {
                       style={{ background: "#fff7ed", border: "2px solid #ea580c", borderRadius: "8px", padding: "12px", marginBottom: "12px" }}
                     >
                       <p style={{ fontSize: "12px", fontWeight: 600, color: "#ea580c", marginBottom: "10px" }}>Block dates when your property is unavailable:</p>
-                      
+
                       <div style={{ display: "flex", gap: "8px", marginBottom: "10px" }}>
                         <div style={{ flex: 1 }}>
                           <DateField
@@ -822,7 +860,7 @@ const ListingDetail = () => {
                           />
                         </div>
                       </div>
-                      
+
                       <button
                         onClick={handleBlockDates}
                         disabled={!blockFrom || !blockTo || savingBlock}
@@ -840,7 +878,7 @@ const ListingDetail = () => {
                       >
                         {savingBlock ? "Blocking..." : "🔒 Block These Dates"}
                       </button>
-                      
+
                       {listing?.unavailableDates?.length > 0 && (
                         <div style={{ marginTop: "12px", paddingTop: "12px", borderTop: "1px solid #fed7aa" }}>
                           <p style={{ fontSize: "11px", fontWeight: 700, color: "#9a3412", marginBottom: "6px" }}>Currently Blocked:</p>
@@ -863,8 +901,8 @@ const ListingDetail = () => {
                   )}
                 </motion.div>
               )}
-              
-              {/* Availability notice */}
+
+              {}
               {loadingBookings ? (
                 <div className="ld-avail ld-avail--loading">
                   <Loader2 size={14} className="ld-spin" />
@@ -889,7 +927,7 @@ const ListingDetail = () => {
                 <div className="ld-avail ld-avail--ok" style={{ color: "#059669", fontWeight: 600 }}>✓ All dates available for booking</div>
               )}
 
-              {/* Price breakdown */}
+              {}
               <div className="ld-price-breakdown">
                 <AnimatePresence>
                   {checkIn && checkOut && nights > 0 ? (
@@ -916,7 +954,7 @@ const ListingDetail = () => {
                 </AnimatePresence>
               </div>
 
-              {/* Selected dates summary */}
+              {}
               {checkIn && checkOut && (
                 <motion.div
                   initial={{ opacity: 0, y: -10 }}
@@ -948,14 +986,14 @@ const ListingDetail = () => {
                 </motion.div>
               )}
 
-              {/* Reserve button — now navigates to /book/:id */}
+              {}
               <motion.button
                 className="ld-reserve-btn"
                 onClick={handleReserve}
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.97 }}
                 disabled={!checkIn || !checkOut}
-                style={{ 
+                style={{
                   opacity: (!checkIn || !checkOut) ? 0.6 : 1,
                   cursor: (!checkIn || !checkOut) ? "not-allowed" : "pointer"
                 }}
@@ -982,13 +1020,34 @@ const ListingDetail = () => {
           </div>
         </section>
 
-        {/* ── Host ── */}
+        {}
         <section className="ld-section">
           <HostSection owner={listing.owner} />
         </section>
       </div>
+
+      {}
+      {!isOwner && listing.owner?._id && (
+        <RealTimeMessagingWidget
+          listingId={listing._id}
+          hostId={listing.owner._id}
+          hostName={listing.owner.username || listing.owner.name || "Host"}
+          currentUserId={getCurrentUserId()}
+        />
+      )}
     </>
   );
 };
+
+function getCurrentUserId() {
+  try {
+    const token = localStorage.getItem('authToken');
+    if (!token) return null;
+    const payload = JSON.parse(atob(token.split('.')[1]));
+    return payload.id || payload._id || payload.userId;
+  } catch (error) {
+    return null;
+  }
+}
 
 export default ListingDetail;

@@ -1,10 +1,3 @@
-/**
- * HeroSearch.jsx — complete rewrite
- * Clean inline absolute dropdowns, polished calendar, no portals
- *
- * npm i react-hot-toast   (if not already)
- */
-
 import React, { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
@@ -15,7 +8,7 @@ import {
   Plus, Minus, Loader2, X,
 } from "lucide-react";
 import "../../utilis/css/HeroSearch.css";
-/* ──────────────────────────────── constants */
+
 const API = import.meta.env.VITE_APP_API_URL || "http://localhost:8000";
 
 const DESTINATIONS = [
@@ -36,13 +29,11 @@ const GUEST_TYPES = [
 
 const WD = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
 
-/* ──────────────────────────────── tiny helpers */
 const sod   = d => { const c = new Date(d); c.setHours(0,0,0,0); return c; };
 const today = () => sod(new Date());
 const fmtD  = d => d ? d.toLocaleDateString("en-IN",{day:"numeric",month:"short"}) : null;
 const sameD = (a,b) => a && b && sod(a).getTime() === sod(b).getTime();
 
-/* ──────────────────────────────── Calendar */
 const MiniCalendar = ({ checkIn, checkOut, onChange }) => {
   const now   = new Date();
   const [view, setView] = useState(new Date(now.getFullYear(), now.getMonth(), 1));
@@ -68,7 +59,7 @@ const MiniCalendar = ({ checkIn, checkOut, onChange }) => {
 
   return (
     <div className="hs-cal">
-      {/* nav */}
+      {}
       <div className="hs-cal-nav">
         <button className="hs-cal-nav-btn" onClick={() => setView(new Date(yr, mo-1, 1))}>
           <ChevronLeft size={15}/>
@@ -79,21 +70,21 @@ const MiniCalendar = ({ checkIn, checkOut, onChange }) => {
         </button>
       </div>
 
-      {/* hint */}
+      {}
       <p className="hs-cal-hint">
         {phase === "pickIn"  ? "Select check-in date"  :
          phase === "pickOut" ? "Now select check-out"  :
          `${fmtD(checkIn)} → ${fmtD(checkOut)}`}
       </p>
 
-      {/* weekday headers */}
+      {}
       <div className="hs-cal-grid">
         {WD.map(w => <div key={w} className="hs-cal-wh">{w}</div>)}
 
-        {/* empty cells */}
+        {}
         {Array.from({length: fdw}, (_,i) => <div key={`e${i}`}/>)}
 
-        {/* days */}
+        {}
         {Array.from({length: dim}, (_,i) => {
           const d      = sod(new Date(yr, mo, i+1));
           const isPast = d < today();
@@ -122,7 +113,7 @@ const MiniCalendar = ({ checkIn, checkOut, onChange }) => {
         })}
       </div>
 
-      {/* footer */}
+      {}
       <div className="hs-cal-footer">
         <button className="hs-cal-clear" onClick={() => onChange(null, null)}>
           Clear dates
@@ -137,7 +128,6 @@ const MiniCalendar = ({ checkIn, checkOut, onChange }) => {
   );
 };
 
-/* ──────────────────────────────── Guests panel */
 const GuestsPanel = ({ guests, onChange }) => {
   const total = Object.values(guests).reduce((a,b)=>a+b,0);
   const step = (key, delta) => {
@@ -177,7 +167,6 @@ const GuestsPanel = ({ guests, onChange }) => {
   );
 };
 
-/* ──────────────────────────────── Dropdown shell */
 const DD_ANIM = {
   hidden: { opacity:0, y:-10, scale:0.97 },
   show:   { opacity:1, y:0,   scale:1,    transition:{duration:0.18,ease:"easeOut"} },
@@ -193,7 +182,6 @@ const Dropdown = ({ children, style={} }) => (
   </motion.div>
 );
 
-/* ──────────────────────────────── HeroSearch */
 const HeroSearch = () => {
   const navigate = useNavigate();
 
@@ -201,12 +189,11 @@ const HeroSearch = () => {
   const [checkIn,   setCheckIn]   = useState(null);
   const [checkOut,  setCheckOut]  = useState(null);
   const [guests,    setGuests]    = useState({adults:2,children:0,infants:0,pets:0});
-  const [active,    setActive]    = useState(null);   // "dest"|"dates"|"guests"
+  const [active,    setActive]    = useState(null);
   const [loading,   setLoading]   = useState(false);
 
   const wrapRef = useRef(null);
 
-  /* close on outside click */
   useEffect(() => {
     const h = e => {
       if (!wrapRef.current?.contains(e.target)) setActive(null);
@@ -224,18 +211,15 @@ const HeroSearch = () => {
     d.tags.some(t => t.toLowerCase().includes(dest.toLowerCase()))
   );
 
-  /* date label */
   const dateLabel = checkIn && checkOut
     ? `${fmtD(checkIn)} → ${fmtD(checkOut)}`
     : checkIn
     ? `${fmtD(checkIn)} → …`
     : "Add dates";
 
-  /* search — only destination is required; dates & guests are UI-only for now */
   const handleSearch = async () => {
     if (!dest.trim()) return toast.error("Please enter a destination");
 
-    // Only send destination to the API — dates/availability not wired yet
     const qs = new URLSearchParams({ destination: dest });
 
     setLoading(true);
@@ -269,7 +253,7 @@ const HeroSearch = () => {
       <div className="hs-outer" ref={wrapRef}>
         <div className="hs-bar">
 
-          {/* ── Where ── */}
+          {}
           <div className={`hs-segment${active==="dest"?" hs-segment--active":""}`}>
             <button className="hs-segment-btn" onClick={()=>toggle("dest")}>
               <MapPin size={15} className="hs-seg-icon"/>
@@ -285,7 +269,7 @@ const HeroSearch = () => {
             <AnimatePresence>
               {active==="dest" && (
                 <Dropdown>
-                  {/* search input */}
+                  {}
                   <div className="hs-dest-search">
                     <Search size={14} className="hs-dest-search-ico"/>
                     <input
@@ -302,7 +286,7 @@ const HeroSearch = () => {
                     )}
                   </div>
 
-                  {/* suggestions */}
+                  {}
                   <div className="hs-dest-list">
                     {filtered.length===0
                       ? <p className="hs-dest-empty">No destinations found</p>
@@ -333,7 +317,7 @@ const HeroSearch = () => {
 
           <div className="hs-sep"/>
 
-          {/* ── When ── */}
+          {}
           <div className={`hs-segment${active==="dates"?" hs-segment--active":""}`}>
             <button className="hs-segment-btn" onClick={()=>toggle("dates")}>
               <Calendar size={15} className="hs-seg-icon"/>
@@ -361,7 +345,7 @@ const HeroSearch = () => {
 
           <div className="hs-sep"/>
 
-          {/* ── Who ── */}
+          {}
           <div className={`hs-segment${active==="guests"?" hs-segment--active":""}`}>
             <button className="hs-segment-btn" onClick={()=>toggle("guests")}>
               <Users size={15} className="hs-seg-icon"/>
@@ -383,7 +367,7 @@ const HeroSearch = () => {
             </AnimatePresence>
           </div>
 
-          {/* ── Search button ── */}
+          {}
           <motion.button
             className="hs-search-btn"
             onClick={handleSearch}
@@ -401,6 +385,5 @@ const HeroSearch = () => {
     </>
   );
 };
-
 
 export default HeroSearch;

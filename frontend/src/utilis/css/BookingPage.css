@@ -1,6 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=DM+Sans:wght@400;500;600&display=swap');
 
-/* ── Page shell ──────────────────────────────────────────────────────────────── */
 .bp-page {
   min-height: 100vh;
   background: #fafaf9;
@@ -8,7 +7,6 @@
   font-family: 'DM Sans', system-ui, sans-serif;
 }
 
-/* ── Back link ───────────────────────────────────────────────────────────────── */
 .bp-back {
   max-width: 1100px;
   margin: 0 auto 28px;
@@ -34,7 +32,6 @@
   border-color: #d1d5db;
 }
 
-/* ── Two column layout ───────────────────────────────────────────────────────── */
 .bp-layout {
   max-width: 1100px;
   margin: 0 auto;
@@ -49,11 +46,10 @@
     grid-template-columns: 1fr;
     gap: 28px;
   }
-  /* On mobile put listing card above payment form */
+
   .bp-right { order: -1; }
 }
 
-/* ── Left column ─────────────────────────────────────────────────────────────── */
 .bp-title {
   font-family: 'Sora', sans-serif;
   font-size: 28px;
@@ -69,7 +65,6 @@
   margin: 0 0 28px;
 }
 
-/* ── Cards ───────────────────────────────────────────────────────────────────── */
 .bp-card {
   background: #fff;
   border: 1.5px solid #e5e7eb;
@@ -103,7 +98,6 @@
   margin-bottom: 16px;
 }
 
-/* Trip rows */
 .bp-trip-row {
   display: flex;
   align-items: flex-start;
@@ -154,7 +148,6 @@
   color: #9ca3af;
 }
 
-/* Price breakdown rows */
 .bp-price-row {
   display: flex;
   justify-content: space-between;
@@ -179,7 +172,6 @@
   margin: 10px 0;
 }
 
-/* Policy card */
 .bp-card--policy {
   display: flex;
   gap: 14px;
@@ -208,7 +200,6 @@
   line-height: 1.5;
 }
 
-/* Error */
 .bp-error {
   display: flex;
   align-items: center;
@@ -222,7 +213,6 @@
   margin-bottom: 16px;
 }
 
-/* Pay button */
 .bp-pay-btn {
   width: 100%;
   display: flex;
@@ -266,7 +256,6 @@
   margin: 10px 0 0;
 }
 
-/* ── Right column ────────────────────────────────────────────────────────────── */
 .bp-listing-card {
   background: #fff;
   border: 1.5px solid #e5e7eb;
@@ -356,7 +345,6 @@
   color: #9ca3af;
 }
 
-/* Trust badges */
 .bp-trust {
   margin-top: 16px;
   display: flex;
@@ -375,4 +363,44 @@
 
 .bp-trust__icon {
   font-size: 16px;
+}
+
+@media (max-width: 640px) {
+  .bp-page {
+    padding: 18px 12px 56px;
+  }
+
+  .bp-back {
+    margin-bottom: 14px;
+  }
+
+  .bp-title {
+    font-size: 22px;
+  }
+
+  .bp-subtitle {
+    margin-bottom: 18px;
+  }
+
+  .bp-card,
+  .bp-listing-card__body {
+    padding: 14px;
+  }
+
+  .bp-layout {
+    gap: 18px;
+  }
+
+  .bp-listing-card {
+    position: static;
+  }
+
+  .bp-listing-card__img-wrap {
+    height: 180px;
+  }
+
+  .bp-pay-btn {
+    font-size: 15px;
+    padding: 14px;
+  }
 }

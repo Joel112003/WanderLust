@@ -2,7 +2,6 @@ const Review = require("../models/review");
 const Listing = require("../models/listing");
 const mongoose = require("mongoose");
 
-// 🚀 Validation helper function for review input
 const validateReviewInput = (data) => {
   const errors = {};
   if (
@@ -22,30 +21,25 @@ const validateReviewInput = (data) => {
   };
 };
 
-// 🚀 Get All Reviews
-
 module.exports.getAllReviews = async (req, res) => {
   try {
     const { listingId } = req.params;
-    
-    // Validate listing ID format
+
     if (!mongoose.Types.ObjectId.isValid(listingId)) {
-      return res.status(400).json({ 
-        success: false, 
-        message: "Invalid listing ID format" 
+      return res.status(400).json({
+        success: false,
+        message: "Invalid listing ID format"
       });
     }
 
-    // Check if listing exists
     const listing = await Listing.findById(listingId);
     if (!listing) {
-      return res.status(404).json({ 
-        success: false, 
-        message: "Listing not found" 
+      return res.status(404).json({
+        success: false,
+        message: "Listing not found"
       });
     }
 
-    // Get reviews with pagination
     const { page = 1, limit = 10 } = req.query;
     const reviews = await Review.find({ listing: listingId })
       .sort({ createdAt: -1 })
@@ -68,46 +62,40 @@ module.exports.getAllReviews = async (req, res) => {
 
   } catch (error) {
     console.error("Error fetching reviews:", error);
-    res.status(500).json({ 
-      success: false, 
-      message: "Server error fetching reviews" 
+    res.status(500).json({
+      success: false,
+      message: "Server error fetching reviews"
     });
   }
 };
-
 
 module.exports.addReview = async (req, res) => {
   try {
     const { listingId } = req.params;
     const { rating, comment } = req.body;
-    
-    // Authentication check
+
     if (!req.user) {
       return res.status(401).json({ success: false, message: "Unauthorized" });
     }
-    
-    // Validate listing ID format
+
     if (!mongoose.Types.ObjectId.isValid(listingId)) {
       return res
         .status(400)
         .json({ success: false, message: "Invalid listing ID" });
     }
-    
-    // Validate review input
+
     const { isValid, errors } = validateReviewInput(req.body);
     if (!isValid) {
       return res.status(400).json({ success: false, errors });
     }
-    
-    // Check if listing exists
+
     const listing = await Listing.findById(listingId);
     if (!listing) {
       return res
         .status(404)
         .json({ success: false, message: "Listing not found" });
     }
-    
-    // Prevent duplicate review by the same user
+
     const existingReview = await Review.findOne({
       author: req.user._id,
       listing: listingId,
@@ -118,28 +106,25 @@ module.exports.addReview = async (req, res) => {
         message: "You have already reviewed this listing",
       });
     }
-    
-    // Create and save new review
+
     const newReview = new Review({
       comment: req.body.comment,
       rating: req.body.rating,
       author: req.user._id,
       listing: listingId,
-      authorName: req.user.username, // Store username as a backup
-      
+      authorName: req.user.username,
+
     });
     await newReview.save();
-    
-    // Update listing without triggering full validation
+
     await Listing.findByIdAndUpdate(
       listingId,
       { $push: { reviews: newReview._id } },
       { runValidators: false }
     );
-    
-    // Populate author field so _id and username are available
+
     await newReview.populate("author", "username");
-    
+
     res.status(201).json({
       success: true,
       message: "Review added successfully",
@@ -155,8 +140,6 @@ module.exports.addReview = async (req, res) => {
   }
 };
 
-
-// 🚀 Delete a Review
 module.exports.deleteReview = async (req, res) => {
   try {
     const { listingId, reviewId } = req.params;
@@ -177,7 +160,7 @@ module.exports.deleteReview = async (req, res) => {
         .status(404)
         .json({ success: false, message: "Review not found" });
     }
-    // Ensure the logged-in user is the review author
+
     if (review.author.toString() !== req.user._id.toString()) {
       return res.status(403).json({
         success: false,

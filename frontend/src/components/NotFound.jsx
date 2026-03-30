@@ -31,7 +31,7 @@ function NotFound() {
         animate="visible"
         className="max-w-4xl w-full text-center"
       >
-        {/* Animated 404 */}
+        {}
         <motion.div
           variants={itemVariants}
           className="mb-8"
@@ -51,7 +51,7 @@ function NotFound() {
           </motion.h1>
         </motion.div>
 
-        {/* Icon */}
+        {}
         <motion.div
           variants={itemVariants}
           className="mb-6"
@@ -71,13 +71,13 @@ function NotFound() {
           </motion.div>
         </motion.div>
 
-        {/* Text Content */}
+        {}
         <motion.div variants={itemVariants} className="mb-8">
           <h2 className="text-3xl md:text-4xl font-bold text-gray-800 mb-4">
             Oops! You've Lost Your Way
           </h2>
           <p className="text-lg text-gray-600 max-w-2xl mx-auto mb-2">
-            The page you're looking for seems to have wandered off the map. 
+            The page you're looking for seems to have wandered off the map.
             Don't worry, even the best explorers get lost sometimes!
           </p>
           <p className="text-md text-gray-500">
@@ -85,7 +85,7 @@ function NotFound() {
           </p>
         </motion.div>
 
-        {/* Action Buttons */}
+        {}
         <motion.div
           variants={itemVariants}
           className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12"
@@ -123,16 +123,12 @@ function NotFound() {
           </Link>
         </motion.div>
 
-        {/* Decorative Elements */}
+        {}
         <motion.div
           variants={itemVariants}
           className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-3xl mx-auto"
         >
-          {/*
-            { icon: FaHome, title: 'Explore Homes', desc: 'Find your perfect stay' },
-            { icon: FaCompass, title: 'Discover Places', desc: 'Explore new destinations' },
-            { icon: FaSearch, title: 'Search Listings', desc: 'Find what you need' }
-          */}
+          {}
         </motion.div>
       </motion.div>
     </div>

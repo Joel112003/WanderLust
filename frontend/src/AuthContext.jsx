@@ -1,12 +1,12 @@
 import { createContext, useState, useEffect, useCallback } from "react";
 import axios from "axios";
+import { safeGetItem, safeSetItem, safeRemoveItem, parseJWT } from "./utilis/js/storage";
 
-// ===== API CONFIGURATION =====
 const API_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:8000";
 const API_ENDPOINTS = {
   login: `${API_URL}/auth/login`,
-  register: `${API_URL}/auth/register`,
-  profile: `${API_URL}/auth/me`,
+  register: `${API_URL}/auth/signup`,
+  profile: `${API_URL}/auth/profile`,
   logout: `${API_URL}/auth/logout`,
   refresh: `${API_URL}/auth/refresh`,
 };
@@ -22,7 +22,6 @@ export const AuthProvider = ({ children }) => {
   const [token, setToken] = useState(null);
   const [error, setError] = useState(null);
 
-  // ===== SET AXIOS DEFAULT HEADERS =====
   const setAuthHeader = useCallback((authToken) => {
     if (authToken) {
       axios.defaults.headers.common["Authorization"] = `Bearer ${authToken}`;
@@ -34,29 +33,37 @@ export const AuthProvider = ({ children }) => {
     }
   }, []);
 
-  // ===== INITIALIZE TOKEN FROM STORAGE =====
  useEffect(() => {
-  const savedToken = localStorage.getItem("authToken");
-  
-  if (savedToken) {
-    // Check if token is expired before trusting it
-    try {
-      const payload = JSON.parse(atob(savedToken.split('.')[1]));
-      if (payload.exp * 1000 < Date.now()) {
-        // Token expired — clear it
-        localStorage.removeItem("authToken");
-        localStorage.removeItem("user");
+  try {
+    const savedToken = safeGetItem("authToken");
+
+    if (savedToken) {
+
+      const payload = parseJWT(savedToken);
+      if (!payload) {
+
+        safeRemoveItem("authToken");
+        safeRemoveItem("user");
         return;
       }
-    } catch { /* invalid token format */ }
-    
-    setToken(savedToken);
-    setAuthHeader(savedToken);
+
+      if (payload.exp && payload.exp * 1000 < Date.now()) {
+
+        safeRemoveItem("authToken");
+        safeRemoveItem("user");
+        return;
+      }
+
+      setToken(savedToken);
+      setAuthHeader(savedToken);
+    }
+  } catch (error) {
+    console.error('[AuthContext] Token initialization error:', error);
+  } finally {
+    setIsLoading(false);
   }
-  setIsLoading(false);
 }, [setAuthHeader]);
 
-  // ===== FETCH USER PROFILE =====
   const fetchUserProfile = useCallback(async (authToken) => {
     try {
       console.log("[AuthContext] Fetching user profile...");
@@ -80,7 +87,6 @@ export const AuthProvider = ({ children }) => {
     }
   }, []);
 
-  // ===== REGISTER USER =====
   const register = useCallback(
     async (userData) => {
       try {
@@ -100,11 +106,9 @@ export const AuthProvider = ({ children }) => {
           throw new Error("No token received from server");
         }
 
-        // Save token and user
-        localStorage.setItem("authToken", authToken);
-        localStorage.setItem("user", JSON.stringify(responseUser));
+        safeSetItem("authToken", authToken);
+        safeSetItem("user", JSON.stringify(responseUser));
 
-        // Update state
         setToken(authToken);
         setUser(responseUser);
         setAuthHeader(authToken);
@@ -131,7 +135,6 @@ export const AuthProvider = ({ children }) => {
     [setAuthHeader]
   );
 
-  // ===== LOGIN USER =====
  const login = useCallback(async (email, password) => {
   try {
     setError(null);
@@ -139,12 +142,12 @@ export const AuthProvider = ({ children }) => {
 
     const response = await axios.post(
       API_ENDPOINTS.login,
-      { email, password },          // ✅ plain object = JSON
+      { email, password },
       {
         headers: {
           "Content-Type": "application/json",
         },
-        withCredentials: true,       // ✅ needed for session cookie
+        withCredentials: true,
       }
     );
 
@@ -152,8 +155,8 @@ export const AuthProvider = ({ children }) => {
 
     if (!authToken) throw new Error("No token received from server");
 
-    localStorage.setItem("authToken", authToken);
-    localStorage.setItem("user", JSON.stringify(responseUser));
+    safeSetItem("authToken", authToken);
+    safeSetItem("user", JSON.stringify(responseUser));
     setToken(authToken);
     setUser(responseUser);
     setAuthHeader(authToken);
@@ -174,11 +177,10 @@ export const AuthProvider = ({ children }) => {
   }
 }, [setAuthHeader]);
 
-  // ===== LOGOUT USER =====
   const logout = useCallback(async () => {
     try {
       console.log("[AuthContext] Logging out user...");
-      // Attempt to notify backend
+
       if (token) {
         await axios.post(
           API_ENDPOINTS.logout,
@@ -193,9 +195,9 @@ export const AuthProvider = ({ children }) => {
     } catch (error) {
       console.warn("[AuthContext] Logout API call failed (this is okay):", error.message);
     } finally {
-      // Clear local state regardless
-      localStorage.removeItem("authToken");
-      localStorage.removeItem("user");
+
+      safeRemoveItem("authToken");
+      safeRemoveItem("user");
       setToken(null);
       setUser(null);
       setAuthHeader(null);
@@ -205,7 +207,6 @@ export const AuthProvider = ({ children }) => {
     }
   }, [token, setAuthHeader]);
 
-  // ===== REFRESH TOKEN =====
   const refreshToken = useCallback(async () => {
     try {
       console.log("[AuthContext] Refreshing token...");
@@ -225,7 +226,7 @@ export const AuthProvider = ({ children }) => {
         throw new Error("No new token received");
       }
 
-      localStorage.setItem("authToken", newToken);
+      safeSetItem("authToken", newToken);
       setToken(newToken);
       setAuthHeader(newToken);
 
@@ -233,13 +234,12 @@ export const AuthProvider = ({ children }) => {
       return { success: true, token: newToken };
     } catch (error) {
       console.error("[AuthContext] Token refresh failed:", error.message);
-      // If refresh fails, logout user
+
       await logout();
       return { success: false, error: error.message };
     }
   }, [token, setAuthHeader, logout]);
 
-  // ===== VERIFY AUTHENTICATION =====
   const checkAuth = useCallback(async () => {
     if (!token) {
       setIsAuthenticated(false);
@@ -256,7 +256,6 @@ export const AuthProvider = ({ children }) => {
     }
   }, [token, fetchUserProfile]);
 
-  // ===== CONTEXT VALUE =====
   const value = {
     user,
     token,

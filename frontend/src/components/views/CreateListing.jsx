@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import React from "react";
 import AvailabilityPicker from "./AvailabilityPicker";
-// ─── Icons ────────────────────────────────────────────────────────────────────
+
 const Icon = ({ d, size = 24, className = "", strokeWidth = 2 }) => (
   <svg
     width={size}
@@ -65,7 +65,6 @@ const SparkleIcon = () => (
   />
 );
 
-// ─── Hooks ───────────────────────────────────────────────────────────────────
 const useForm = (initial) => {
   const [data, setData] = useState(initial);
   const set = useCallback(
@@ -91,7 +90,6 @@ const useToast = () => {
   return { toast, show };
 };
 
-// ─── UI Primitives ────────────────────────────────────────────────────────────
 const Label = ({ children, required }) => (
   <label className="block text-sm font-semibold text-gray-700 mb-1.5">
     {children}
@@ -325,7 +323,6 @@ const Spinner = ({ size = 20 }) => (
   </svg>
 );
 
-// ─── Constants ────────────────────────────────────────────────────────────────
 const STEPS = [
   { label: "Basics", icon: <HomeIcon /> },
   { label: "Location", icon: <PinIcon /> },
@@ -417,7 +414,6 @@ const validate = (step, data, images) => {
   return e;
 };
 
-// ─── Step Components ──────────────────────────────────────────────────────────
 const StepBasics = ({ data, errors, handleChange, setField }) => (
   <div className="space-y-6">
     <Input
@@ -840,14 +836,13 @@ const StepPricing = ({ data, errors, handleChange, setField }) => {
   );
 };
 
-// ─── Success Overlay ──────────────────────────────────────────────────────────
 const SuccessOverlay = () => (
   <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-sm flex items-center justify-center p-4">
     <div
       className="bg-white rounded-3xl p-10 shadow-2xl text-center max-w-sm w-full"
       style={{ animation: "bounceIn 0.5s cubic-bezier(.34,1.56,.64,1) both" }}
     >
-      {/* Icon with badge */}
+      {}
       <div className="relative w-20 h-20 mx-auto mb-6">
         <div className="w-20 h-20 bg-amber-50 rounded-full flex items-center justify-center">
           <svg
@@ -867,7 +862,7 @@ const SuccessOverlay = () => (
             <polyline points="12 6 12 12 16 14" />
           </svg>
         </div>
-        {/* Green check badge */}
+        {}
         <div
           className="absolute -top-1 -right-1 w-7 h-7 bg-green-500 rounded-full flex items-center justify-center shadow-lg"
           style={{
@@ -902,7 +897,7 @@ const SuccessOverlay = () => (
         page.
       </p>
 
-      {/* Progress steps */}
+      {}
       <div className="flex items-center justify-center gap-1">
         {[
           { icon: "✓", label: "Submitted", done: true, active: false },
@@ -952,7 +947,6 @@ const SuccessOverlay = () => (
   </div>
 );
 
-// ─── Main Component ───────────────────────────────────────────────────────────
 export default function CreateListing() {
   const { data, set: setField, handleChange, setData } = useForm(INIT);
   const { toast, show: showToast } = useToast();
@@ -1052,6 +1046,16 @@ export default function CreateListing() {
       formData.append("title", data.title);
       formData.append("description", data.description);
       formData.append("price", data.price);
+
+      formData.append("pricing", JSON.stringify({
+        basePrice: data.price,
+        finalPrice: data.price,
+        platformFee: 0,
+        taxAmount: 0,
+        cleaningFee: 0,
+        isAllInclusive: true
+      }));
+
       formData.append("country", data.country);
       formData.append("location", data.location);
       formData.append("category", data.category);
@@ -1111,11 +1115,11 @@ export default function CreateListing() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-indigo-50/30 to-violet-50/40 py-10 px-4">
-      {/* ── Success Overlay ── */}
+      {}
       {success && <SuccessOverlay />}
 
       <div className="max-w-2xl mx-auto space-y-5">
-        {/* Header card */}
+        {}
         <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 mt-12">
           <div className="flex items-center justify-between mb-5">
             <div>
@@ -1157,7 +1161,7 @@ export default function CreateListing() {
           </div>
         </div>
 
-        {/* Form card */}
+        {}
         <div className="bg-white rounded-2xl shadow-sm border border-gray-100">
           <div className="p-6 sm:p-8" ref={contentRef}>
             {step === 0 && <StepBasics {...stepProps} />}
@@ -1209,7 +1213,7 @@ export default function CreateListing() {
         </p>
       </div>
 
-      {/* Toast */}
+      {}
       {toast && (
         <div
           key={toast.id}

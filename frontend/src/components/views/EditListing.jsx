@@ -27,7 +27,6 @@ const INIT = {
   guests: 1, bedrooms: 1, beds: 1, baths: 1,
 };
 
-/* ── Stepper ── */
 const Stepper = ({ label, name, value, onChange, min = 1, max = 30 }) => (
   <div className="el-stepper">
     <span className="el-stepper__label">{label}</span>
@@ -41,7 +40,6 @@ const Stepper = ({ label, name, value, onChange, min = 1, max = 30 }) => (
   </div>
 );
 
-/* ── Field wrapper ── */
 const Field = ({ label, children, hint }) => (
   <div className="el-field">
     <label className="el-field__label">{label}</label>
@@ -61,7 +59,6 @@ export default function EditListing() {
   const navigate                    = useNavigate();
   const { id }                      = useParams();
 
-  /* ── init map ── */
   useEffect(() => {
     if (!mapContainerRef.current || mapRef.current) return;
     mapRef.current = new mapboxgl.Map({
@@ -74,7 +71,6 @@ export default function EditListing() {
     return () => { mapRef.current?.remove(); mapRef.current = null; };
   }, []);
 
-  /* ── geocode ── */
   const geocode = useCallback(async (location, country) => {
     if (!mapRef.current || !location || !country) return;
     try {
@@ -86,10 +82,9 @@ export default function EditListing() {
       document.querySelectorAll(".mapboxgl-marker").forEach(m => m.remove());
       new mapboxgl.Marker({ color: "#6366f1" }).setLngLat(coords).addTo(mapRef.current);
       mapRef.current.flyTo({ center: coords, zoom: 12, essential: true });
-    } catch { /* silent */ }
+    } catch {  }
   }, []);
 
-  /* ── fetch listing ── */
   useEffect(() => {
     (async () => {
       try {
@@ -112,7 +107,6 @@ export default function EditListing() {
     })();
   }, [id, geocode]);
 
-  /* ── handlers ── */
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData(p => ({ ...p, [name]: name === "price" ? Number(value) : value }));
@@ -413,7 +407,7 @@ export default function EditListing() {
 
       <div className="el-page">
         <div className="el-shell">
-          {/* Header */}
+          {}
           <motion.div className="el-header"
             initial={{ opacity: 0, y: -12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: .4 }}>
             <p className="el-header__eyebrow">Host Dashboard</p>
@@ -421,7 +415,7 @@ export default function EditListing() {
             <p className="el-header__sub">Changes are saved immediately and visible to guests.</p>
           </motion.div>
 
-          {/* Warning */}
+          {}
           <motion.div className="el-warning"
             initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: .1 }}>
             <span className="el-warning__icon">⚠️</span>

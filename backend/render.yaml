@@ -2,14 +2,11 @@ services:
   - type: web
     name: wanderlust
     runtime: node
-    buildCommand: npm run build
+    buildCommand: npm install
     startCommand: node app.js
     envVars:
       - key: ATLAS_DB
-         sync: false  
-        fromDatabase:
-          name: wanderlust
-          property: connectionString
+        sync: false
       - key: JWT_SECRET
         generateValue: true
       - key: NODE_ENV

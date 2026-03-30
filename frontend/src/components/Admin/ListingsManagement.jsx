@@ -12,7 +12,6 @@ const STATUS = {
 const inputCls  = "w-full pl-10 pr-4 py-3 text-base rounded-xl border border-gray-200 bg-white text-gray-900 placeholder:text-gray-400 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 shadow-sm transition-all";
 const selectCls = "text-base px-4 py-3 rounded-xl border border-gray-200 bg-white text-gray-700 font-medium focus:outline-none focus:border-blue-500 shadow-sm transition-colors";
 
-// ─── Rejection Reason Modal ───────────────────────────────────────────────────
 const RejectModal = ({ listing, onClose, onConfirm }) => {
   const [reason, setReason] = useState('');
   if (!listing) return null;
@@ -55,7 +54,6 @@ const RejectModal = ({ listing, onClose, onConfirm }) => {
   );
 };
 
-// ─── Listing Detail Modal ─────────────────────────────────────────────────────
 const ListingModal = ({ listing, onClose, onApprove, onRejectClick, onFeature }) => {
   if (!listing) return null;
   const s = STATUS[listing.status] ?? STATUS.pending;
@@ -130,7 +128,6 @@ const ListingModal = ({ listing, onClose, onApprove, onRejectClick, onFeature })
   );
 };
 
-// ─── Card ─────────────────────────────────────────────────────────────────────
 const ListingCard = ({ listing, onView, onApprove, onRejectClick }) => {
   const s = STATUS[listing.status] ?? STATUS.pending;
   return (
@@ -204,7 +201,6 @@ const StatsBar = ({ listings }) => {
   );
 };
 
-// ─── Main ─────────────────────────────────────────────────────────────────────
 const ListingsManagement = () => {
   const [listings, setListings]         = useState([]);
   const [loading, setLoading]           = useState(true);

@@ -61,7 +61,6 @@ const GlobalStyle = () => (
   `}</style>
 );
 
-// ─── Contact Dialog ───────────────────────────────────────────────────────────
 const ContactHostDialog = ({ isOpen, onClose, owner }) => {
   const [copied, setCopied] = useState(null);
   const [mounted, setMounted] = useState(false);
@@ -116,7 +115,7 @@ const ContactHostDialog = ({ isOpen, onClose, owner }) => {
           transition: "transform .28s cubic-bezier(.34,1.46,.64,1), opacity .28s ease",
         }}
       >
-        {/* Header */}
+        {}
         <div style={{ padding: "20px 24px 18px", borderBottom: "1px solid #f3f4f6", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
           <div>
             <h3 className="host-serif" style={{ margin: 0, fontSize: 22, fontWeight: 600, color: "#111" }}>Contact Host</h3>
@@ -132,7 +131,7 @@ const ContactHostDialog = ({ isOpen, onClose, owner }) => {
           </button>
         </div>
 
-        {/* Avatar row */}
+        {}
         <div style={{ padding: "20px 24px 0", display: "flex", alignItems: "center", gap: 14 }}>
           <div style={{ width: 52, height: 52, borderRadius: "50%", overflow: "hidden", border: "2px solid #fecaca", flexShrink: 0 }}>
             {owner?.profilePic
@@ -146,7 +145,7 @@ const ContactHostDialog = ({ isOpen, onClose, owner }) => {
           </div>
         </div>
 
-        {/* Contact rows */}
+        {}
         <div style={{ padding: "18px 24px", display: "flex", flexDirection: "column", gap: 10 }}>
           {[
             { icon: <Mail size={16} color="#ef4444" />, label: "Email", value: email, field: "email", bg: "#fff5f5" },
@@ -174,7 +173,7 @@ const ContactHostDialog = ({ isOpen, onClose, owner }) => {
             </div>
           ))}
 
-          {/* Info pills */}
+          {}
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, marginTop: 4 }}>
             <div style={{ background: "#fff5f5", border: "1px solid #fecaca", borderRadius: 10, padding: "11px 14px" }}>
               <div style={{ fontSize: 10, color: "#ef4444", textTransform: "uppercase", letterSpacing: ".07em", marginBottom: 4 }}>Prefers</div>
@@ -191,7 +190,7 @@ const ContactHostDialog = ({ isOpen, onClose, owner }) => {
           </div>
         </div>
 
-        {/* Footer */}
+        {}
         <div style={{ padding: "0 24px 22px" }}>
           <button
             onClick={close}
@@ -206,7 +205,6 @@ const ContactHostDialog = ({ isOpen, onClose, owner }) => {
   );
 };
 
-// ─── Main HostSection ─────────────────────────────────────────────────────────
 const HostSection = ({ owner }) => {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [saved, setSaved] = useState(false);
@@ -242,12 +240,12 @@ const HostSection = ({ owner }) => {
 
       <div style={{ borderTop: "1px solid #e5e7eb", paddingTop: 32, paddingBottom: 40 }}>
 
-        {/* ── Top: Avatar + Info ── */}
+        {}
         <div
           className={`fade-up ${visible ? "in" : ""}`}
           style={{ display: "flex", alignItems: "flex-start", gap: 28, marginBottom: 32, flexWrap: "wrap" }}
         >
-          {/* Avatar */}
+          {}
           <div
             className="avatar-wrap"
             onClick={() => setDialogOpen(true)}
@@ -268,7 +266,7 @@ const HostSection = ({ owner }) => {
             )}
           </div>
 
-          {/* Name + meta */}
+          {}
           <div style={{ flex: 1, minWidth: 200 }}>
             <h2
               className="host-serif name-link"
@@ -299,7 +297,7 @@ const HostSection = ({ owner }) => {
           </div>
         </div>
 
-        {/* ── Stats grid ── */}
+        {}
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(150px, 1fr))", gap: 14, marginBottom: 28 }}>
           {stats.map((s, i) => (
             <div
@@ -316,7 +314,7 @@ const HostSection = ({ owner }) => {
           ))}
         </div>
 
-        {/* ── Bio ── */}
+        {}
         <div
           className={`fade-up ${visible ? "in" : ""}`}
           style={{ background: "#fafafa", border: "1.5px solid #e5e7eb", borderRadius: 18, padding: "24px 26px", marginBottom: 28, transitionDelay: "400ms" }}
@@ -329,7 +327,7 @@ const HostSection = ({ owner }) => {
           </p>
         </div>
 
-        {/* ── Buttons ── */}
+        {}
         <div
           className={`fade-up ${visible ? "in" : ""}`}
           style={{ display: "flex", gap: 12, flexWrap: "wrap", transitionDelay: "500ms" }}

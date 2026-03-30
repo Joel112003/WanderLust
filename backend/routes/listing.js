@@ -7,9 +7,8 @@ const { isLoggedIn, isAdmin } = require("../middleware");
 const upload = multer({ storage });
 const Listing = require("../models/listing");
 
-// ─── Public listing routes ────────────────────────────────────────────────────
-router.get("/",        listingController.getAllListings);   // approved only
-router.get("/search",  listingController.searchListings);  // approved only
+router.get("/",        listingController.getAllListings);
+router.get("/search",  listingController.searchListings);
 router.get("/user",    isLoggedIn, listingController.getUserListings);
 router.get("/:id",     listingController.getListingById);
 router.get("/:id/edit", listingController.getListingForEdit);
@@ -34,8 +33,6 @@ router.put("/:id", isLoggedIn, upload.single("image"), async (req, res, next) =>
 
 router.delete("/:id", isLoggedIn, listingController.deleteListing);
 
-// ─── Owner: manage unavailable dates ─────────────────────────────────────────
-// PATCH /listings/:id/unavailable-dates   body: { unavailableDates: [...] }
 router.patch("/:id/unavailable-dates", isLoggedIn, async (req, res) => {
   try {
     const { id } = req.params;
@@ -46,12 +43,10 @@ router.patch("/:id/unavailable-dates", isLoggedIn, async (req, res) => {
       return res.status(404).json({ success: false, error: "Listing not found" });
     }
 
-    // Check if the user is the owner
     if (listing.owner.toString() !== req.user._id.toString()) {
       return res.status(403).json({ success: false, error: "You are not authorized to modify this listing" });
     }
 
-    // Validate the unavailableDates format
     if (!Array.isArray(unavailableDates)) {
       return res.status(400).json({ success: false, error: "unavailableDates must be an array" });
     }
@@ -66,8 +61,6 @@ router.patch("/:id/unavailable-dates", isLoggedIn, async (req, res) => {
   }
 });
 
-// ─── Admin: approve / reject a listing ───────────────────────────────────────
-// PATCH /listings/:id/status   body: { status: "approved" | "rejected" }
 router.patch("/:id/status", isLoggedIn, isAdmin, async (req, res) => {
   try {
     const { id } = req.params;
@@ -92,7 +85,6 @@ router.patch("/:id/status", isLoggedIn, isAdmin, async (req, res) => {
   }
 });
 
-// ─── Error handler ────────────────────────────────────────────────────────────
 router.use((err, req, res, next) => {
   console.error("Router error:", err);
   const statusCode = err instanceof multer.MulterError ? 400 : 500;

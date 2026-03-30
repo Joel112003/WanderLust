@@ -60,7 +60,7 @@ export default function FrontPageOfCreateListings() {
   const goSignup = () => navigate('/auth/signup', { state: { from: '/listings/new' } });
 
   return (
-   
+
     <div style={{ fontFamily: "'Cormorant Garamond', Georgia, serif", background: '#FFFFFF', minHeight: '100vh', overflowX: 'hidden' }}>
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400;1,600;1,700&family=Outfit:wght@300;400;500;600;700&display=swap');
@@ -201,10 +201,10 @@ export default function FrontPageOfCreateListings() {
         .hero-vis-card { background: white; border-radius: 18px; padding: 22px 24px; box-shadow: 0 12px 40px rgba(10,10,8,0.08); border: 1px solid #F0F0EC; }
       `}</style>
 
-      {/* ─── HERO ─── */}
+      {}
       <section ref={heroRef} style={{ maxWidth: 1240, margin: '0 auto', padding: 'clamp(80px,10vw,120px) clamp(20px,5vw,60px) 80px', position: 'relative' }}>
 
-        {/* Ambient blob */}
+        {}
         <div style={{
           position: 'absolute', right: -60, top: -40, width: 600, height: 600, pointerEvents: 'none', zIndex: 0,
           background: `radial-gradient(ellipse at ${50 + mousePos.x * 12}% ${50 + mousePos.y * 12}%, #FAE8E5 0%, #FFF5F4 40%, transparent 70%)`,
@@ -213,7 +213,7 @@ export default function FrontPageOfCreateListings() {
 
         <div className={`hero-two-col`} style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 'clamp(40px,6vw,100px)', alignItems: 'center', position: 'relative', zIndex: 1 }}>
 
-          {/* LEFT */}
+          {}
           <div>
             <div className={`reveal p1 ${phase >= 1 ? 'visible' : ''}`} style={{ marginBottom: 28 }}>
               <span className="tag-pill">
@@ -262,12 +262,12 @@ export default function FrontPageOfCreateListings() {
             </div>
           </div>
 
-          {/* RIGHT - floating visual cards */}
+          {}
           <div className={`hero-visuals reveal-right ${phase >= 2 ? 'visible' : ''}`} style={{ position: 'relative', height: 540, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            {/* Large bg shape */}
+            {}
             <div style={{ position: 'absolute', inset: 20, borderRadius: 28, background: 'linear-gradient(145deg, #FFF5F3 0%, #FDF8F7 50%, #F5F5F2 100%)', border: '1px solid #F0EDE9' }} />
 
-            {/* Center card - earnings */}
+            {}
             <div className="hero-vis-card float-a" style={{ position: 'absolute', left: '8%', top: '12%', width: 200, zIndex: 3 }}>
               <div style={{ fontFamily: 'var(--sans)', fontSize: 11, fontWeight: 600, color: 'var(--lighter)', letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: 10 }}>This month</div>
               <div style={{ fontFamily: 'var(--serif)', fontSize: 38, fontWeight: 700, color: 'var(--ink)', lineHeight: 1 }}>$3,240</div>
@@ -276,7 +276,7 @@ export default function FrontPageOfCreateListings() {
               </div>
             </div>
 
-            {/* Booking card */}
+            {}
             <div className="hero-vis-card float-b" style={{ position: 'absolute', right: '6%', top: '22%', width: 190, zIndex: 3 }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 12 }}>
                 <div style={{ width: 36, height: 36, borderRadius: 10, background: '#FEF3C7', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 18 }}>🏡</div>
@@ -288,7 +288,7 @@ export default function FrontPageOfCreateListings() {
               <div style={{ fontFamily: 'var(--sans)', fontSize: 12, color: 'var(--muted)', lineHeight: 1.5 }}>Marcus T. booked 5 nights · <strong style={{ color: 'var(--accent)' }}>$890</strong></div>
             </div>
 
-            {/* Rating card */}
+            {}
             <div className="hero-vis-card float-c" style={{ position: 'absolute', left: '12%', bottom: '16%', width: 170, zIndex: 3 }}>
               <div style={{ fontFamily: 'var(--sans)', fontSize: 11, color: 'var(--lighter)', marginBottom: 8, fontWeight: 500 }}>Guest review</div>
               <div style={{ display: 'flex', gap: 3, marginBottom: 8 }}>
@@ -299,7 +299,7 @@ export default function FrontPageOfCreateListings() {
               <div style={{ fontFamily: 'var(--serif)', fontSize: 14, color: 'var(--charcoal)', lineHeight: 1.5, fontStyle: 'italic' }}>"Absolutely stunning view, 10/10!"</div>
             </div>
 
-            {/* Countries card */}
+            {}
             <div className="hero-vis-card float-b" style={{ position: 'absolute', right: '4%', bottom: '18%', width: 150, zIndex: 3, textAlign: 'center', padding: '20px 16px' }}>
               <div style={{ fontFamily: 'var(--serif)', fontWeight: 700, fontSize: 32, color: 'var(--ink)', lineHeight: 1 }}>190+</div>
               <div style={{ fontFamily: 'var(--sans)', fontSize: 12, color: 'var(--muted)', marginTop: 6, fontWeight: 400 }}>Countries<br />represented</div>
@@ -308,7 +308,7 @@ export default function FrontPageOfCreateListings() {
         </div>
       </section>
 
-      {/* ─── MARQUEE ─── */}
+      {}
       <div style={{ borderTop: '1px solid #F0F0EC', borderBottom: '1px solid #F0F0EC', padding: '14px 0', overflow: 'hidden', background: '#FAFAF8' }}>
         <div className="marquee-outer">
           <div className="marquee-inner">
@@ -328,22 +328,21 @@ export default function FrontPageOfCreateListings() {
         </div>
       </div>
 
-      {/* ─── STATS ─── */}
+      {}
       <StatsSection />
 
-      {/* ─── FEATURES ─── */}
+      {}
       <FeaturesSection />
 
-      {/* ─── PROCESS ─── */}
+      {}
       <ProcessSection />
 
-      {/* ─── CTA ─── */}
+      {}
       <CtaSection goSignup={goSignup} goLogin={goLogin} />
     </div>
   );
 }
 
-/* ─── Stats ─── */
 function StatsSection() {
   const ref = useRef(null);
   const [vis, setVis] = useState(false);
@@ -379,7 +378,6 @@ function StatsSection() {
   );
 }
 
-/* ─── Features ─── */
 const FEATURES = [
   { icon: Clock, title: 'Flexible scheduling', desc: 'Block dates, set rules, and adjust availability at any time with ease.' },
   { icon: CreditCard, title: 'Keep 97% earnings', desc: 'Set your own prices and keep nearly all of every booking.' },
@@ -445,7 +443,6 @@ function FeaturesSection() {
   );
 }
 
-/* ─── Process ─── */
 const STEPS = [
   { num: '01', title: 'Create your listing', desc: 'Add your space details, photos, and set your own price in minutes.' },
   { num: '02', title: 'Get discovered', desc: 'Your listing is shown to verified travelers in 190+ countries.' },
@@ -493,7 +490,6 @@ function ProcessSection() {
   );
 }
 
-/* ─── CTA ─── */
 function CtaSection({ goSignup, goLogin }) {
   const ref = useRef(null);
   const [inView, setInView] = useState(false);
@@ -511,7 +507,7 @@ function CtaSection({ goSignup, goLogin }) {
           opacity: inView ? 1 : 0, transform: inView ? 'translateY(0) scale(1)' : 'translateY(30px) scale(0.98)',
           transition: 'opacity 0.9s, transform 0.9s',
         }}>
-          {/* Decorative elements */}
+          {}
           <div style={{ position: 'absolute', right: -80, top: -80, width: 500, height: 500, borderRadius: '50%', background: 'radial-gradient(ellipse, rgba(200,56,42,0.2) 0%, transparent 70%)', pointerEvents: 'none' }} />
           <div style={{ position: 'absolute', left: -40, bottom: -80, width: 300, height: 300, borderRadius: '50%', background: 'radial-gradient(ellipse, rgba(200,56,42,0.08) 0%, transparent 70%)', pointerEvents: 'none' }} />
           <div style={{ display: 'grid', gridTemplateColumns: '1fr auto', gap: 60, alignItems: 'center', position: 'relative', zIndex: 1 }}>

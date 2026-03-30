@@ -7,7 +7,6 @@ const fs = require('fs');
 const path = require('path');
 const emailService = require('../services/emailService');
 
-// Get dashboard statistics
 const getDashboardStats = async (req, res) => {
   try {
     const stats = {
@@ -24,19 +23,18 @@ const getDashboardStats = async (req, res) => {
         .limit(5)
         .populate('owner', 'username')
     };
-    
+
     res.json(stats);
   } catch (err) {
     res.status(500).json({ message: 'Server error' });
   }
 };
 
-// Get all listings with filters
 const getAllListings = async (req, res) => {
   try {
     const { status, featured, search } = req.query;
     const query = {};
-    
+
     if (status) query.status = status;
     if (featured) query.featured = featured === 'true';
     if (search) {
@@ -45,18 +43,17 @@ const getAllListings = async (req, res) => {
         { description: { $regex: search, $options: 'i' } }
       ];
     }
-    
+
     const listings = await Listing.find(query)
       .populate('owner', 'username email')
       .sort({ createdAt: -1 });
-      
+
     res.json(listings);
   } catch (err) {
     res.status(500).json({ message: 'Server error' });
   }
 };
 
-// Update listing status (approve/reject)
 const updateListingStatus = async (req, res) => {
   try {
     const { id } = req.params;
@@ -67,7 +64,6 @@ const updateListingStatus = async (req, res) => {
 
     const updateData = { status };
 
-    // Save rejection reason (clear it if approving)
     if (status === "rejected") {
       updateData.rejectionReason = reason || "Your listing did not meet our guidelines.";
     } else {
@@ -80,7 +76,6 @@ const updateListingStatus = async (req, res) => {
     if (!listing)
       return res.status(404).json({ success: false, error: "Listing not found" });
 
-    // ── Send email to the listing owner ──────────────────────────────────────
     if (listing.owner?.email) {
       if (status === "approved") {
         await emailService.sendListingApproved({
@@ -109,37 +104,35 @@ const updateListingStatus = async (req, res) => {
     res.status(500).json({ success: false, error: "Failed to update listing status" });
   }
 };
-// Toggle featured status
+
 const toggleFeatured = async (req, res) => {
   try {
     const listing = await Listing.findById(req.params.id);
     if (!listing) {
       return res.status(404).json({ message: 'Listing not found' });
     }
-    
+
     listing.featured = !listing.featured;
     await listing.save();
-    
+
     res.json(listing);
   } catch (err) {
     res.status(500).json({ message: 'Server error' });
   }
 };
 
-// Get all users
 const getAllUsers = async (req, res) => {
   try {
     const users = await User.find()
       .select('-password')
       .sort({ createdAt: -1 });
-      
+
     res.json(users);
   } catch (err) {
     res.status(500).json({ message: 'Server error' });
   }
 };
 
-// Update user role
 const updateUserRole = async (req, res) => {
   try {
     const { isAdmin } = req.body;
@@ -148,32 +141,30 @@ const updateUserRole = async (req, res) => {
       { isAdmin },
       { new: true }
     ).select('-password');
-    
+
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
     }
-    
+
     res.json(user);
   } catch (err) {
     res.status(500).json({ message: 'Server error' });
   }
 };
 
-// Get all reviews
 const getAllReviews = async (req, res) => {
   try {
     const reviews = await Review.find()
       .populate('author', 'username')
       .populate('listing', 'title')
       .sort({ createdAt: -1 });
-      
+
     res.json(reviews);
   } catch (err) {
     res.status(500).json({ message: 'Server error' });
   }
 };
 
-// Approve review
 const approveReview = async (req, res) => {
   try {
     const review = await Review.findByIdAndUpdate(
@@ -181,25 +172,24 @@ const approveReview = async (req, res) => {
       { approved: true },
       { new: true }
     );
-    
+
     if (!review) {
       return res.status(404).json({ message: 'Review not found' });
     }
-    
+
     res.json(review);
   } catch (err) {
     res.status(500).json({ message: 'Server error' });
   }
 };
 
-// Delete a listing
 const deleteListing = async (req, res) => {
   try {
     const listing = await Listing.findByIdAndDelete(req.params.id);
     if (!listing) {
       return res.status(404).json({ message: 'Listing not found' });
     }
-    // Also delete associated reviews
+
     await Review.deleteMany({ listing: req.params.id });
     res.json({ message: 'Listing deleted successfully' });
   } catch (err) {
@@ -208,14 +198,13 @@ const deleteListing = async (req, res) => {
   }
 };
 
-// Delete a user
 const deleteUser = async (req, res) => {
   try {
     const user = await User.findByIdAndDelete(req.params.id);
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
     }
-    // Delete user's listings and reviews
+
     await Listing.deleteMany({ owner: req.params.id });
     await Review.deleteMany({ author: req.params.id });
     res.json({ message: 'User deleted successfully' });
@@ -225,7 +214,6 @@ const deleteUser = async (req, res) => {
   }
 };
 
-// Delete a review
 const deleteReview = async (req, res) => {
   try {
     const review = await Review.findByIdAndDelete(req.params.id);
@@ -242,66 +230,59 @@ const deleteReview = async (req, res) => {
 const adminLogin = async (req, res) => {
   try {
     const { email, password, username } = req.body;
-    
-    // Validate required fields
+
     if (!email || !password || !username) {
-      return res.status(400).json({ 
+      return res.status(400).json({
         success: false,
-        message: "Email, username, and password are required" 
+        message: "Email, username, and password are required"
       });
     }
 
-    // Check if user exists with both email and username
-    const user = await User.findOne({ 
+    const user = await User.findOne({
       email,
-      username 
+      username
     });
-    
+
     if (!user) {
-      return res.status(401).json({ 
+      return res.status(401).json({
         success: false,
-        message: "Invalid credentials" 
+        message: "Invalid credentials"
       });
     }
 
-    // Check admin status
     if (!user.isAdmin) {
-      return res.status(403).json({ 
+      return res.status(403).json({
         success: false,
-        message: "Access denied. Admin privileges required." 
+        message: "Access denied. Admin privileges required."
       });
     }
 
-    // Verify password
     const isValid = await user.authenticate(password);
-    
+
     if (!isValid) {
-      return res.status(401).json({ 
+      return res.status(401).json({
         success: false,
-        message: "Invalid credentials" 
+        message: "Invalid credentials"
       });
     }
 
-    // Ensure JWT_SECRET exists
     if (!process.env.JWT_SECRET) {
       console.error('JWT_SECRET is not defined in environment variables');
-      return res.status(500).json({ 
+      return res.status(500).json({
         success: false,
-        message: "Server configuration error" 
+        message: "Server configuration error"
       });
     }
 
-    // Generate JWT token
     const token = jwt.sign(
-      { 
+      {
         id: user._id,
-        isAdmin: user.isAdmin 
+        isAdmin: user.isAdmin
       },
       process.env.JWT_SECRET,
       { expiresIn: '24h' }
     );
 
-    // Send response
     res.json({
       success: true,
       token,
@@ -315,13 +296,13 @@ const adminLogin = async (req, res) => {
 
   } catch (err) {
     console.error('Admin login error:', err);
-    res.status(500).json({ 
+    res.status(500).json({
       success: false,
-      message: "Server error during login" 
+      message: "Server error during login"
     });
   }
 };
-  
+
   module.exports = {
     getDashboardStats,
     getAllListings,
@@ -331,7 +312,7 @@ const adminLogin = async (req, res) => {
     updateUserRole,
     getAllReviews,
     approveReview,
-    deleteListing,  // Add these new functions
+    deleteListing,
     deleteUser,
     deleteReview,
     adminLogin

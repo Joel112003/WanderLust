@@ -38,10 +38,9 @@ const bookingSchema = new mongoose.Schema(
       required: true,
     },
 
-    // Razorpay fields
     razorpay_order_id: {
       type: String,
-      required: true,
+      default: null,
     },
     razorpay_payment_id: {
       type: String,
@@ -52,11 +51,46 @@ const bookingSchema = new mongoose.Schema(
       default: null,
     },
 
-    // Booking lifecycle status
     status: {
       type: String,
-      enum: ["pending", "paid", "confirmed", "failed", "cancelled"],
+      enum: [
+        "pending",
+        "paid",
+        "confirmed",
+        "failed",
+        "cancelled",
+        "cancelled_by_owner",
+        "completed",
+      ],
       default: "pending",
+    },
+
+    cancellationReason: {
+      type: String,
+    },
+    isCancelledLastMinute: {
+      type: Boolean,
+      default: false,
+    },
+    cancellationDate: {
+      type: Date,
+    },
+
+    isAlternativeBooking: {
+      type: Boolean,
+      default: false,
+    },
+    originalBooking: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Booking",
+    },
+    priceDifferenceCovered: {
+      type: Number,
+      default: 0,
+    },
+
+    confirmationNumber: {
+      type: String,
     },
   },
   { timestamps: true }

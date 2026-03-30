@@ -35,7 +35,7 @@ const Login = () => {
     setLoading(true);
 
     try {
-      // ✅ Correctly passing email and password as two separate args to AuthContext login
+
       const result = await login(email, password);
 
       if (result.success) {

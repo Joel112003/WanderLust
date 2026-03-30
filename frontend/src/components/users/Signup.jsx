@@ -52,7 +52,7 @@ const Signup = () => {
     setLoading(true);
 
     try {
-      // ✅ Use AuthContext register — passes full userData object
+
       const result = await register({ username, email, password });
 
       if (result.success) {
@@ -73,7 +73,6 @@ const Signup = () => {
     }
   };
 
-  // Animation variants
   const containerVariants = {
     hidden: { opacity: 0, y: 50 },
     visible: {
@@ -156,7 +155,7 @@ const Signup = () => {
         overflow: "hidden",
       }}
     >
-      {/* Animated background patterns */}
+      {}
       <motion.div
         variants={bgPatternVariants}
         style={{
@@ -285,7 +284,7 @@ const Signup = () => {
           variants={containerVariants}
           style={{ display: "flex", flexDirection: "column", gap: "1.25rem" }}
         >
-          {/* Username */}
+          {}
           <motion.div
             variants={formItemVariants}
             style={{ display: "flex", flexDirection: "column", gap: 6 }}
@@ -344,7 +343,7 @@ const Signup = () => {
             )}
           </motion.div>
 
-          {/* Email */}
+          {}
           <motion.div
             variants={formItemVariants}
             style={{ display: "flex", flexDirection: "column", gap: 6 }}
@@ -405,7 +404,7 @@ const Signup = () => {
             )}
           </motion.div>
 
-          {/* Password */}
+          {}
           <motion.div
             variants={formItemVariants}
             style={{ display: "flex", flexDirection: "column", gap: 6 }}
@@ -491,7 +490,7 @@ const Signup = () => {
               </motion.button>
             </div>
 
-            {/* Password checklist */}
+            {}
             {password && (
               <motion.ul
                 initial={{ opacity: 0, height: 0 }}
@@ -530,7 +529,7 @@ const Signup = () => {
               </motion.ul>
             )}
 
-            {/* Password strength bar */}
+            {}
             {password && (
               <div style={{ marginTop: 8 }}>
                 <div
@@ -580,7 +579,7 @@ const Signup = () => {
             )}
           </motion.div>
 
-          {/* Submit */}
+          {}
           <motion.button
             variants={buttonVariants}
             whileHover="hover"

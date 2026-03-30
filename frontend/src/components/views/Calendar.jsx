@@ -3,7 +3,7 @@ import { DateRange } from "react-date-range";
 import { format } from "date-fns";
 import { motion, AnimatePresence } from "framer-motion";
 import "react-date-range/dist/styles.css";
-import "react-date-range/dist/theme/default.css"; // Default theme
+import "react-date-range/dist/theme/default.css";
 
 const Calendar = ({ onDateChange }) => {
   const [showCalendar, setShowCalendar] = useState(false);
@@ -15,7 +15,6 @@ const Calendar = ({ onDateChange }) => {
     },
   ]);
 
-  // Handle date change
   const handleSelect = (ranges) => {
     setDateRange([ranges.selection]);
     onDateChange(ranges.selection);
@@ -23,7 +22,7 @@ const Calendar = ({ onDateChange }) => {
 
   return (
     <div className="relative w-full max-w-sm">
-      {/* Button to Toggle Calendar */}
+      {}
       <button
         onClick={() => setShowCalendar(!showCalendar)}
         className="w-full p-3 border border-gray-300 rounded-lg flex justify-between items-center bg-white shadow-md hover:shadow-lg transition"
@@ -35,7 +34,7 @@ const Calendar = ({ onDateChange }) => {
         <span className="text-gray-500">📅</span>
       </button>
 
-      {/* Animated Calendar Dropdown */}
+      {}
       <AnimatePresence>
         {showCalendar && (
           <motion.div
@@ -50,7 +49,7 @@ const Calendar = ({ onDateChange }) => {
               moveRangeOnFirstSelection={false}
               ranges={dateRange}
               onChange={handleSelect}
-              rangeColors={["#ff385c"]} // Airbnb Red
+              rangeColors={["#ff385c"]}
               className="p-2"
             />
           </motion.div>

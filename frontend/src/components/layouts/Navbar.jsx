@@ -1,6 +1,8 @@
 import React, { useState, useContext, useEffect, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { AuthContext } from "../../AuthContext";
+import NotificationDropdown from "./NotificationDropdown";
+import MessageDropdown from "./MessageDropdown";
 import "../../utilis/css/Navbar.css";
 import toast, { Toaster } from "react-hot-toast";
 
@@ -56,9 +58,9 @@ const Navbar = () => {
   const handleBecomeHost = () => {
     setMenuOpen(false);
     if (isAuthenticated) {
-      navigate("/listings/new"); // logged in → go straight to create
+      navigate("/listings/new");
     } else {
-      navigate("/become-host"); // not logged in → show landing page first
+      navigate("/become-host");
     }
   };
 
@@ -84,25 +86,33 @@ const Navbar = () => {
           </Link>
         </div>
 
-        <div className="navbar-user" ref={menuRef}>
-          <div
-            className="user-menu"
-            onClick={() => setMenuOpen((o) => !o)}
-            aria-expanded={menuOpen}
-            aria-haspopup="true"
-          >
-            <i
-              className={`fa-solid fa-bars menu-icon${menuOpen ? " open" : ""}`}
-            />
-            <div className="user-icon">
-              <b>
-                <i className="fa-solid fa-user" />
-              </b>
-            </div>
-          </div>
+        <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+          {isAuthenticated && (
+            <>
+              <MessageDropdown />
+              <NotificationDropdown />
+            </>
+          )}
 
-          <div className={`dropdown-menu${menuOpen ? " show" : ""}`}>
-            {isAuthenticated ? (
+          <div className="navbar-user" ref={menuRef}>
+            <div
+              className="user-menu"
+              onClick={() => setMenuOpen((o) => !o)}
+              aria-expanded={menuOpen}
+              aria-haspopup="true"
+            >
+              <i
+                className={`fa-solid fa-bars menu-icon${menuOpen ? " open" : ""}`}
+              />
+              <div className="user-icon">
+                <b>
+                  <i className="fa-solid fa-user" />
+                </b>
+              </div>
+            </div>
+
+            <div className={`dropdown-menu${menuOpen ? " show" : ""}`}>
+              {isAuthenticated ? (
               <>
                 <Link
                   to="/profile"
@@ -165,7 +175,8 @@ const Navbar = () => {
                   Help Center
                 </Link>
               </>
-            )}
+              )}
+            </div>
           </div>
         </div>
       </nav>

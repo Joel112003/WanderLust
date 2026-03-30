@@ -3,7 +3,6 @@ const Listing = require("../models/listing");
 const Review = require("../models/review");
 const PDFDocument = require("pdfkit");
 
-// Helper function to get date range
 const getDateRange = (range) => {
   const endDate = new Date();
   let startDate = new Date();
@@ -22,19 +21,18 @@ const getDateRange = (range) => {
       startDate.setFullYear(startDate.getFullYear() - 1);
       break;
     case "all":
-      startDate = new Date(0); // Beginning of time
+      startDate = new Date(0);
       break;
     default:
-      startDate.setDate(startDate.getDate() - 7); // Default to week
+      startDate.setDate(startDate.getDate() - 7);
   }
 
   return { startDate, endDate };
 };
 
-// Generate report for users, listings, reviews or all
 const generateReport = async (req, res) => {
   try {
-    // Check if user is admin
+
     if (!req.user || !req.user.isAdmin) {
       return res.status(403).json({ message: "Not authorized as admin" });
     }
@@ -42,25 +40,20 @@ const generateReport = async (req, res) => {
     const { type = "all", dateRange = "week" } = req.query;
     const { startDate, endDate } = getDateRange(dateRange);
 
-    // Validate report type
     if (!["all", "users", "listings", "reviews"].includes(type)) {
       return res.status(400).json({ message: "Invalid report type" });
     }
 
-    // Create PDF document
     const doc = new PDFDocument();
     const fileName = `wanderlust_${type}_report_${
       new Date().toISOString().split("T")[0]
     }.pdf`;
 
-    // Set response headers for file download
     res.setHeader("Content-Type", "application/pdf");
     res.setHeader("Content-Disposition", `attachment; filename=${fileName}`);
 
-    // Pipe PDF directly to response
     doc.pipe(res);
 
-    // Add report title and meta information
     doc
       .font("Helvetica-Bold")
       .fontSize(20)
@@ -81,7 +74,6 @@ const generateReport = async (req, res) => {
 
     doc.moveDown().moveDown();
 
-    // Fetch data based on report type
     if (type === "all" || type === "users") {
       await generateUsersReport(doc, startDate, endDate);
     }
@@ -94,7 +86,6 @@ const generateReport = async (req, res) => {
       await generateReviewsReport(doc, startDate, endDate);
     }
 
-    // Finalize PDF and end response
     doc.end();
   } catch (error) {
     console.error("Error generating report:", error);
@@ -104,18 +95,15 @@ const generateReport = async (req, res) => {
   }
 };
 
-// Generate users report section
 async function generateUsersReport(doc, startDate, endDate) {
   try {
-    // Get total users
+
     const totalUsers = await User.countDocuments();
 
-    // Get new users in date range
     const newUsers = await User.countDocuments({
       createdAt: { $gte: startDate, $lte: endDate },
     });
 
-    // Get users by registration date (grouped by month)
     const usersByMonth = await User.aggregate([
       {
         $match: {
@@ -134,18 +122,15 @@ async function generateUsersReport(doc, startDate, endDate) {
       { $sort: { "_id.year": 1, "_id.month": 1 } },
     ]);
 
-    // Get admin vs regular user counts
     const adminCount = await User.countDocuments({ isAdmin: true });
     const regularUserCount = totalUsers - adminCount;
 
-    // Write section header
     doc
       .font("Helvetica-Bold")
       .fontSize(16)
       .text("User Statistics", { underline: true });
     doc.moveDown();
 
-    // Write user statistics
     doc
       .font("Helvetica")
       .fontSize(12)
@@ -158,7 +143,6 @@ async function generateUsersReport(doc, startDate, endDate) {
 
     doc.moveDown();
 
-    // User distribution by month
     if (usersByMonth.length > 0) {
       doc
         .font("Helvetica-Bold")
@@ -166,7 +150,6 @@ async function generateUsersReport(doc, startDate, endDate) {
         .text("User Registration by Month");
       doc.moveDown();
 
-      // Create a simple table
       const monthNames = [
         "Jan",
         "Feb",
@@ -197,7 +180,6 @@ async function generateUsersReport(doc, startDate, endDate) {
         .text("No new users registered in the selected date range.");
     }
 
-    // Add a page break
     doc.addPage();
   } catch (error) {
     console.error("Error generating users report:", error);
@@ -208,28 +190,23 @@ async function generateUsersReport(doc, startDate, endDate) {
   }
 }
 
-// Generate listings report section
 async function generateListingsReport(doc, startDate, endDate) {
   try {
-    // Get total listings
+
     const totalListings = await Listing.countDocuments();
 
-    // Get new listings in date range
     const newListings = await Listing.countDocuments({
       createdAt: { $gte: startDate, $lte: endDate },
     });
 
-    // Get listings by status
     const [activeListings, pendingListings, rejectedListings] = await Promise.all([
       Listing.countDocuments({ status: "approved" }),
       Listing.countDocuments({ status: "pending" }),
       Listing.countDocuments({ status: "rejected" })
     ]);
 
-    // Get featured listings count
     const featuredListings = await Listing.countDocuments({ featured: true });
 
-    // Get listings by category
     const listingsByCategory = await Listing.aggregate([
       {
         $group: {
@@ -240,7 +217,6 @@ async function generateListingsReport(doc, startDate, endDate) {
       { $sort: { count: -1 } },
     ]);
 
-    // Get average price
     const priceStats = await Listing.aggregate([
       {
         $group: {
@@ -252,14 +228,12 @@ async function generateListingsReport(doc, startDate, endDate) {
       },
     ]);
 
-    // Write section header
     doc
       .font("Helvetica-Bold")
       .fontSize(16)
       .text("Listing Statistics", { underline: true });
     doc.moveDown();
 
-    // Write listing statistics
     doc
       .font("Helvetica")
       .fontSize(12)
@@ -285,7 +259,6 @@ async function generateListingsReport(doc, startDate, endDate) {
 
     doc.moveDown();
 
-    // Listings by category
     if (listingsByCategory.length > 0) {
       doc.font("Helvetica-Bold").fontSize(14).text("Listings by Category");
       doc.moveDown();
@@ -304,7 +277,6 @@ async function generateListingsReport(doc, startDate, endDate) {
         .text("No category data available.");
     }
 
-    // Add a page break
     doc.addPage();
   } catch (error) {
     console.error("Error generating listings report:", error);
@@ -315,22 +287,18 @@ async function generateListingsReport(doc, startDate, endDate) {
   }
 }
 
-// Generate reviews report section
 async function generateReviewsReport(doc, startDate, endDate) {
   try {
-    // Get total reviews
+
     const totalReviews = await Review.countDocuments();
 
-    // Get new reviews in date range
     const newReviews = await Review.countDocuments({
       createdAt: { $gte: startDate, $lte: endDate },
     });
 
-    // Get approved vs pending reviews
     const approvedReviews = await Review.countDocuments({ approved: true });
     const pendingReviews = totalReviews - approvedReviews;
 
-    // Get average rating
     const ratingStats = await Review.aggregate([
       {
         $group: {
@@ -341,7 +309,6 @@ async function generateReviewsReport(doc, startDate, endDate) {
       },
     ]);
 
-    // Get rating distribution
     const ratingDistribution = await Review.aggregate([
       {
         $group: {
@@ -352,14 +319,12 @@ async function generateReviewsReport(doc, startDate, endDate) {
       { $sort: { _id: 1 } },
     ]);
 
-    // Write section header
     doc
       .font("Helvetica-Bold")
       .fontSize(16)
       .text("Review Statistics", { underline: true });
     doc.moveDown();
 
-    // Write review statistics
     doc
       .font("Helvetica")
       .fontSize(12)
@@ -378,12 +343,10 @@ async function generateReviewsReport(doc, startDate, endDate) {
 
     doc.moveDown();
 
-    // Rating distribution
     if (ratingDistribution.length > 0) {
       doc.font("Helvetica-Bold").fontSize(14).text("Rating Distribution");
       doc.moveDown();
 
-      // Create a simple rating distribution chart
       for (let i = 5; i >= 1; i--) {
         const found = ratingDistribution.find((item) => item._id === i);
         const count = found ? found.count : 0;

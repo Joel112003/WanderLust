@@ -86,7 +86,7 @@ export default function HelpCenter() {
       `}</style>
 
       <div className="hlp-root">
-        {/* Hero */}
+        {}
         <div className="hlp-hero">
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
             <h1 style={{ fontFamily: "'Lora', serif", fontSize: "clamp(32px, 5vw, 52px)", fontWeight: 600, color: "#fff", margin: "0 0 12px", lineHeight: 1.15 }}>
@@ -113,7 +113,7 @@ export default function HelpCenter() {
 
         <div style={{ maxWidth: 860, margin: "0 auto", padding: "48px 24px 80px" }}>
 
-          {/* Quick Links */}
+          {}
           <motion.div variants={stagger} initial="hidden" animate="visible" style={{ marginBottom: 48 }}>
             <motion.h2 variants={fadeUp} style={{ fontFamily: "'Lora', serif", fontSize: 22, fontWeight: 600, marginBottom: 20, color: "#1c1a17" }}>
               Quick Links
@@ -129,11 +129,11 @@ export default function HelpCenter() {
             </div>
           </motion.div>
 
-          {/* FAQ Card */}
+          {}
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2, duration: 0.5 }}
             style={{ background: "#fff", border: "1.5px solid #ebe8e2", borderRadius: 24, overflow: "hidden" }}>
 
-            {/* Tabs */}
+            {}
             <div style={{ padding: "16px 20px", borderBottom: "1px solid #f0ece6", display: "flex", flexWrap: "wrap", gap: 6 }}>
               {TABS.map((tab, i) => (
                 <button key={i} className={`hlp-tab${activeTab === i ? " active" : ""}`}
@@ -143,7 +143,7 @@ export default function HelpCenter() {
               ))}
             </div>
 
-            {/* FAQs */}
+            {}
             <div style={{ padding: "28px 24px" }}>
               <h3 style={{ fontFamily: "'Lora', serif", fontSize: 18, fontWeight: 600, margin: "0 0 20px", color: "#1c1a17" }}>
                 Frequently Asked Questions
@@ -186,7 +186,7 @@ export default function HelpCenter() {
             </div>
           </motion.div>
 
-          {/* Contact */}
+          {}
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3, duration: 0.5 }}
             className="hlp-contact" style={{ marginTop: 32 }}>
             <h2 style={{ fontFamily: "'Lora', serif", fontSize: 28, fontWeight: 600, margin: "0 0 8px" }}>Still need help?</h2>

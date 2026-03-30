@@ -13,7 +13,6 @@
     to   { opacity: 1; transform: translateY(0); }
   }
 
-  /* ── Layout ── */
   .hero-section {
     background: linear-gradient(135deg, #fff5f5 0%, #fef6fb 50%, #f3f6ff 100%);
     padding: 1rem 0 0.5rem;
@@ -30,7 +29,6 @@
     gap: 28px;
   }
 
-  /* ── Card ── */
   .listing-link {
     display: block;
     text-decoration: none;
@@ -71,7 +69,6 @@
   }
   .listing-card:hover .accent-bar { transform: scaleX(1); }
 
-  /* ── Image ── */
   .listing-img-wrap {
     position: relative;
     width: 100%;
@@ -126,7 +123,6 @@
   .review-star  { color: #ff385c; font-size: 13px; }
   .review-count { color: #555; }
 
-  /* ── Body ── */
   .listing-body { padding: 18px 20px 20px; }
 
   .listing-title {
@@ -193,7 +189,6 @@
     transform: translateX(0);
   }
 
-  /* ── Skeletons ── */
   .skeleton-card {
     border-radius: 18px;
     overflow: hidden;
@@ -219,7 +214,6 @@
   }
   .skeleton-line:last-child { margin-bottom: 0; }
 
-  /* ── Toast ── */
   .toast {
     display: flex;
     align-items: center;
@@ -246,7 +240,6 @@
   }
   .toast-close:hover { opacity: 0.6; }
 
-  /* ── Empty state ── */
   .empty-state {
     grid-column: 1 / -1;
     text-align: center;
@@ -286,7 +279,6 @@
     box-shadow: 0 12px 28px rgba(224,32,32,0.36);
   }
 
-  /* ── Responsive ── */
   @media (max-width: 640px) {
     .listings-grid { grid-template-columns: 1fr; gap: 18px; }
     .listings-main { padding-bottom: 48px; }

@@ -1,7 +1,6 @@
 const Notification = require('../models/Notification');
 const User = require('../models/user');
 
-// Create a new notification
 exports.createNotification = async (data) => {
   try {
     const notification = new Notification(data);
@@ -13,7 +12,6 @@ exports.createNotification = async (data) => {
   }
 };
 
-// Get all notifications for a user
 exports.getUserNotifications = async (req, res) => {
   try {
     const notifications = await Notification.find({ recipient: req.user._id })
@@ -41,24 +39,23 @@ exports.getUserNotifications = async (req, res) => {
   }
 };
 
-// Mark a notification as read
 exports.markAsRead = async (req, res) => {
   try {
     const { id } = req.params;
-    
+
     const notification = await Notification.findOneAndUpdate(
       { _id: id, recipient: req.user._id },
       { isRead: true },
       { new: true }
     );
-    
+
     if (!notification) {
       return res.status(404).json({
         success: false,
         error: 'Notification not found'
       });
     }
-    
+
     res.status(200).json({
       success: true,
       data: notification
@@ -72,14 +69,13 @@ exports.markAsRead = async (req, res) => {
   }
 };
 
-// Mark all notifications as read
 exports.markAllAsRead = async (req, res) => {
   try {
     await Notification.updateMany(
       { recipient: req.user._id, isRead: false },
       { isRead: true }
     );
-    
+
     res.status(200).json({
       success: true,
       message: 'All notifications marked as read'
@@ -93,14 +89,13 @@ exports.markAllAsRead = async (req, res) => {
   }
 };
 
-// Get unread notification count
 exports.getUnreadCount = async (req, res) => {
   try {
     const count = await Notification.countDocuments({
       recipient: req.user._id,
       isRead: false
     });
-    
+
     res.status(200).json({
       success: true,
       count
@@ -114,23 +109,22 @@ exports.getUnreadCount = async (req, res) => {
   }
 };
 
-// Delete a notification
 exports.deleteNotification = async (req, res) => {
   try {
     const { id } = req.params;
-    
+
     const notification = await Notification.findOneAndDelete({
       _id: id,
       recipient: req.user._id
     });
-    
+
     if (!notification) {
       return res.status(404).json({
         success: false,
         error: 'Notification not found'
       });
     }
-    
+
     res.status(200).json({
       success: true,
       message: 'Notification deleted successfully'

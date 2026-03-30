@@ -32,6 +32,7 @@ const InputField = ({ name, type: baseType, label, placeholder, value, onChange 
 const AdminLogin = () => {
   const [form, setForm] = useState({ username: '', email: '', password: '' });
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
   const navigate = useNavigate();
 
   const onChange = e => setForm(p => ({ ...p, [e.target.name]: e.target.value }));
@@ -39,6 +40,7 @@ const AdminLogin = () => {
   const handleSubmit = async e => {
     e.preventDefault();
     setLoading(true);
+    setError('');
     try {
       const { data } = await api.post('/admin/login', form);
       localStorage.setItem('adminToken', data.token);
@@ -46,16 +48,18 @@ const AdminLogin = () => {
       toast.success('Welcome back');
       navigate('/admin');
     } catch (err) {
-      toast.error(err.response?.data?.message || 'Invalid credentials');
+      const msg = err.response?.data?.message || 'Invalid credentials';
+      setError(msg);
+      toast.error(msg);
     } finally { setLoading(false); }
   };
 
   return (
     <div className="min-h-screen bg-gray-100 flex items-center justify-center p-6">
       <div className="w-full max-w-md">
-        {/* Card */}
+        {}
         <div className="bg-white rounded-3xl shadow-xl overflow-hidden">
-          {/* Top band */}
+          {}
           <div className="bg-blue-600 px-10 py-10 text-center">
             <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-white/20 mb-4">
               <Compass size={32} className="text-white" />
@@ -64,12 +68,17 @@ const AdminLogin = () => {
             <p className="text-blue-100 text-base mt-1">Admin Portal</p>
           </div>
 
-          {/* Form */}
+          {}
           <div className="px-10 py-10">
             <form onSubmit={handleSubmit} className="space-y-6">
               <InputField name="username" type="text" label="Username" placeholder="Enter username" value={form.username} onChange={onChange} />
               <InputField name="email" type="email" label="Email" placeholder="Enter email" value={form.email} onChange={onChange} />
               <InputField name="password" type="password" label="Password" placeholder="••••••••" value={form.password} onChange={onChange} />
+              {error && (
+                <p className="text-sm font-medium text-red-600 bg-red-50 border border-red-200 rounded-lg px-3 py-2">
+                  {error}
+                </p>
+              )}
               <button
                 type="submit" disabled={loading}
                 className="w-full py-4 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-base font-bold

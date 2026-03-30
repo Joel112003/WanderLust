@@ -1,9 +1,9 @@
 import React, { useEffect, useState, useCallback } from "react";
 import { Link } from "react-router-dom";
 import HeroSearch from "./HeroSearch";
+import AdvancedFilters from "./AdvancedFilters";
 import "../../utilis/css/Listing.css";
 
-/* ─── helpers ─────────────────────────────────────────────── */
 const formatPrice = (price) =>
   new Intl.NumberFormat("en-IN", {
     style: "currency",
@@ -19,7 +19,6 @@ const normalise = (listing) => ({
   image: listing.image ?? { url: "/default-image.jpg" },
 });
 
-/* ─── Toast ───────────────────────────────────────────────── */
 const Toast = ({ message, onClose }) => (
   <div className="toast" role="alert">
     <span className="toast-icon">⚠</span>
@@ -28,7 +27,6 @@ const Toast = ({ message, onClose }) => (
   </div>
 );
 
-/* ─── Skeleton ────────────────────────────────────────────── */
 const Skeleton = ({ index }) => (
   <div className="skeleton-card" style={{ animationDelay: `${index * 50}ms` }}>
     <div className="skeleton-img" />
@@ -40,7 +38,6 @@ const Skeleton = ({ index }) => (
   </div>
 );
 
-/* ─── ListingCard ─────────────────────────────────────────── */
 const ListingCard = ({ listing, index }) => {
   const [loaded, setLoaded] = useState(false);
   const src = listing.image?.url || "/default-image.jpg";
@@ -57,7 +54,7 @@ const ListingCard = ({ listing, index }) => {
         className="listing-card"
         style={{ animationDelay: `${index * 55}ms` }}
       >
-        {/* ── Image ── */}
+        {}
         <div className="listing-img-wrap">
           {!loaded && <div className="listing-img-skeleton" />}
           <img
@@ -78,7 +75,7 @@ const ListingCard = ({ listing, index }) => {
           </div>
         </div>
 
-        {/* ── Body ── */}
+        {}
         <div className="listing-body">
           <h3 className="listing-title">{listing.title || "Untitled Property"}</h3>
 
@@ -106,7 +103,6 @@ const ListingCard = ({ listing, index }) => {
   );
 };
 
-/* ─── EmptyState ──────────────────────────────────────────── */
 const EmptyState = () => (
   <div className="empty-state">
     <div className="empty-icon">🏡</div>
@@ -116,11 +112,12 @@ const EmptyState = () => (
   </div>
 );
 
-/* ─── Listings ────────────────────────────────────────────── */
 function Listings() {
   const [listings, setListings] = useState([]);
+  const [filteredListings, setFilteredListings] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [filters, setFilters] = useState({});
 
   const dismissError = useCallback(() => setError(null), []);
 
@@ -136,7 +133,11 @@ function Listings() {
         if (!result.success || !Array.isArray(result.data))
           throw new Error("Unexpected response format.");
 
-        if (!cancelled) setListings(result.data.map(normalise));
+        if (!cancelled) {
+          const normalized = result.data.map(normalise);
+          setListings(normalized);
+          setFilteredListings(normalized);
+        }
       } catch (err) {
         if (!cancelled) setError(err.message);
       } finally {
@@ -147,6 +148,61 @@ function Listings() {
     return () => { cancelled = true; };
   }, []);
 
+  const applyFilters = useCallback((newFilters) => {
+    setFilters(newFilters);
+
+    let filtered = [...listings];
+
+    if (newFilters.priceMin) {
+      filtered = filtered.filter(l => l.price >= Number(newFilters.priceMin));
+    }
+    if (newFilters.priceMax) {
+      filtered = filtered.filter(l => l.price <= Number(newFilters.priceMax));
+    }
+
+    if (newFilters.propertyType) {
+      filtered = filtered.filter(l =>
+        l.propertyType?.toLowerCase() === newFilters.propertyType.toLowerCase()
+      );
+    }
+
+    if (newFilters.minGuests) {
+      filtered = filtered.filter(l =>
+        (l.guests || l.maxGuests || 0) >= Number(newFilters.minGuests)
+      );
+    }
+
+    if (newFilters.minRating) {
+      filtered = filtered.filter(l => {
+        const avgRating = l.reviews?.length > 0
+          ? l.reviews.reduce((sum, r) => sum + (r.rating || 0), 0) / l.reviews.length
+          : 0;
+        return avgRating >= Number(newFilters.minRating);
+      });
+    }
+
+    if (newFilters.location) {
+      const searchTerm = newFilters.location.toLowerCase();
+      filtered = filtered.filter(l =>
+        l.location?.toLowerCase().includes(searchTerm) ||
+        l.country?.toLowerCase().includes(searchTerm)
+      );
+    }
+
+    if (newFilters.amenities?.length > 0) {
+      filtered = filtered.filter(l => {
+        const listingAmenities = (l.amenities || []).map(a =>
+          typeof a === 'string' ? a.toLowerCase() : a.name?.toLowerCase()
+        );
+        return newFilters.amenities.every(amenity =>
+          listingAmenities.some(la => la.includes(amenity.toLowerCase()))
+        );
+      });
+    }
+
+    setFilteredListings(filtered);
+  }, [listings]);
+
   return (
     <>
       <section className="hero-section">
@@ -156,12 +212,19 @@ function Listings() {
       <main className="listings-main">
         {error && <Toast message={error} onClose={dismissError} />}
 
+        <div style={{ maxWidth: 1200, margin: "0 auto 20px", padding: "0 20px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+          <h2 style={{ fontSize: 20, fontWeight: 600, color: "#1a1207", margin: 0 }}>
+            {filteredListings.length} {filteredListings.length === 1 ? "Property" : "Properties"}
+          </h2>
+          <AdvancedFilters onApply={applyFilters} initialFilters={filters} />
+        </div>
+
         <div className="listings-grid">
           {loading
             ? Array.from({ length: 8 }, (_, i) => <Skeleton key={i} index={i} />)
-            : listings.length === 0
+            : filteredListings.length === 0
             ? <EmptyState />
-            : listings.map((l, i) => (
+            : filteredListings.map((l, i) => (
                 <ListingCard key={l._id} listing={l} index={i} />
               ))}
         </div>

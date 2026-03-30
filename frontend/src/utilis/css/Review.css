@@ -4,13 +4,11 @@
   @keyframes rv-fadeUp  { from { opacity:0; transform:translateY(16px); } to { opacity:1; transform:translateY(0); } }
   @keyframes rv-barIn   { from { width:0; } to { width: var(--w); } }
 
-  /* ── root ── */
   .rv-root {
     font-family: 'DM Sans', sans-serif;
     display: flex; flex-direction: column; gap: 28px;
   }
 
-  /* ── error ── */
   .rv-error {
     display: flex; align-items: center; justify-content: space-between;
     padding: 12px 16px; border-radius: 10px;
@@ -24,7 +22,6 @@
   }
   .rv-error-x:hover { opacity: .6; }
 
-  /* ── summary ── */
   .rv-summary {
     display: flex; align-items: center; gap: 40px;
     padding-bottom: 24px;
@@ -48,7 +45,6 @@
   .rv-star-on  { color: #e03030; }
   .rv-star-off { color: #e5e5e5; }
 
-  /* distribution bars */
   .rv-dist { flex: 1; display: flex; flex-direction: column; gap: 7px; min-width: 180px; }
   .rv-bar-row  { display: flex; align-items: center; gap: 9px; }
   .rv-bar-label { font-size: 11.5px; font-weight: 600; color: #aaa; width: 22px; text-align: right; }
@@ -62,7 +58,6 @@
   }
   .rv-bar-count { font-size: 11.5px; color: #bbb; width: 18px; text-align: right; }
 
-  /* ── form card ── */
   .rv-form-card {
     background: #faf8f8;
     border: 1px solid #ede8e8;
@@ -86,7 +81,6 @@
     color: #bbb; text-transform: uppercase;
   }
 
-  /* star picker */
   .rv-star-picker { display: flex; align-items: center; gap: 4px; }
   .rv-star-btn {
     background: none; border: none; cursor: pointer; padding: 2px;
@@ -99,7 +93,6 @@
     color: #e03030; letter-spacing: .02em;
   }
 
-  /* textarea */
   .rv-textarea {
     width: 100%; padding: 12px 14px;
     border: 1.5px solid #ede8e8; border-radius: 12px;
@@ -117,7 +110,6 @@
     font-size: 11px; color: #ccc; text-align: right; margin-top: -4px;
   }
 
-  /* submit */
   .rv-submit-btn {
     display: flex; align-items: center; justify-content: center; gap: 7px;
     padding: 12px 24px; border-radius: 10px; border: none; cursor: pointer;
@@ -130,7 +122,6 @@
   .rv-submit-btn:disabled { opacity: .7; cursor: not-allowed; }
   .rv-submit-btn:not(:disabled):hover { box-shadow: 0 8px 24px rgba(201,26,26,0.36); }
 
-  /* login nudge */
   .rv-login-nudge {
     display: flex; align-items: center; gap: 8px;
     padding: 14px 18px; border-radius: 12px;
@@ -140,7 +131,6 @@
   .rv-login-link { color: #e03030; font-weight: 600; text-decoration: underline; }
   .rv-login-link:hover { color: #c91a1a; }
 
-  /* ── list ── */
   .rv-list { display: flex; flex-direction: column; gap: 14px; }
 
   .rv-loading {
@@ -156,7 +146,6 @@
     text-align: center;
   }
 
-  /* ── review card ── */
   .rv-card {
     background: #fff;
     border: 1px solid #f0eded;
@@ -209,7 +198,6 @@
   .rv-delete-btn:hover:not(:disabled) { background: #ffe8e8; border-color: #e03030; }
   .rv-delete-btn:disabled { opacity: .5; cursor: not-allowed; }
 
-  /* spinner */
   .rv-spin { animation: rv-spin .8s linear infinite; }
 
   @media (max-width: 560px) {

@@ -1,19 +1,14 @@
-
-
 import React, { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Star, Trash2, Loader2, MessageSquare, Award } from "lucide-react";
-import "../../utilis/css/Review.css";
-
+import { Star, Trash2, Loader2, MessageSquare, Award } from "lucide-react";import "../../utilis/css/Review.css";
 
 const API_URL = import.meta.env.VITE_APP_API_URL || "http://localhost:8000";
 
-/* ─── helpers ─────────────────────────────────────────────── */
 const getToken = () => localStorage.getItem("authToken");
 
 const apiFetch = async (url, options = {}) => {
   const { headers: extraHeaders, ...rest } = options;
-  
+
   const res = await fetch(url, {
     ...rest,
     headers: {
@@ -21,7 +16,7 @@ const apiFetch = async (url, options = {}) => {
       ...extraHeaders,
     },
   });
-  
+
   const data = await res.json();
   if (!res.ok) throw new Error(
     data.errors?.comment || data.errors?.rating || data.message || data.error || "Request failed"
@@ -35,7 +30,6 @@ const fmtDate = (d) =>
 const avgRating = (list) =>
   list.length ? list.reduce((s, r) => s + r.rating, 0) / list.length : 0;
 
-/* ─── StarPicker ──────────────────────────────────────────── */
 const StarPicker = ({ value, onChange }) => {
   const [hover, setHover] = useState(0);
   return (
@@ -61,7 +55,6 @@ const StarPicker = ({ value, onChange }) => {
   );
 };
 
-/* ─── RatingBar ───────────────────────────────────────────── */
 const RatingBar = ({ star, count, total }) => {
   const pct = total ? Math.round((count / total) * 100) : 0;
   return (
@@ -80,7 +73,6 @@ const RatingBar = ({ star, count, total }) => {
   );
 };
 
-/* ─── ReviewCard ──────────────────────────────────────────── */
 const ReviewCard = ({ review, currentUser, onDelete, deleting }) => {
   const isOwn = currentUser && review.author?.username === currentUser.username;
   return (
@@ -93,7 +85,7 @@ const ReviewCard = ({ review, currentUser, onDelete, deleting }) => {
       layout
     >
       <div className="rv-card__top">
-        {/* Avatar */}
+        {}
         <div className="rv-avatar">
           {(review.author?.username || "A")[0].toUpperCase()}
         </div>
@@ -105,7 +97,7 @@ const ReviewCard = ({ review, currentUser, onDelete, deleting }) => {
           <span className="rv-card__date">{fmtDate(review.createdAt)}</span>
         </div>
 
-        {/* Stars */}
+        {}
         <div className="rv-card__stars">
           {[1,2,3,4,5].map(n => (
             <Star
@@ -136,7 +128,6 @@ const ReviewCard = ({ review, currentUser, onDelete, deleting }) => {
   );
 };
 
-/* ─── Review (main) ───────────────────────────────────────── */
 const Review = ({ listingId, onReviewSubmit }) => {
   const [reviews,   setReviews]   = useState([]);
   const [user,      setUser]      = useState(null);
@@ -149,7 +140,6 @@ const Review = ({ listingId, onReviewSubmit }) => {
 
   const token = getToken();
 
-  /* fetch user */
   useEffect(() => {
     if (!token) return;
     (async () => {
@@ -158,11 +148,10 @@ const Review = ({ listingId, onReviewSubmit }) => {
           headers: { Authorization: `Bearer ${token}` },
         });
         setUser(d.user || d);
-      } catch { /* silent — user stays null */ }
+      } catch {  }
     })();
   }, [token]);
 
-  /* fetch reviews */
   const fetchReviews = useCallback(async () => {
     setLoadingR(true);
     setError("");
@@ -178,13 +167,12 @@ const Review = ({ listingId, onReviewSubmit }) => {
 
   useEffect(() => { fetchReviews(); }, [fetchReviews]);
 
-  /* submit */
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
      const token = getToken();
-  console.log("Token:", token);        // ← add this
-  console.log("Payload:", { rating, comment }); // ← and this
+  console.log("Token:", token);
+  console.log("Payload:", { rating, comment });
     if (!token)             return setError("You must be logged in to review.");
     if (!rating)            return setError("Please select a star rating.");
     if (comment.length < 10)return setError("Comment must be at least 10 characters.");
@@ -208,7 +196,6 @@ body: JSON.stringify({ rating: Number(rating), comment: comment.trim() }),
     }
   };
 
-  /* delete */
   const handleDelete = async (reviewId) => {
     if (!token) return setError("You must be logged in.");
     setLoadingD(true);
@@ -225,7 +212,6 @@ body: JSON.stringify({ rating: Number(rating), comment: comment.trim() }),
     }
   };
 
-  /* derived */
   const overall = avgRating(reviews);
   const dist = [5,4,3,2,1].map(s => ({
     star: s,
@@ -236,7 +222,7 @@ body: JSON.stringify({ rating: Number(rating), comment: comment.trim() }),
     <>
 
       <div className="rv-root">
-        {/* ── Error banner ── */}
+        {}
         <AnimatePresence>
           {error && (
             <motion.div
@@ -250,9 +236,9 @@ body: JSON.stringify({ rating: Number(rating), comment: comment.trim() }),
           )}
         </AnimatePresence>
 
-        {/* ── Summary row ── */}
+        {}
         <div className="rv-summary">
-          {/* Big score */}
+          {}
           <div className="rv-score">
             <span className="rv-score__num">{overall.toFixed(1)}</span>
             <div className="rv-score__stars">
@@ -268,7 +254,7 @@ body: JSON.stringify({ rating: Number(rating), comment: comment.trim() }),
             </span>
           </div>
 
-          {/* Distribution bars */}
+          {}
           {reviews.length > 0 && (
             <div className="rv-dist">
               {dist.map(({star,count})=>(
@@ -278,7 +264,7 @@ body: JSON.stringify({ rating: Number(rating), comment: comment.trim() }),
           )}
         </div>
 
-        {/* ── Submit form ── */}
+        {}
         {token ? (
           <motion.div
             className="rv-form-card"
@@ -322,7 +308,7 @@ body: JSON.stringify({ rating: Number(rating), comment: comment.trim() }),
               >
                 {loadingS
                   ? <><Loader2 size={15} className="rv-spin"/> Submitting…</>
-                  : <><Award size={15}/> Submit review</>}
+                  : <><Star size={15}/> Submit review</>}
               </motion.button>
             </form>
           </motion.div>
@@ -336,7 +322,7 @@ body: JSON.stringify({ rating: Number(rating), comment: comment.trim() }),
           </div>
         )}
 
-        {/* ── Reviews list ── */}
+        {}
         <div className="rv-list">
           {loadingR ? (
             <div className="rv-loading">
@@ -366,7 +352,5 @@ body: JSON.stringify({ rating: Number(rating), comment: comment.trim() }),
     </>
   );
 };
-
-
 
 export default Review;

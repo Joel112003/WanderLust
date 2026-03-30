@@ -2,18 +2,16 @@
 
 @keyframes hs-spin { to { transform:rotate(360deg); } }
 
-/* ── wrapper */
 .hs-outer {
   width: 100%;
   display: flex;
   justify-content: center;
-  padding: 80px 16px 20px;          /* 80px clears fixed navbar */
+  padding: 80px 16px 20px;
   font-family: 'DM Sans', sans-serif;
   position: relative;
   z-index: 100;
 }
 
-/* ── pill bar */
 .hs-bar {
   display: flex;
   align-items: center;
@@ -27,14 +25,12 @@
   width: 100%;
 }
 
-/* ── separator */
 .hs-sep {
   width: 1px; height: 30px;
   background: #e5e0e0;
   flex-shrink: 0;
 }
 
-/* ── segment */
 .hs-segment {
   position: relative;
   flex: 1;
@@ -76,7 +72,6 @@
 }
 .hs-chevron.open { transform: rotate(180deg); color: #e03030; }
 
-/* ── shared dropdown shell */
 .hs-dropdown {
   position: absolute;
   top: calc(100% + 10px);
@@ -92,7 +87,6 @@
   z-index: 9999;
 }
 
-/* ── destination dropdown */
 .hs-dest-search {
   display: flex; align-items: center; gap: 8px;
   border: 1.5px solid #ede8e8; border-radius: 12px;
@@ -118,7 +112,7 @@
 .hs-dest-list {
   display: flex; flex-direction: column; gap: 2px;
   max-height: 280px; overflow-y: auto;
-  /* custom scrollbar */
+
   scrollbar-width: thin;
   scrollbar-color: #f0e8e8 transparent;
 }
@@ -153,7 +147,6 @@
   padding: 2px 9px; font-weight: 500;
 }
 
-/* ── calendar */
 .hs-cal { min-width: 300px; }
 .hs-cal-nav {
   display: flex; align-items: center; justify-content: space-between;
@@ -209,7 +202,7 @@
 }
 .hs-cal-day.sel-in  { border-radius: 50% 0 0 50%; }
 .hs-cal-day.sel-out { border-radius: 0 50% 50% 0; }
-/* only round when single selection */
+
 .hs-cal-day.sel-in:not(.has-range),
 .hs-cal-day.sel-out:not(.has-range) { border-radius: 50%; }
 
@@ -228,7 +221,6 @@
   font-size: 12.5px; font-weight: 600; color: #555;
 }
 
-/* ── guests panel */
 .hs-guests-panel { display: flex; flex-direction: column; gap: 4px; }
 .hs-guest-row {
   display: flex; align-items: center; justify-content: space-between;
@@ -267,7 +259,6 @@
   border-top: 1px solid #f5f0f0;
 }
 
-/* ── search button */
 .hs-search-btn {
   display: flex; align-items: center; gap: 7px;
   padding: 13px 26px; border-radius: 52px; border: none;
@@ -282,7 +273,6 @@
 .hs-search-btn:not(:disabled):hover { box-shadow: 0 10px 30px rgba(201,26,26,0.44); }
 .hs-spin { animation: hs-spin .8s linear infinite; }
 
-/* ── responsive */
 @media (max-width: 680px) {
   .hs-bar {
     flex-direction: column;
@@ -296,3 +286,44 @@
   .hs-search-btn { width: 100%; margin: 6px 0 0; border-radius: 14px; justify-content: center; }
   .hs-dropdown { position: fixed; left: 12px !important; right: 12px !important; min-width: unset !important; width: auto !important; }
 }
+
+  @media (max-width: 420px) {
+    .hs-outer {
+      padding: 74px 10px 14px;
+    }
+
+    .hs-segment-btn {
+      padding: 9px 10px;
+      gap: 8px;
+    }
+
+    .hs-seg-label {
+      font-size: 9px;
+    }
+
+    .hs-seg-val {
+      font-size: 12px;
+    }
+
+    .hs-dropdown {
+      left: 8px !important;
+      right: 8px !important;
+      padding: 12px;
+      border-radius: 14px;
+    }
+
+    .hs-dest-item {
+      gap: 10px;
+      padding: 10px;
+    }
+
+    .hs-dest-emoji {
+      width: 36px;
+      height: 36px;
+      font-size: 20px;
+    }
+
+    .hs-cal {
+      min-width: 0;
+    }
+  }

@@ -24,10 +24,11 @@ import AdminLogin from "./components/Admin/AdminLogin";
 import BookingPage from "./components/views/BookingPage";
 import BookingConfirmation from "./components/views/BookingConfirmation";
 import FrontPageOfCreateListings from "./components/layouts/FrontPageOfCreateListings";
+import ConversationsPage from "./components/views/ConversationsPage";
 import "react-toastify/dist/ReactToastify.css";
+import { ToastContainer } from "react-toastify";
 import NotFound from "./components/NotFound";
 
-// ScrollToTop component to reset scroll position on route changes
 const ScrollToTop = () => {
   const { pathname } = useLocation();
 
@@ -35,7 +36,7 @@ const ScrollToTop = () => {
     window.scrollTo({
       top: 0,
       left: 0,
-      behavior: "instant"
+      behavior: "auto"
     });
   }, [pathname]);
 
@@ -46,14 +47,15 @@ const App = () => {
   return (
     <div>
       <ScrollToTop />
-      {/* Render Navbar everywhere except admin routes */}
+      <ToastContainer position="top-right" autoClose={2500} hideProgressBar={false} newestOnTop />
+      {}
       <Routes>
         <Route path="/admin/*" element={null} />
         <Route path="*"        element={<Navbar />} />
       </Routes>
 
       <Routes>
-        {/* Public routes */}
+        {}
         <Route path="/"                      element={<Listings />} />
         <Route path="/listings"              element={<Listings />} />
         <Route path="/listings/:id"          element={<ListingDetail />} />
@@ -65,14 +67,15 @@ const App = () => {
         <Route path="/auth/login"            element={<Login />} />
         <Route path="/auth/signup"           element={<Signup />} />
         <Route path="/profile"               element={<Account />} />
-        {/* <Route path="/profile/bookings"      element={<MyBookings />} />          */}
+        {}
         <Route path="/book/:id"              element={<BookingPage />} />
         <Route path="/booking-confirmation"  element={<BookingConfirmation />} />
+        <Route path="/conversations"         element={<ConversationsPage />} />
         <Route path="/terms"                 element={<Terms />} />
         <Route path="/privacy"               element={<Privacy />} />
         <Route path="/help-center"           element={<HelpCenter />} />
 
-        {/* Admin routes */}
+        {}
         <Route path="/admin/login" element={<AdminLogin />} />
         <Route
           path="/admin"
@@ -89,11 +92,11 @@ const App = () => {
           <Route path="reviews"       element={<ReviewList />} />
         </Route>
 
-        {/* 404 */}
+        {}
         <Route path="*" element={<NotFound />} />
       </Routes>
 
-      {/* Render Footer everywhere except admin routes */}
+      {}
       <Routes>
         <Route path="/admin/*" element={null} />
         <Route path="*"        element={<Footer />} />

@@ -15,9 +15,9 @@ const CARDS = [
 const StatCard = ({ label, value, icon: Icon, gradient, light, text, link, trend, trendValue }) => (
   <Link to={link} className="block group">
     <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 overflow-hidden relative">
-      {/* Background decoration */}
+      {}
       <div className={`absolute -right-8 -top-8 w-32 h-32 rounded-full bg-gradient-to-br ${gradient} opacity-5 group-hover:opacity-10 transition-opacity`} />
-      
+
       <div className="relative flex items-start justify-between">
         <div className="flex-1">
           <p className="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-3">{label}</p>
@@ -142,9 +142,9 @@ const Dashboard = () => {
         };
       });
       setStats({ ...data, chartData });
-    } catch (err) { 
+    } catch (err) {
       console.error('Dashboard error:', err);
-      toast.error('Failed to load dashboard data'); 
+      toast.error('Failed to load dashboard data');
     } finally {
       setLoading(false);
     }
@@ -175,7 +175,6 @@ const Dashboard = () => {
 
   if (loading) return <LoadingSkeleton />;
 
-  // Calculate trends (mock data - in real app, compare with previous period)
   const trends = {
     totalUsers: { trend: 'up', value: 12 },
     totalListings: { trend: 'up', value: 8 },
@@ -185,7 +184,7 @@ const Dashboard = () => {
 
   return (
     <div className="space-y-8 max-w-7xl mx-auto">
-      {/* Header */}
+      {}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h2 className="text-3xl font-bold text-gray-900 mb-1">Dashboard Overview</h2>
@@ -216,17 +215,17 @@ const Dashboard = () => {
         </div>
       </div>
 
-      {/* Quick Actions */}
+      {}
       <QuickActions />
 
-      {/* Stat cards */}
+      {}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
         {CARDS.map(c => (
           <StatCard key={c.key} {...c} value={stats[c.key]} {...trends[c.key]} />
         ))}
       </div>
 
-      {/* Chart */}
+      {}
       <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 hover:shadow-md transition-shadow">
         <div className="flex items-center justify-between mb-6">
           <div>
@@ -266,7 +265,7 @@ const Dashboard = () => {
         </div>
       </div>
 
-      {/* Recent Activity */}
+      {}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {[
           { title: 'Recent Users',    items: stats.recentUsers,    type: 'users',    icon: Users,        color: 'blue',   link: '/admin/users' },

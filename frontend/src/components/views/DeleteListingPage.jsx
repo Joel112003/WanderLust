@@ -14,7 +14,6 @@ const DeleteListingPage = () => {
   const [isDeleting, setIsDeleting] = useState(false)
   const [error, setError] = useState(null)
 
-  // Fetch listing details
   useEffect(() => {
     const fetchListing = async () => {
       try {
@@ -41,7 +40,7 @@ const DeleteListingPage = () => {
         }
       })
       navigate('/profile', {
-        state: { 
+        state: {
           message: 'Listing deleted successfully',
           showToast: true
         }
@@ -102,7 +101,7 @@ const DeleteListingPage = () => {
 
           <div className="flex flex-col items-center text-center mb-8">
             <motion.div
-              animate={{ 
+              animate={{
                 scale: [1, 1.1, 1],
                 rotate: [0, 5, -5, 0]
               }}
@@ -123,8 +122,8 @@ const DeleteListingPage = () => {
             <h4 className="font-medium text-gray-900 mb-2">{listing.title}</h4>
             <p className="text-gray-600 text-sm">{listing.location}, {listing.country}</p>
             {listing.image?.url && (
-              <img 
-                src={listing.image.url} 
+              <img
+                src={listing.image.url}
                 alt={listing.title}
                 className="mt-2 rounded-md w-full h-32 object-cover"
               />

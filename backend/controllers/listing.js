@@ -28,7 +28,6 @@ const geocodeLocation = async (location, country) => {
   }
 };
 
-// ─── PUBLIC: only approved ────────────────────────────────────────────────────
 exports.getAllListings = async (req, res, next) => {
   try {
     const listings = await Listing.find({ status: "approved" })
@@ -50,7 +49,7 @@ exports.getListingById = async (req, res) => {
         path: "reviews",
         populate: { path: "author", select: "username phoneNumber email" },
       })
-      .populate("owner", "username email phoneNumber");
+      .populate("owner", "username email phoneNumber profilePic bio location languages responseRate responseTime totalGuests superHost preferredContact verified createdAt");
 
     if (!listing)
       return res
@@ -59,7 +58,7 @@ exports.getListingById = async (req, res) => {
 
     if (listing.status !== "approved") {
       const isOwner =
-        req.user && req.user._id.toString() === listing.owner._id.toString();
+        req.user && listing.owner && req.user._id.toString() === listing.owner._id.toString();
       const isAdmin = req.user && req.user.isAdmin;
       if (!isOwner && !isAdmin)
         return res
@@ -89,7 +88,6 @@ exports.getListingById = async (req, res) => {
   }
 };
 
-// ─── CREATE: pending + email admin ───────────────────────────────────────────
 exports.createListing = async (req, res, next) => {
   try {
     const {
@@ -157,6 +155,15 @@ exports.createListing = async (req, res, next) => {
       beds: Number(beds),
       baths: Number(baths),
 
+      pricing: req.body.pricing ? JSON.parse(req.body.pricing) : {
+        basePrice: Number(price),
+        finalPrice: Number(price),
+        platformFee: 0,
+        taxAmount: 0,
+        cleaningFee: 0,
+        isAllInclusive: true
+      },
+
       unavailableDates: JSON.parse(req.body.unavailableDates || "[]"),
 
       image: { url: req.file.path, filename: req.file.filename },
@@ -166,7 +173,6 @@ exports.createListing = async (req, res, next) => {
     });
     await newListing.save();
 
-    // Notify admin
     await emailService.sendNewListingAlert({
       listingTitle: title,
       ownerName: req.user.username || req.user.email,

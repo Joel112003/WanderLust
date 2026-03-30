@@ -4,18 +4,15 @@ const JwtStrategy = require("passport-jwt").Strategy;
 const ExtractJwt = require("passport-jwt").ExtractJwt;
 const User = require("../models/user");
 
-// Ensure the JWT secret exists
 if (!process.env.JWT_SECRET) {
   console.error("❌ JWT_SECRET is not set in the environment.");
   process.exit(1);
 }
 
-// Serialize user for the session
 passport.serializeUser((user, done) => {
   done(null, user.id);
 });
 
-// Deserialize user from the session
 passport.deserializeUser(async (id, done) => {
   try {
     const user = await User.findById(id);
@@ -36,14 +33,14 @@ passport.use(new LocalStrategy(
       if (!user) {
         return done(null, false, { message: 'Incorrect email or password' });
       }
-      // Use the callback style for authentication:
+
       user.authenticate(password, (err, authenticatedUser, passwordError) => {
         if (err) return done(err);
         if (!authenticatedUser) {
-          // If authentication fails, passwordError holds the reason
+
           return done(null, false, { message: passwordError || 'Incorrect email or password' });
         }
-        // Authentication succeeded—return the authenticated user
+
         return done(null, authenticatedUser);
       });
     } catch (error) {
@@ -52,7 +49,6 @@ passport.use(new LocalStrategy(
   }
 ));
 
-// JWT Strategy for protected routes
 const jwtOptions = {
   jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
   secretOrKey: process.env.JWT_SECRET,

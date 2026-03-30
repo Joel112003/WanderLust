@@ -103,7 +103,7 @@ export default function Terms() {
       `}</style>
 
       <div className="trm-root">
-        {/* Hero */}
+        {}
         <div className="trm-hero" style={{ padding: "100px 24px 64px", textAlign: "center" }}>
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
             <span className="trm-badge">📄 Legal</span>
@@ -117,7 +117,7 @@ export default function Terms() {
           </motion.div>
         </div>
 
-        {/* Sections */}
+        {}
         <div style={{ maxWidth: 780, margin: "0 auto", padding: "48px 24px 80px" }}>
           <motion.div variants={stagger} initial="hidden" animate="visible" style={{ display: "flex", flexDirection: "column", gap: 20 }}>
             {sections.map((s) => (
@@ -145,7 +145,7 @@ export default function Terms() {
               </motion.div>
             ))}
 
-            {/* Contact */}
+            {}
             <motion.div variants={fadeUp} className="trm-contact">
               <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 12 }}>
                 <span style={{ fontSize: 28 }}>💬</span>

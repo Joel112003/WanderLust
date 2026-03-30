@@ -36,6 +36,50 @@ const UserSchema = new mongoose.Schema(
         message: (props) => `${props.value} is not a valid phone number!`,
       },
     },
+
+    profilePic: {
+      type: String,
+      default: null,
+    },
+    bio: {
+      type: String,
+      maxlength: 500,
+      default: "Hello! I'm a passionate host who loves to share my space with travelers from around the world.",
+    },
+    location: {
+      type: String,
+      default: null,
+    },
+    languages: {
+      type: [String],
+      default: ["English"],
+    },
+    responseRate: {
+      type: String,
+      default: "95%",
+    },
+    responseTime: {
+      type: String,
+      default: "within an hour",
+      enum: ["within an hour", "within a few hours", "within a day", "Not available"],
+    },
+    totalGuests: {
+      type: Number,
+      default: 0,
+    },
+    superHost: {
+      type: Boolean,
+      default: false,
+    },
+    preferredContact: {
+      type: String,
+      default: "Email",
+      enum: ["Email", "Phone", "Message", "Any"],
+    },
+    verified: {
+      type: Boolean,
+      default: false,
+    },
     createdAt: {
       type: Date,
       default: Date.now,
@@ -46,20 +90,18 @@ const UserSchema = new mongoose.Schema(
   }
 );
 
-// Configure passport-local-mongoose
 UserSchema.plugin(passportLocalMongoose, {
   usernameField: "email",
   limitAttempts: true,
   maxAttempts: 5,
   passwordValidator: function (password, cb) {
-    // More comprehensive password validation
+
     const errors = [];
 
     if (password.length < 8) {
       errors.push("Password must be at least 8 characters long");
     }
 
-    // Optional: Add more password strength checks
     if (!/[A-Z]/.test(password)) {
       errors.push("Password must contain at least one uppercase letter");
     }

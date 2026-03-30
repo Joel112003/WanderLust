@@ -9,7 +9,7 @@ const TokenBlacklistSchema = new mongoose.Schema({
     createdAt: {
         type: Date,
         default: Date.now,
-        expires: 7 * 24 * 60 * 60 // Automatically delete after 7 days (token expiry time)
+        expires: 7 * 24 * 60 * 60
     }
 });
 
