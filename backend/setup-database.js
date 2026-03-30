@@ -1,13 +1,38 @@
+const path = require("path");
+const dns = require("dns");
 const mongoose = require("mongoose");
-require("dotenv").config();
+require("dotenv").config({ path: path.resolve(__dirname, ".env") });
+
+dns.setDefaultResultOrder("ipv4first");
+try {
+  dns.setServers(["8.8.8.8", "1.1.1.1"]);
+} catch (_) {
+  // Ignore if DNS override is not allowed in this environment.
+}
+
+const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+async function connectWithRetry(uri, retries = 3) {
+  for (let attempt = 1; attempt <= retries; attempt += 1) {
+    try {
+      await mongoose.connect(uri);
+      return;
+    } catch (error) {
+      const isLastTry = attempt === retries;
+      console.error(`MongoDB connect attempt ${attempt}/${retries} failed: ${error.message}`);
+      if (isLastTry) throw error;
+      await sleep(1500 * attempt);
+    }
+  }
+}
 
 async function setupDatabase() {
   try {
+    if (!process.env.ATLAS_DB) {
+      throw new Error("ATLAS_DB is missing in backend/.env");
+    }
 
-    await mongoose.connect(process.env.ATLAS_DB, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    });
+    await connectWithRetry(process.env.ATLAS_DB, 4);
 
     console.log("✅ Connected to MongoDB");
 
