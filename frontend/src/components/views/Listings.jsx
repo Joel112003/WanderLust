@@ -54,8 +54,7 @@ const ListingCard = ({ listing, index }) => {
         className="listing-card"
         style={{ animationDelay: `${index * 55}ms` }}
       >
-        {}
-        <div className="listing-img-wrap">
+<div className="listing-img-wrap">
           {!loaded && <div className="listing-img-skeleton" />}
           <img
             src={src}
@@ -74,9 +73,7 @@ const ListingCard = ({ listing, index }) => {
             </span>
           </div>
         </div>
-
-        {}
-        <div className="listing-body">
+<div className="listing-body">
           <h3 className="listing-title">{listing.title || "Untitled Property"}</h3>
 
           {location && (

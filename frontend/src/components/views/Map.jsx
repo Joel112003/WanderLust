@@ -507,9 +507,7 @@ const Map = React.forwardRef((
       boxShadow: "0 4px 32px rgba(0,0,0,0.12)",
     }}>
       <div ref={containerRef} style={{ width: "100%", height: "100%" }} />
-
-      {}
-      {isLoading && (
+{isLoading && (
         <div style={{
           position: "absolute", inset: 0,
           display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center",
@@ -529,9 +527,7 @@ const Map = React.forwardRef((
           <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
         </div>
       )}
-
-      {}
-      {loadError && (
+{loadError && (
         <div style={{
           position: "absolute", inset: 0,
           display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center",
@@ -543,9 +539,7 @@ const Map = React.forwardRef((
           <p style={{ fontSize: "13px", color: "#94a3b8", margin: 0 }}>Check your Mapbox token or network.</p>
         </div>
       )}
-
-      {}
-      {!isLoading && !loadError && validListings.length > 0 && (
+{!isLoading && !loadError && validListings.length > 0 && (
         <div style={{
           position: "absolute", bottom: "40px", right: "14px",
           background: "rgba(255,255,255,0.95)",

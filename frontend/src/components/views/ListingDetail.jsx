@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef , useCallback  } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import toast, { Toaster } from "react-hot-toast";
+import toast from "react-hot-toast";
 import { DayPicker } from "react-day-picker";
 import { isBefore, addDays, differenceInCalendarDays, format } from "date-fns";
 import "react-day-picker/dist/style.css";
@@ -101,7 +101,7 @@ const HighlightCard = ({ Icon, title, desc, delay }) => (
   </motion.div>
 );
 
-const DateField = ({ label, value, onChange, disabledDays, minDate, existingBookings = [], ownerBlockedDates = [] }) => {
+const DateField = ({ label, value, onChange, disabledDays, minDate, align = "start", existingBookings = [], ownerBlockedDates = [] }) => {
   const [open, setOpen] = useState(false);
   const ref = useRef(null);
 
@@ -174,7 +174,7 @@ const DateField = ({ label, value, onChange, disabledDays, minDate, existingBook
       <AnimatePresence>
         {open && (
           <motion.div
-            className="ld-datefield__popover"
+            className={`ld-datefield__popover ld-datefield__popover--${align}`}
             initial={{ opacity: 0, y: 8, scale: 0.97 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 6, scale: 0.97 }}
@@ -586,15 +586,9 @@ const ListingDetail = () => {
 
   return (
     <>
-      <Toaster
-        position="top-center"
-        toastOptions={{ style: { fontFamily: "'DM Sans', sans-serif", fontSize: 14 } }}
-      />
 
       <div className="ld-page">
-
-        {}
-        <motion.header
+<motion.header
           className="ld-header"
           initial={{ opacity: 0, y: 18 }}
           animate={{ opacity: 1, y: 0 }}
@@ -629,17 +623,11 @@ const ListingDetail = () => {
             </div>
           </div>
         </motion.header>
-
-        {}
-        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.6, delay: 0.1 }}>
+<motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.6, delay: 0.1 }}>
           <Gallery src={listing.image?.url} title={listing.title} />
         </motion.div>
-
-        {}
-        <div className="ld-body">
-
-          {}
-          <div className="ld-main">
+<div className="ld-body">
+<div className="ld-main">
 
             <motion.div
               className="ld-hostbar"
@@ -692,9 +680,7 @@ const ListingDetail = () => {
               />
             </section>
           </div>
-
-          {}
-          <motion.aside
+<motion.aside
             className="ld-aside"
             style={{ opacity: bookingOpacity }}
             initial={{ opacity: 0, y: 22 }}
@@ -712,13 +698,12 @@ const ListingDetail = () => {
                   <span>{listing.reviews?.length || 0} reviews</span>
                 </div>
               </div>
-
-              {}
-              <div className="ld-dates">
+<div className="ld-dates">
                 <DateField
                   label="CHECK-IN"
                   value={checkIn}
                   onChange={setCheckIn}
+                  align="start"
                   disabledDays={disabledRanges}
                   minDate={new Date()}
                   existingBookings={existingBookings}
@@ -729,15 +714,14 @@ const ListingDetail = () => {
                   label="CHECK-OUT"
                   value={checkOut}
                   onChange={setCheckOut}
+                  align="end"
                   disabledDays={disabledRanges}
                   minDate={checkIn ? addDays(checkIn, 1) : new Date()}
                   existingBookings={existingBookings}
                   ownerBlockedDates={listing?.unavailableDates || []}
                 />
               </div>
-
-              {}
-              <div className="ld-guests">
+<div className="ld-guests">
                 <div className="ld-guests__label">
                   <Users size={14} /><span>GUESTS</span>
                 </div>
@@ -751,9 +735,7 @@ const ListingDetail = () => {
                   ))}
                 </select>
               </div>
-
-              {}
-              {listing?.unavailableDates && listing.unavailableDates.length > 0 && (
+{listing?.unavailableDates && listing.unavailableDates.length > 0 && (
                 <motion.div
                   initial={{ opacity: 0, y: -8 }}
                   animate={{ opacity: 1, y: 0 }}
@@ -812,9 +794,7 @@ const ListingDetail = () => {
                   </div>
                 </motion.div>
               )}
-
-              {}
-              {isOwner && (
+{isOwner && (
                 <motion.div
                   initial={{ opacity: 0, y: -8 }}
                   animate={{ opacity: 1, y: 0 }}
@@ -901,9 +881,7 @@ const ListingDetail = () => {
                   )}
                 </motion.div>
               )}
-
-              {}
-              {loadingBookings ? (
+{loadingBookings ? (
                 <div className="ld-avail ld-avail--loading">
                   <Loader2 size={14} className="ld-spin" />
                   Checking availability…
@@ -926,9 +904,7 @@ const ListingDetail = () => {
               ) : (
                 <div className="ld-avail ld-avail--ok" style={{ color: "#059669", fontWeight: 600 }}>✓ All dates available for booking</div>
               )}
-
-              {}
-              <div className="ld-price-breakdown">
+<div className="ld-price-breakdown">
                 <AnimatePresence>
                   {checkIn && checkOut && nights > 0 ? (
                     <motion.div
@@ -953,9 +929,7 @@ const ListingDetail = () => {
                   )}
                 </AnimatePresence>
               </div>
-
-              {}
-              {checkIn && checkOut && (
+{checkIn && checkOut && (
                 <motion.div
                   initial={{ opacity: 0, y: -10 }}
                   animate={{ opacity: 1, y: 0 }}
@@ -985,9 +959,7 @@ const ListingDetail = () => {
                   </div>
                 </motion.div>
               )}
-
-              {}
-              <motion.button
+<motion.button
                 className="ld-reserve-btn"
                 onClick={handleReserve}
                 whileHover={{ scale: 1.02 }}
@@ -1019,15 +991,11 @@ const ListingDetail = () => {
             />
           </div>
         </section>
-
-        {}
-        <section className="ld-section">
+<section className="ld-section">
           <HostSection owner={listing.owner} />
         </section>
       </div>
-
-      {}
-      {!isOwner && listing.owner?._id && (
+{!isOwner && listing.owner?._id && (
         <RealTimeMessagingWidget
           listingId={listing._id}
           hostId={listing.owner._id}

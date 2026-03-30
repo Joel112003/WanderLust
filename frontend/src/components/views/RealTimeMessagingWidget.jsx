@@ -402,8 +402,7 @@ const RealTimeMessagingWidget = ({
 
   return (
     <>
-      {}
-      <motion.button
+<motion.button
         onClick={() => setIsOpen(!isOpen)}
         style={{
           position: 'fixed',
@@ -430,9 +429,7 @@ const RealTimeMessagingWidget = ({
         transition={{ type: 'spring', stiffness: 260, damping: 20 }}
       >
         <MessageCircle size={26} strokeWidth={2} />
-
-        {}
-        {isConnected ? (
+{isConnected ? (
           <Circle
             size={12}
             fill="#22c55e"
@@ -458,9 +455,7 @@ const RealTimeMessagingWidget = ({
           />
         )}
       </motion.button>
-
-      {}
-      <AnimatePresence>
+<AnimatePresence>
         {isOpen && (
           <motion.div
             initial={{ opacity: 0, y: 20, scale: 0.95 }}
@@ -482,8 +477,7 @@ const RealTimeMessagingWidget = ({
               zIndex: 1000
             }}
           >
-            {}
-            <div style={{
+<div style={{
               background: 'linear-gradient(135deg, #C0392B 0%, #E74C3C 100%)',
               color: 'white',
               padding: '14px 16px',
@@ -551,9 +545,7 @@ const RealTimeMessagingWidget = ({
                 <X size={16} />
               </button>
             </div>
-
-            {}
-            <div style={{
+<div style={{
               flex: 1,
               overflowY: 'auto',
               overflowX: 'hidden',
@@ -658,9 +650,7 @@ const RealTimeMessagingWidget = ({
                       </motion.div>
                     );
                   })}
-
-                  {}
-                  {isTyping && (
+{isTyping && (
                     <motion.div
                       initial={{ opacity: 0, y: 10 }}
                       animate={{ opacity: 1, y: 0 }}
@@ -689,9 +679,7 @@ const RealTimeMessagingWidget = ({
                 </div>
               )}
             </div>
-
-            {}
-            <form
+<form
               onSubmit={handleSendMessage}
               style={{
                 padding: '12px 14px',
@@ -773,9 +761,7 @@ const RealTimeMessagingWidget = ({
           </motion.div>
         )}
       </AnimatePresence>
-
-      {}
-      <style>{`
+<style>{`
         .typing-dot {
           width: 7px;
           height: 7px;

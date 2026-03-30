@@ -116,8 +116,7 @@ const CancelBookingModal = ({ isOpen, onClose, booking, onCancelSuccess }) => {
           onClick={(e) => e.stopPropagation()}
           className="bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto"
         >
-          {}
-          <div className="bg-gradient-to-r from-red-500 to-orange-500 text-white px-6 py-5 rounded-t-2xl">
+<div className="bg-gradient-to-r from-red-500 to-orange-500 text-white px-6 py-5 rounded-t-2xl">
             <div className="flex items-center justify-between">
               <div>
                 <h2 className="text-2xl font-bold">Cancel Booking</h2>
@@ -147,8 +146,7 @@ const CancelBookingModal = ({ isOpen, onClose, booking, onCancelSuccess }) => {
           </div>
 
           <form onSubmit={handleSubmit} className="p-6 space-y-6">
-            {}
-            {isLastMinute && (
+{isLastMinute && (
               <div className="bg-red-50 border-2 border-red-300 rounded-lg p-4">
                 <div className="flex items-start gap-3">
                   <svg
@@ -178,9 +176,7 @@ const CancelBookingModal = ({ isOpen, onClose, booking, onCancelSuccess }) => {
                 </div>
               </div>
             )}
-
-            {}
-            <div className="bg-gray-50 rounded-lg p-4">
+<div className="bg-gray-50 rounded-lg p-4">
               <h3 className="font-semibold text-gray-900 mb-3">
                 Booking Details
               </h3>
@@ -223,9 +219,7 @@ const CancelBookingModal = ({ isOpen, onClose, booking, onCancelSuccess }) => {
                 </div>
               </div>
             </div>
-
-            {}
-            <div>
+<div>
               <label className="block text-sm font-semibold text-gray-900 mb-2">
                 Cancellation Reason *
               </label>
@@ -245,9 +239,7 @@ const CancelBookingModal = ({ isOpen, onClose, booking, onCancelSuccess }) => {
                 <p className="text-xs text-gray-500">{reason.length}/500</p>
               </div>
             </div>
-
-            {}
-            <div className="bg-teal-50 border border-teal-200 rounded-lg p-4">
+<div className="bg-teal-50 border border-teal-200 rounded-lg p-4">
               <div className="flex items-start gap-3">
                 <input
                   type="checkbox"
@@ -344,9 +336,7 @@ const CancelBookingModal = ({ isOpen, onClose, booking, onCancelSuccess }) => {
                 </div>
               </div>
             </div>
-
-            {}
-            <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+<div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
               <h4 className="font-semibold text-yellow-900 mb-2">
                 📋 Cancellation Policy Notice
               </h4>
@@ -370,9 +360,7 @@ const CancelBookingModal = ({ isOpen, onClose, booking, onCancelSuccess }) => {
                 )}
               </ul>
             </div>
-
-            {}
-            <div className="flex gap-3 pt-4 border-t border-gray-200">
+<div className="flex gap-3 pt-4 border-t border-gray-200">
               <button
                 type="button"
                 onClick={onClose}

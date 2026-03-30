@@ -25,8 +25,7 @@ import BookingPage from "./components/views/BookingPage";
 import BookingConfirmation from "./components/views/BookingConfirmation";
 import FrontPageOfCreateListings from "./components/layouts/FrontPageOfCreateListings";
 import ConversationsPage from "./components/views/ConversationsPage";
-import "react-toastify/dist/ReactToastify.css";
-import { ToastContainer } from "react-toastify";
+import { Toaster } from "react-hot-toast";
 import NotFound from "./components/NotFound";
 
 const ScrollToTop = () => {
@@ -47,15 +46,27 @@ const App = () => {
   return (
     <div>
       <ScrollToTop />
-      <ToastContainer position="top-right" autoClose={2500} hideProgressBar={false} newestOnTop />
-      {}
+      <Toaster
+        position="top-right"
+        toastOptions={{
+          duration: 2600,
+          style: {
+            borderRadius: "12px",
+            border: "1px solid #e5e7eb",
+            background: "#111827",
+            color: "#f9fafb",
+            fontSize: "14px",
+          },
+          success: { iconTheme: { primary: "#22c55e", secondary: "#f9fafb" } },
+          error: { iconTheme: { primary: "#ef4444", secondary: "#f9fafb" } },
+        }}
+      />
       <Routes>
         <Route path="/admin/*" element={null} />
         <Route path="*"        element={<Navbar />} />
       </Routes>
 
       <Routes>
-        {}
         <Route path="/"                      element={<Listings />} />
         <Route path="/listings"              element={<Listings />} />
         <Route path="/listings/:id"          element={<ListingDetail />} />
@@ -67,7 +78,6 @@ const App = () => {
         <Route path="/auth/login"            element={<Login />} />
         <Route path="/auth/signup"           element={<Signup />} />
         <Route path="/profile"               element={<Account />} />
-        {}
         <Route path="/book/:id"              element={<BookingPage />} />
         <Route path="/booking-confirmation"  element={<BookingConfirmation />} />
         <Route path="/conversations"         element={<ConversationsPage />} />
@@ -75,7 +85,6 @@ const App = () => {
         <Route path="/privacy"               element={<Privacy />} />
         <Route path="/help-center"           element={<HelpCenter />} />
 
-        {}
         <Route path="/admin/login" element={<AdminLogin />} />
         <Route
           path="/admin"
@@ -92,11 +101,9 @@ const App = () => {
           <Route path="reviews"       element={<ReviewList />} />
         </Route>
 
-        {}
         <Route path="*" element={<NotFound />} />
       </Routes>
 
-      {}
       <Routes>
         <Route path="/admin/*" element={null} />
         <Route path="*"        element={<Footer />} />

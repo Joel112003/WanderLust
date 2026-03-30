@@ -96,8 +96,7 @@ const MessageDropdown = () => {
 
   return (
     <div style={{ position: "relative" }}>
-      {}
-      <button
+<button
         onClick={() => navigate('/conversations')}
         style={{
           position: "relative",

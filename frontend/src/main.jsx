@@ -4,7 +4,6 @@ import { BrowserRouter } from "react-router-dom";
 import { AuthProvider } from "./AuthContext";
 import App from "./App";
 import "./index.css";
-import "react-toastify/dist/ReactToastify.css";
 
 import { Analytics } from "@vercel/analytics/react";
 

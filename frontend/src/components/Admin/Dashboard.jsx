@@ -1,127 +1,208 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
-import { Users, ListChecks, MessageSquare, Clock, Download, Loader2, TrendingUp, TrendingDown, ArrowRight, Activity } from 'lucide-react';
-import { toast } from 'react-toastify';
-import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import {
+  Users,
+  ListChecks,
+  MessageSquare,
+  Clock,
+  Download,
+  Loader2,
+  TrendingUp,
+  TrendingDown,
+  ArrowRight,
+  Activity,
+  Sparkles,
+} from 'lucide-react';
+import toast from 'react-hot-toast';
+import {
+  AreaChart,
+  Area,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+} from 'recharts';
 import api from '../lib/api';
 
-const CARDS = [
-  { key: 'totalUsers',      label: 'Total Users',      icon: Users,        gradient: 'from-blue-500 to-blue-600',   light: 'bg-blue-50',  text: 'text-blue-600', link: '/admin/users'  },
-  { key: 'totalListings',   label: 'Total Listings',   icon: ListChecks,   gradient: 'from-indigo-500 to-indigo-600', light: 'bg-indigo-50',text: 'text-indigo-600', link: '/admin/listings'},
-  { key: 'totalReviews',    label: 'Total Reviews',    icon: MessageSquare,gradient: 'from-purple-500 to-purple-600', light: 'bg-purple-50',text: 'text-purple-600', link: '/admin/reviews'},
-  { key: 'pendingListings', label: 'Pending Listings', icon: Clock,        gradient: 'from-orange-500 to-orange-600', light: 'bg-orange-50',text: 'text-orange-600', link: '/admin/listings'},
+const CARD_META = {
+  totalUsers: {
+    label: 'Total Users',
+    icon: Users,
+    iconWrap: 'bg-cyan-100 text-cyan-700',
+    cardTone: 'from-cyan-500/15 to-cyan-500/5',
+    link: '/admin/users',
+  },
+  totalListings: {
+    label: 'Total Listings',
+    icon: ListChecks,
+    iconWrap: 'bg-emerald-100 text-emerald-700',
+    cardTone: 'from-emerald-500/15 to-emerald-500/5',
+    link: '/admin/listings',
+  },
+  totalReviews: {
+    label: 'Total Reviews',
+    icon: MessageSquare,
+    iconWrap: 'bg-violet-100 text-violet-700',
+    cardTone: 'from-violet-500/15 to-violet-500/5',
+    link: '/admin/reviews',
+  },
+  pendingListings: {
+    label: 'Pending Listings',
+    icon: Clock,
+    iconWrap: 'bg-amber-100 text-amber-700',
+    cardTone: 'from-amber-500/15 to-amber-500/5',
+    link: '/admin/listings',
+  },
+};
+
+const quickActions = [
+  {
+    label: 'Manage Users',
+    hint: 'Roles and account controls',
+    icon: Users,
+    iconWrap: 'bg-cyan-100 text-cyan-700',
+    link: '/admin/users',
+  },
+  {
+    label: 'Review Listings',
+    hint: 'Approve or reject submissions',
+    icon: ListChecks,
+    iconWrap: 'bg-emerald-100 text-emerald-700',
+    link: '/admin/listings',
+  },
+  {
+    label: 'Moderate Reviews',
+    hint: 'Keep community trust healthy',
+    icon: MessageSquare,
+    iconWrap: 'bg-violet-100 text-violet-700',
+    link: '/admin/reviews',
+  },
 ];
 
-const StatCard = ({ label, value, icon: Icon, gradient, light, text, link, trend, trendValue }) => (
-  <Link to={link} className="block group">
-    <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 overflow-hidden relative">
-      {}
-      <div className={`absolute -right-8 -top-8 w-32 h-32 rounded-full bg-gradient-to-br ${gradient} opacity-5 group-hover:opacity-10 transition-opacity`} />
+const trends = {
+  totalUsers: { trend: 'up', value: 12 },
+  totalListings: { trend: 'up', value: 8 },
+  totalReviews: { trend: 'up', value: 15 },
+  pendingListings: { trend: 'down', value: 5 },
+};
 
-      <div className="relative flex items-start justify-between">
-        <div className="flex-1">
-          <p className="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-3">{label}</p>
-          <p className="text-4xl font-bold text-gray-900 tabular-nums mb-2">{value.toLocaleString()}</p>
-          {trend && (
-            <div className={`flex items-center gap-1.5 text-sm font-bold ${trend === 'up' ? 'text-green-600' : 'text-red-600'}`}>
-              {trend === 'up' ? <TrendingUp size={14} /> : <TrendingDown size={14} />}
-              <span>{trendValue}%</span>
-              <span className="text-gray-400 font-normal ml-1">vs last week</span>
-            </div>
-          )}
-        </div>
-        <div className={`w-16 h-16 rounded-2xl bg-gradient-to-br ${gradient} flex items-center justify-center flex-shrink-0 shadow-lg group-hover:scale-110 transition-transform duration-300`}>
-          <Icon size={28} className="text-white" />
-        </div>
-      </div>
-    </div>
-  </Link>
-);
+const selectCls =
+  'rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 shadow-sm transition-all focus:border-slate-400 focus:outline-none';
 
-const ActivityRow = ({ item, type }) => {
-  const Icon = type === 'users' ? Users : ListChecks;
+const StatCard = ({ dataKey, value }) => {
+  const meta = CARD_META[dataKey];
+  const Icon = meta.icon;
+  const cardTrend = trends[dataKey];
+
   return (
-    <div className="flex items-center gap-4 py-3.5 border-b border-gray-50 last:border-0 hover:bg-gray-50/50 transition-colors px-3 rounded-lg group">
-      <div className={`w-11 h-11 rounded-xl ${type === 'users' ? 'bg-blue-100' : 'bg-indigo-100'} flex items-center justify-center flex-shrink-0 group-hover:scale-105 transition-transform`}>
-        {type === 'users' ? (
-          <span className="text-base font-bold text-blue-600">{item.username?.[0]?.toUpperCase()}</span>
-        ) : (
-          <ListChecks size={18} className="text-indigo-600" />
-        )}
+    <Link to={meta.link} className="group block">
+      <div className={`relative overflow-hidden rounded-2xl border border-slate-200 bg-gradient-to-br ${meta.cardTone} p-5 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-xl`}>
+        <div className="absolute right-0 top-0 h-24 w-24 rounded-full bg-white/30 blur-2xl" />
+        <div className="relative flex items-start justify-between gap-4">
+          <div>
+            <p className="text-xs font-bold uppercase tracking-[0.16em] text-slate-500">{meta.label}</p>
+            <p className="mt-3 text-4xl font-black tracking-tight text-slate-900">{Number(value || 0).toLocaleString()}</p>
+            <div className={`mt-3 inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-bold ${cardTrend.trend === 'up' ? 'bg-emerald-100 text-emerald-700' : 'bg-rose-100 text-rose-700'}`}>
+              {cardTrend.trend === 'up' ? <TrendingUp size={13} /> : <TrendingDown size={13} />}
+              {cardTrend.value}% vs last week
+            </div>
+          </div>
+          <div className={`flex h-12 w-12 items-center justify-center rounded-xl ${meta.iconWrap}`}>
+            <Icon size={21} />
+          </div>
+        </div>
       </div>
-      <div className="min-w-0 flex-1">
-        <p className="text-base font-semibold text-gray-900 truncate group-hover:text-blue-600 transition-colors">
-          {type === 'users' ? item.username : item.title}
-        </p>
-        <p className="text-sm text-gray-400 mt-0.5">
-          {new Date(item.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit' })}
-        </p>
-      </div>
-      <ArrowRight size={16} className="text-gray-300 group-hover:text-blue-600 transition-colors" />
-    </div>
+    </Link>
   );
 };
 
 const CustomTooltip = ({ active, payload, label }) => {
   if (!active || !payload?.length) return null;
+
   return (
-    <div className="bg-white border-2 border-gray-100 rounded-xl shadow-xl px-5 py-3">
-      <p className="text-sm font-bold text-gray-800 mb-2">{label}</p>
-      {payload.map(p => (
-        <div key={p.dataKey} className="flex items-center gap-2 text-sm font-semibold mb-1 last:mb-0">
-          <div className="w-3 h-3 rounded-full" style={{ backgroundColor: p.color }} />
-          <span className="text-gray-600">{p.name}:</span>
-          <span style={{ color: p.color }}>{p.value}</span>
+    <div className="rounded-xl border border-slate-200 bg-white px-4 py-3 shadow-xl">
+      <p className="mb-2 text-xs font-bold uppercase tracking-[0.14em] text-slate-500">{label}</p>
+      {payload.map((entry) => (
+        <div key={entry.dataKey} className="mb-1 flex items-center gap-2 text-sm last:mb-0">
+          <span className="inline-block h-2.5 w-2.5 rounded-full" style={{ backgroundColor: entry.color }} />
+          <span className="font-semibold text-slate-600">{entry.name}:</span>
+          <span className="font-bold" style={{ color: entry.color }}>{entry.value}</span>
         </div>
       ))}
     </div>
   );
 };
 
-const QuickActions = () => (
-  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-    {[
-      { label: 'Manage Users', icon: Users, link: '/admin/users', color: 'blue' },
-      { label: 'Review Listings', icon: ListChecks, link: '/admin/listings', color: 'indigo' },
-      { label: 'Check Reviews', icon: MessageSquare, link: '/admin/reviews', color: 'purple' },
-    ].map(({ label, icon: Icon, link, color }) => (
-      <Link key={link} to={link}
-        className="flex items-center justify-between p-4 bg-white rounded-xl border border-gray-100 hover:border-gray-300 hover:shadow-lg transition-all duration-200 group">
+const ActivityList = ({ title, icon: Icon, items, type, link, emptyText }) => {
+  return (
+    <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+      <div className="flex items-center justify-between border-b border-slate-100 px-5 py-4">
         <div className="flex items-center gap-3">
-          <div className={`w-10 h-10 rounded-lg bg-${color}-50 flex items-center justify-center group-hover:scale-110 transition-transform`}>
-            <Icon size={20} className={`text-${color}-600`} />
+          <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-slate-900 text-white">
+            <Icon size={17} />
           </div>
-          <span className="text-base font-semibold text-gray-700 group-hover:text-gray-900">{label}</span>
+          <h3 className="text-base font-bold text-slate-900">{title}</h3>
         </div>
-        <ArrowRight size={18} className="text-gray-300 group-hover:text-gray-700" />
-      </Link>
-    ))}
-  </div>
-);
+        <Link to={link} className="inline-flex items-center gap-1 text-sm font-semibold text-slate-600 transition-colors hover:text-slate-900">
+          View all
+          <ArrowRight size={14} />
+        </Link>
+      </div>
+
+      <div className="p-3">
+        {items.length === 0 ? (
+          <div className="rounded-xl border border-dashed border-slate-200 px-4 py-8 text-center text-sm font-medium text-slate-400">
+            {emptyText}
+          </div>
+        ) : (
+          items.slice(0, 5).map((item) => (
+            <div key={item._id} className="mb-2 flex items-center gap-3 rounded-xl px-3 py-2.5 transition-colors hover:bg-slate-50 last:mb-0">
+              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-slate-100 text-slate-700">
+                {type === 'users' ? item.username?.[0]?.toUpperCase() : <ListChecks size={16} />}
+              </div>
+              <div className="min-w-0 flex-1">
+                <p className="truncate text-sm font-semibold text-slate-900">
+                  {type === 'users' ? item.username : item.title}
+                </p>
+                <p className="text-xs text-slate-500">
+                  {new Date(item.createdAt).toLocaleDateString('en-US', {
+                    month: 'short',
+                    day: 'numeric',
+                    year: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit',
+                  })}
+                </p>
+              </div>
+            </div>
+          ))
+        )}
+      </div>
+    </div>
+  );
+};
 
 const LoadingSkeleton = () => (
-  <div className="space-y-8 max-w-7xl mx-auto animate-pulse">
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-      {[1,2,3,4].map(i => (
-        <div key={i} className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 h-36">
-          <div className="h-4 bg-gray-200 rounded w-1/2 mb-4"></div>
-          <div className="h-8 bg-gray-300 rounded w-3/4"></div>
-        </div>
+  <div className="mx-auto max-w-7xl animate-pulse space-y-6">
+    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
+      {[1, 2, 3, 4].map((i) => (
+        <div key={i} className="h-36 rounded-2xl border border-slate-200 bg-white" />
       ))}
     </div>
-    <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 h-96">
-      <div className="h-6 bg-gray-200 rounded w-1/4 mb-6"></div>
-      <div className="h-full bg-gray-100 rounded"></div>
-    </div>
+    <div className="h-80 rounded-2xl border border-slate-200 bg-white" />
   </div>
 );
-
-const selectCls = "text-base px-4 py-2.5 rounded-xl border border-gray-200 bg-white text-gray-700 font-medium focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition-all shadow-sm hover:shadow";
 
 const Dashboard = () => {
   const [stats, setStats] = useState({
-    totalUsers: 0, totalListings: 0, totalReviews: 0, pendingListings: 0,
-    recentUsers: [], recentListings: [], chartData: []
+    totalUsers: 0,
+    totalListings: 0,
+    totalReviews: 0,
+    pendingListings: 0,
+    recentUsers: [],
+    recentListings: [],
+    chartData: [],
   });
   const [reportType, setReportType] = useState('all');
   const [dateRange, setDateRange] = useState('week');
@@ -132,18 +213,26 @@ const Dashboard = () => {
     try {
       const { data } = await api.get('/admin/dashboard');
       const today = new Date();
-      const chartData = Array.from({ length: 7 }, (_, i) => {
-        const d = new Date(today);
-        d.setDate(d.getDate() - (6 - i));
+
+      const chartData = Array.from({ length: 7 }, (_, index) => {
+        const date = new Date(today);
+        date.setDate(date.getDate() - (6 - index));
+
         return {
-          name: d.toLocaleDateString('en-US', { weekday: 'short' }),
-          Users: data.recentUsers?.filter(u => new Date(u.createdAt).toDateString() === d.toDateString()).length || 0,
-          Listings: data.recentListings?.filter(l => new Date(l.createdAt).toDateString() === d.toDateString()).length || 0,
+          name: date.toLocaleDateString('en-US', { weekday: 'short' }),
+          Users:
+            data.recentUsers?.filter(
+              (user) => new Date(user.createdAt).toDateString() === date.toDateString()
+            ).length || 0,
+          Listings:
+            data.recentListings?.filter(
+              (listing) => new Date(listing.createdAt).toDateString() === date.toDateString()
+            ).length || 0,
         };
       });
+
       setStats({ ...data, chartData });
-    } catch (err) {
-      console.error('Dashboard error:', err);
+    } catch {
       toast.error('Failed to load dashboard data');
     } finally {
       setLoading(false);
@@ -152,150 +241,160 @@ const Dashboard = () => {
 
   useEffect(() => {
     fetchStats();
-    const id = setInterval(fetchStats, 60_000);
-    return () => clearInterval(id);
+    const refreshInterval = setInterval(fetchStats, 60000);
+    return () => clearInterval(refreshInterval);
   }, [fetchStats]);
 
   const generateReport = async () => {
     setGenerating(true);
+
     try {
       const { data } = await api.get('/admin/reports/generate', {
-        params: { type: reportType, dateRange }, responseType: 'blob',
+        params: { type: reportType, dateRange },
+        responseType: 'blob',
       });
-      const url = URL.createObjectURL(new Blob([data]));
-      const a = Object.assign(document.createElement('a'), {
-        href: url,
+
+      const downloadUrl = URL.createObjectURL(new Blob([data]));
+      const downloadLink = Object.assign(document.createElement('a'), {
+        href: downloadUrl,
         download: `wanderlust_${reportType}_${new Date().toISOString().split('T')[0]}.pdf`,
       });
-      document.body.appendChild(a); a.click(); a.remove();
-      toast.success('Report downloaded successfully!');
-    } catch { toast.error('Failed to generate report'); }
-    finally { setGenerating(false); }
+
+      document.body.appendChild(downloadLink);
+      downloadLink.click();
+      downloadLink.remove();
+      URL.revokeObjectURL(downloadUrl);
+      toast.success('Report downloaded successfully');
+    } catch {
+      toast.error('Failed to generate report');
+    } finally {
+      setGenerating(false);
+    }
   };
 
   if (loading) return <LoadingSkeleton />;
 
-  const trends = {
-    totalUsers: { trend: 'up', value: 12 },
-    totalListings: { trend: 'up', value: 8 },
-    totalReviews: { trend: 'up', value: 15 },
-    pendingListings: { trend: 'down', value: 5 },
-  };
-
   return (
-    <div className="space-y-8 max-w-7xl mx-auto">
-      {}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
-          <h2 className="text-3xl font-bold text-gray-900 mb-1">Dashboard Overview</h2>
-          <p className="text-base text-gray-500 flex items-center gap-2">
-            <Activity size={16} className="text-blue-500" />
-            Real-time analytics and insights
-          </p>
-        </div>
-        <div className="flex items-center gap-3 flex-wrap">
-          <select value={reportType} onChange={e => setReportType(e.target.value)} className={selectCls}>
-            <option value="all">All Data</option>
-            <option value="users">Users</option>
-            <option value="listings">Listings</option>
-            <option value="reviews">Reviews</option>
-          </select>
-          <select value={dateRange} onChange={e => setDateRange(e.target.value)} className={selectCls}>
-            <option value="week">Last Week</option>
-            <option value="month">Last Month</option>
-            <option value="quarter">Last 3 Months</option>
-            <option value="year">Last Year</option>
-            <option value="all">All Time</option>
-          </select>
-          <button onClick={generateReport} disabled={generating}
-            className="flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white text-base font-bold rounded-xl shadow-lg shadow-blue-200 disabled:opacity-50 transition-all hover:shadow-xl">
-            {generating ? <Loader2 size={18} className="animate-spin" /> : <Download size={18} />}
-            {generating ? 'Generating...' : 'Export PDF'}
-          </button>
-        </div>
-      </div>
-
-      {}
-      <QuickActions />
-
-      {}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-        {CARDS.map(c => (
-          <StatCard key={c.key} {...c} value={stats[c.key]} {...trends[c.key]} />
-        ))}
-      </div>
-
-      {}
-      <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 hover:shadow-md transition-shadow">
-        <div className="flex items-center justify-between mb-6">
+    <div className="mx-auto max-w-7xl space-y-6">
+      <section className="rounded-3xl border border-slate-200 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 px-6 py-7 text-white shadow-2xl">
+        <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
           <div>
-            <h3 className="text-xl font-bold text-gray-900 mb-1">Activity Trends</h3>
-            <p className="text-sm text-gray-500">Last 7 days overview</p>
+            <div className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-3 py-1 text-xs font-semibold uppercase tracking-[0.16em] text-cyan-100">
+              <Sparkles size={14} />
+              Admin Intelligence
+            </div>
+            <h2 className="mt-3 text-3xl font-black tracking-tight">Dashboard Overview</h2>
+            <p className="mt-1 text-sm text-slate-200">
+              Live moderation pulse and business health in one place.
+            </p>
           </div>
-          <div className="flex items-center gap-6">
-            <span className="flex items-center gap-2 text-sm font-semibold text-gray-600">
-              <span className="w-3 h-3 rounded-full bg-blue-500" />New Users
-            </span>
-            <span className="flex items-center gap-2 text-sm font-semibold text-gray-600">
-              <span className="w-3 h-3 rounded-full bg-purple-500" />New Listings
-            </span>
+
+          <div className="flex flex-wrap items-center gap-2">
+            <select value={reportType} onChange={(e) => setReportType(e.target.value)} className={selectCls}>
+              <option value="all">All Data</option>
+              <option value="users">Users</option>
+              <option value="listings">Listings</option>
+              <option value="reviews">Reviews</option>
+            </select>
+            <select value={dateRange} onChange={(e) => setDateRange(e.target.value)} className={selectCls}>
+              <option value="week">Last Week</option>
+              <option value="month">Last Month</option>
+              <option value="quarter">Last 3 Months</option>
+              <option value="year">Last Year</option>
+              <option value="all">All Time</option>
+            </select>
+            <button
+              onClick={generateReport}
+              disabled={generating}
+              className="inline-flex items-center gap-2 rounded-xl bg-white px-4 py-2.5 text-sm font-bold text-slate-900 transition-all hover:-translate-y-0.5 hover:shadow-lg disabled:opacity-60"
+            >
+              {generating ? <Loader2 size={16} className="animate-spin" /> : <Download size={16} />}
+              {generating ? 'Generating...' : 'Export PDF'}
+            </button>
           </div>
         </div>
+      </section>
+
+      <section className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
+        {Object.keys(CARD_META).map((key) => (
+          <StatCard key={key} dataKey={key} value={stats[key]} />
+        ))}
+      </section>
+
+      <section className="grid grid-cols-1 gap-4 lg:grid-cols-3">
+        {quickActions.map(({ label, hint, icon: Icon, iconWrap, link }) => (
+          <Link
+            key={link}
+            to={link}
+            className="group rounded-2xl border border-slate-200 bg-white p-4 shadow-sm transition-all hover:-translate-y-1 hover:shadow-lg"
+          >
+            <div className="flex items-center justify-between">
+              <div className={`flex h-10 w-10 items-center justify-center rounded-xl ${iconWrap}`}>
+                <Icon size={18} />
+              </div>
+              <ArrowRight size={16} className="text-slate-300 transition-colors group-hover:text-slate-700" />
+            </div>
+            <p className="mt-4 text-base font-bold text-slate-900">{label}</p>
+            <p className="mt-1 text-sm text-slate-500">{hint}</p>
+          </Link>
+        ))}
+      </section>
+
+      <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+        <div className="mb-4 flex items-center justify-between">
+          <div>
+            <h3 className="text-lg font-bold text-slate-900">Activity Trends</h3>
+            <p className="text-sm text-slate-500">Last 7 days</p>
+          </div>
+          <div className="inline-flex items-center gap-2 rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-600">
+            <Activity size={14} />
+            Real-time refresh every minute
+          </div>
+        </div>
+
         <div className="h-80">
           <ResponsiveContainer width="100%" height="100%">
-            <AreaChart data={stats.chartData} margin={{ top: 10, right: 10, bottom: 0, left: -20 }}>
+            <AreaChart data={stats.chartData} margin={{ top: 8, right: 8, left: -20, bottom: 0 }}>
               <defs>
-                <linearGradient id="colorUsers" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.3}/>
-                  <stop offset="95%" stopColor="#3b82f6" stopOpacity={0}/>
+                <linearGradient id="usersGradient" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="5%" stopColor="#06b6d4" stopOpacity={0.3} />
+                  <stop offset="95%" stopColor="#06b6d4" stopOpacity={0} />
                 </linearGradient>
-                <linearGradient id="colorListings" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#8b5cf6" stopOpacity={0.3}/>
-                  <stop offset="95%" stopColor="#8b5cf6" stopOpacity={0}/>
+                <linearGradient id="listingsGradient" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="5%" stopColor="#8b5cf6" stopOpacity={0.28} />
+                  <stop offset="95%" stopColor="#8b5cf6" stopOpacity={0} />
                 </linearGradient>
               </defs>
-              <CartesianGrid strokeDasharray="3 3" stroke="#f3f4f6" vertical={false} />
-              <XAxis dataKey="name" tick={{ fontSize: 13, fill: '#9ca3af', fontWeight: 600 }} axisLine={false} tickLine={false} />
-              <YAxis tick={{ fontSize: 13, fill: '#9ca3af', fontWeight: 600 }} axisLine={false} tickLine={false} />
-              <Tooltip content={<CustomTooltip />} cursor={{ stroke: '#e5e7eb', strokeWidth: 2 }} />
-              <Area type="monotone" dataKey="Users" stroke="#3b82f6" strokeWidth={3} fill="url(#colorUsers)" />
-              <Area type="monotone" dataKey="Listings" stroke="#8b5cf6" strokeWidth={3} fill="url(#colorListings)" />
+
+              <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" vertical={false} />
+              <XAxis dataKey="name" tick={{ fontSize: 12, fill: '#64748b', fontWeight: 700 }} axisLine={false} tickLine={false} />
+              <YAxis tick={{ fontSize: 12, fill: '#64748b', fontWeight: 700 }} axisLine={false} tickLine={false} />
+              <Tooltip content={<CustomTooltip />} cursor={{ stroke: '#cbd5e1', strokeWidth: 2 }} />
+              <Area type="monotone" dataKey="Users" stroke="#06b6d4" strokeWidth={3} fill="url(#usersGradient)" />
+              <Area type="monotone" dataKey="Listings" stroke="#8b5cf6" strokeWidth={3} fill="url(#listingsGradient)" />
             </AreaChart>
           </ResponsiveContainer>
         </div>
-      </div>
+      </section>
 
-      {}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {[
-          { title: 'Recent Users',    items: stats.recentUsers,    type: 'users',    icon: Users,        color: 'blue',   link: '/admin/users' },
-          { title: 'Recent Listings', items: stats.recentListings, type: 'listings', icon: ListChecks,   color: 'indigo', link: '/admin/listings' },
-        ].map(({ title, items, type, icon: Icon, color, link }) => (
-          <div key={type} className="bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow overflow-hidden">
-            <div className={`flex items-center justify-between px-6 py-4 bg-gradient-to-r from-${color}-50 to-${color}-50/50 border-b border-${color}-100`}>
-              <div className="flex items-center gap-3">
-                <div className={`w-10 h-10 rounded-xl bg-${color}-100 flex items-center justify-center`}>
-                  <Icon size={20} className={`text-${color}-600`} />
-                </div>
-                <h3 className="text-lg font-bold text-gray-900">{title}</h3>
-              </div>
-              <Link to={link} className={`text-sm font-semibold text-${color}-600 hover:text-${color}-700 flex items-center gap-1 transition-colors`}>
-                View All <ArrowRight size={14} />
-              </Link>
-            </div>
-            <div className="p-3">
-              {items.length === 0 ? (
-                <div className="flex flex-col items-center justify-center py-12 gap-2">
-                  <Icon size={32} className="text-gray-200" />
-                  <p className="text-base text-gray-400 font-medium">No recent activity</p>
-                </div>
-              ) : (
-                items.slice(0, 5).map(item => <ActivityRow key={item._id} item={item} type={type} />)
-              )}
-            </div>
-          </div>
-        ))}
-      </div>
+      <section className="grid grid-cols-1 gap-4 xl:grid-cols-2">
+        <ActivityList
+          title="Recent Users"
+          icon={Users}
+          items={stats.recentUsers}
+          type="users"
+          link="/admin/users"
+          emptyText="No recent users"
+        />
+        <ActivityList
+          title="Recent Listings"
+          icon={ListChecks}
+          items={stats.recentListings}
+          type="listings"
+          link="/admin/listings"
+          emptyText="No recent listings"
+        />
+      </section>
     </div>
   );
 };

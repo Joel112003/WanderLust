@@ -2,7 +2,7 @@ import React, { useEffect, useState, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import toast, { Toaster } from "react-hot-toast";
+import toast from "react-hot-toast";
 import BookingDetailModal from "./BookingDetailModal";
 import AlternativeBookingsModal from "../views/AlternativeBookingsModal";
 
@@ -631,8 +631,7 @@ const ManageBookings = () => {
 
   return (
     <div>
-      {}
-      <div
+<div
         style={{
           display: "grid",
           gridTemplateColumns: "repeat(auto-fit,minmax(140px,1fr))",
@@ -691,9 +690,7 @@ const ManageBookings = () => {
           </motion.div>
         ))}
       </div>
-
-      {}
-      <div className="mb-hdr">
+<div className="mb-hdr">
         <div className="mb-filters">
           {["all", "pending", "confirmed", "paid", "cancelled"].map((f) => (
             <button
@@ -722,9 +719,7 @@ const ManageBookings = () => {
           />
         </div>
       </div>
-
-      {}
-      {filtered.length === 0 ? (
+{filtered.length === 0 ? (
         <Empty
           icon={I.Users}
           title="No bookings found"
@@ -752,8 +747,7 @@ const ManageBookings = () => {
                   background: "#fff",
                 }}
               >
-                {}
-                <div className="br" style={{ borderRadius: 0, border: "none" }}>
+<div className="br" style={{ borderRadius: 0, border: "none" }}>
                   <img
                     className="br-thumb"
                     src={imgOf(b.listing)}
@@ -798,9 +792,7 @@ const ManageBookings = () => {
                       </span>
                     </div>
                   </div>
-
-                  {}
-                  <div className="br-guest">
+<div className="br-guest">
                     <div className="br-gav">
                       {(b.user?.username || "G")[0].toUpperCase()}
                     </div>
@@ -829,9 +821,7 @@ const ManageBookings = () => {
                       </div>
                     </div>
                   </div>
-
-                  {}
-                  <div
+<div
                     style={{ textAlign: "right", flexShrink: 0, minWidth: 110 }}
                   >
                     <div
@@ -846,9 +836,7 @@ const ManageBookings = () => {
                     </div>
                     <Pill status={b.status} />
                   </div>
-
-                  {}
-                  <div className="br-actions">
+<div className="br-actions">
                     {isPending && (
                       <>
                         <button
@@ -928,9 +916,7 @@ const ManageBookings = () => {
                     </button>
                   </div>
                 </div>
-
-                {}
-                <AnimatePresence>
+<AnimatePresence>
                   {isExp && (
                     <motion.div
                       initial={{ height: 0, opacity: 0 }}
@@ -1869,8 +1855,7 @@ const BlockDatesModal = ({ open, onClose, listing, onBlock, onUnblock }) => {
             exit={{ scale: 0.93, y: 20, opacity: 0 }}
             transition={{ type: "spring", stiffness: 300, damping: 28 }}
           >
-            {}
-            <div
+<div
               style={{
                 padding: "20px 24px 17px",
                 borderBottom: "1.5px solid var(--border)",
@@ -1919,8 +1904,7 @@ const BlockDatesModal = ({ open, onClose, listing, onBlock, onUnblock }) => {
                 <I.X style={{ width: 14, height: 14 }} />
               </button>
             </div>
-            {}
-            <div style={{ padding: "22px 24px" }}>
+<div style={{ padding: "22px 24px" }}>
               <div
                 style={{
                   background: "#FDF0EF",
@@ -2633,25 +2617,14 @@ const Account = () => {
   return (
     <div style={{ background: "#fff", minHeight: "100vh", marginTop: 60 }}>
       <Styles />
-      <Toaster
-        position="top-right"
-        toastOptions={{
-          style: { fontFamily: "'Manrope',sans-serif", fontSize: 14 },
-        }}
-      />
-
-      {}
-      <aside
+<aside
         className={"sb" + (sbOpen ? " open" : "")}
         style={{ marginTop: 60 }}
       >
-        {}
-        <div className="sb-logo">
+<div className="sb-logo">
           <div className="sb-logo-tag">Dashboard</div>
         </div>
-
-        {}
-        {user && (
+{user && (
           <div className="sb-user">
             <div className="sb-av">{user.username?.[0]?.toUpperCase()}</div>
             <div style={{ minWidth: 0 }}>
@@ -2660,9 +2633,7 @@ const Account = () => {
             </div>
           </div>
         )}
-
-        {}
-        <nav className="sb-nav">
+<nav className="sb-nav">
           {NAV.map(({ group, items }) => (
             <div key={group}>
               <div className="sb-grp">{group}</div>
@@ -2683,19 +2654,14 @@ const Account = () => {
             </div>
           ))}
         </nav>
-
-        {}
-        <div className="sb-foot">
+<div className="sb-foot">
           <a href="/" className="sb-back">
             <I.Chev style={{ width: 15, height: 15 }} /> Back to Home
           </a>
         </div>
       </aside>
-
-      {}
-      <div className="main">
-        {}
-        <div
+<div className="main">
+<div
           style={{
             display: "none",
             padding: "14px 20px",
@@ -2731,19 +2697,15 @@ const Account = () => {
             {TITLES[section]?.title}
           </span>
         </div>
-
-        {}
-        <div className="ph">
+<div className="ph">
           <div>
             <div className="ph-eye">{TITLES[section]?.eye}</div>
             <div className="ph-title">{TITLES[section]?.title}</div>
             <div className="ph-sub">{TITLES[section]?.sub}</div>
           </div>
-          {}
-          {section === "bookings" && user && (
+{section === "bookings" && user && (
             <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
-              {}
-              {alternatives.length > 0 && (
+{alternatives.length > 0 && (
                 <button
                   onClick={() => setAltModalOpen(true)}
                   style={{
@@ -2806,9 +2768,7 @@ const Account = () => {
             </div>
           )}
         </div>
-
-        {}
-        <div className="content">
+<div className="content">
           <AnimatePresence mode="wait">
             <motion.div
               key={section}
@@ -2859,9 +2819,7 @@ const Account = () => {
           </AnimatePresence>
         </div>
       </div>
-
-      {}
-      <EditModal
+<EditModal
         open={editOpen}
         onClose={() => setEditOpen(false)}
         form={editForm}
@@ -2883,9 +2841,7 @@ const Account = () => {
           onClose={() => setViewBooking(null)}
         />
       )}
-
-      {}
-      <AlternativeBookingsModal
+<AlternativeBookingsModal
         isOpen={altModalOpen}
         onClose={() => {
           setAltModalOpen(false);

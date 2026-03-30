@@ -148,8 +148,7 @@ const OwnerBookingsManager = () => {
 
   return (
     <div className="space-y-6">
-      {}
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+<div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div>
           <h2 className="text-2xl font-bold text-gray-900">
             Manage Your Bookings
@@ -163,9 +162,7 @@ const OwnerBookingsManager = () => {
           <p className="text-sm text-gray-600">Total Bookings</p>
         </div>
       </div>
-
-      {}
-      <div className="bg-white rounded-lg shadow-md p-4 space-y-4">
+<div className="bg-white rounded-lg shadow-md p-4 space-y-4">
         <div className="flex flex-wrap gap-2">
           {["all", "upcoming", "past", "cancelled"].map((filterOption) => (
             <button
@@ -205,14 +202,10 @@ const OwnerBookingsManager = () => {
           </svg>
         </div>
       </div>
-
-      {}
-      <div className="text-sm text-gray-600 mb-4">
+<div className="text-sm text-gray-600 mb-4">
         Showing {filteredBookings.length} of {bookings.length} bookings
       </div>
-
-      {}
-      {filteredBookings.length === 0 ? (
+{filteredBookings.length === 0 ? (
         <div className="bg-white rounded-lg shadow-md p-12 text-center">
           <svg
             className="mx-auto h-16 w-16 text-gray-400 mb-4"
@@ -241,8 +234,7 @@ const OwnerBookingsManager = () => {
               key={group.listing?._id}
               className="bg-white rounded-lg shadow-md overflow-hidden"
             >
-              {}
-              <div className="bg-gradient-to-r from-teal-50 to-cyan-50 px-6 py-4 border-b border-teal-100">
+<div className="bg-gradient-to-r from-teal-50 to-cyan-50 px-6 py-4 border-b border-teal-100">
                 <div className="flex items-start gap-4">
                   {group.listing?.images?.[0] && (
                     <img
@@ -266,14 +258,11 @@ const OwnerBookingsManager = () => {
                   </div>
                 </div>
               </div>
-
-              {}
-              <div className="divide-y divide-gray-200">
+<div className="divide-y divide-gray-200">
                 {group.bookings.map((booking) => (
                   <div key={booking._id} className="p-6 hover:bg-gray-50">
                     <div className="flex flex-col lg:flex-row lg:items-center gap-4">
-                      {}
-                      <div className="flex-1">
+<div className="flex-1">
                         <div className="flex items-center gap-3 mb-2">
                           <div className="w-10 h-10 rounded-full bg-teal-100 flex items-center justify-center">
                             <span className="text-teal-700 font-bold text-lg">
@@ -363,9 +352,7 @@ const OwnerBookingsManager = () => {
                           </div>
                         )}
                       </div>
-
-                      {}
-                      {isCancellable(booking) && (
+{isCancellable(booking) && (
                         <div className="flex-shrink-0">
                           <button
                             onClick={() => handleCancelBooking(booking)}
@@ -396,9 +383,7 @@ const OwnerBookingsManager = () => {
           ))}
         </div>
       )}
-
-      {}
-      <AnimatePresence>
+<AnimatePresence>
         {cancelModalOpen && selectedBooking && (
           <CancelBookingModal
             isOpen={cancelModalOpen}

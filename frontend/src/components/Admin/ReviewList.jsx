@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo, useCallback, memo } from 'react';
 import { Search, Star, Check, Trash2, AlertCircle, MessageSquare, TrendingUp, Clock } from 'lucide-react';
-import { toast } from 'react-toastify';
+import toast from 'react-hot-toast';
 import api from '../lib/api';
 
 const inputCls = "w-full pl-10 pr-4 py-3 text-base rounded-xl border border-gray-200 bg-white text-gray-900 placeholder:text-gray-400 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 shadow-sm transition-all";

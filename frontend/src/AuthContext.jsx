@@ -2,7 +2,11 @@ import { createContext, useState, useEffect, useCallback } from "react";
 import axios from "axios";
 import { safeGetItem, safeSetItem, safeRemoveItem, parseJWT } from "./utilis/js/storage";
 
-const API_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:8000";
+const API_URL = (
+  import.meta.env.VITE_APP_API_URL ||
+  import.meta.env.VITE_BACKEND_URL ||
+  "http://localhost:8000"
+).replace(/\/+$/, "");
 const API_ENDPOINTS = {
   login: `${API_URL}/auth/login`,
   register: `${API_URL}/auth/signup`,

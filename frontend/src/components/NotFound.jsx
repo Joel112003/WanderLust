@@ -31,8 +31,7 @@ function NotFound() {
         animate="visible"
         className="max-w-4xl w-full text-center"
       >
-        {}
-        <motion.div
+<motion.div
           variants={itemVariants}
           className="mb-8"
         >
@@ -50,9 +49,7 @@ function NotFound() {
             404
           </motion.h1>
         </motion.div>
-
-        {}
-        <motion.div
+<motion.div
           variants={itemVariants}
           className="mb-6"
         >
@@ -70,9 +67,7 @@ function NotFound() {
             <FaCompass className="text-6xl text-purple-500 mx-auto" />
           </motion.div>
         </motion.div>
-
-        {}
-        <motion.div variants={itemVariants} className="mb-8">
+<motion.div variants={itemVariants} className="mb-8">
           <h2 className="text-3xl md:text-4xl font-bold text-gray-800 mb-4">
             Oops! You've Lost Your Way
           </h2>
@@ -84,9 +79,7 @@ function NotFound() {
             Let's get you back on track to discover amazing destinations.
           </p>
         </motion.div>
-
-        {}
-        <motion.div
+<motion.div
           variants={itemVariants}
           className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12"
         >
@@ -122,14 +115,11 @@ function NotFound() {
             </motion.button>
           </Link>
         </motion.div>
-
-        {}
-        <motion.div
+<motion.div
           variants={itemVariants}
           className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-3xl mx-auto"
         >
-          {}
-        </motion.div>
+</motion.div>
       </motion.div>
     </div>
   );

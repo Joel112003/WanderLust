@@ -66,8 +66,7 @@ const AdvancedFilters = ({ onApply, initialFilters = {} }) => {
 
   return (
     <>
-      {}
-      <button
+<button
         onClick={() => setIsOpen(true)}
         style={{
           display: "flex",
@@ -116,9 +115,7 @@ const AdvancedFilters = ({ onApply, initialFilters = {} }) => {
           </span>
         )}
       </button>
-
-      {}
-      <AnimatePresence>
+<AnimatePresence>
         {isOpen && (
           <motion.div
             initial={{ opacity: 0 }}
@@ -152,8 +149,7 @@ const AdvancedFilters = ({ onApply, initialFilters = {} }) => {
                 boxShadow: "0 20px 60px rgba(0,0,0,0.15)",
               }}
             >
-              {}
-              <div style={{
+<div style={{
                 padding: "20px 24px",
                 borderBottom: "1px solid rgba(0,0,0,0.07)",
                 display: "flex",
@@ -192,11 +188,8 @@ const AdvancedFilters = ({ onApply, initialFilters = {} }) => {
                   <X size={16} />
                 </button>
               </div>
-
-              {}
-              <div style={{ padding: "24px", maxHeight: "calc(85vh - 160px)", overflowY: "auto" }}>
-                {}
-                <div style={{ marginBottom: 24 }}>
+<div style={{ padding: "24px", maxHeight: "calc(85vh - 160px)", overflowY: "auto" }}>
+<div style={{ marginBottom: 24 }}>
                   <label style={{
                     display: "flex",
                     alignItems: "center",
@@ -240,9 +233,7 @@ const AdvancedFilters = ({ onApply, initialFilters = {} }) => {
                     />
                   </div>
                 </div>
-
-                {}
-                <div style={{ marginBottom: 24 }}>
+<div style={{ marginBottom: 24 }}>
                   <label style={{
                     display: "flex",
                     alignItems: "center",
@@ -285,9 +276,7 @@ const AdvancedFilters = ({ onApply, initialFilters = {} }) => {
                     ))}
                   </div>
                 </div>
-
-                {}
-                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginBottom: 24 }}>
+<div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginBottom: 24 }}>
                   <div>
                     <label style={{
                       display: "flex",
@@ -355,9 +344,7 @@ const AdvancedFilters = ({ onApply, initialFilters = {} }) => {
                     </select>
                   </div>
                 </div>
-
-                {}
-                <div style={{ marginBottom: 24 }}>
+<div style={{ marginBottom: 24 }}>
                   <label style={{
                     display: "flex",
                     alignItems: "center",
@@ -387,9 +374,7 @@ const AdvancedFilters = ({ onApply, initialFilters = {} }) => {
                     }}
                   />
                 </div>
-
-                {}
-                <div>
+<div>
                   <label style={{
                     display: "block",
                     fontSize: 14,
@@ -431,9 +416,7 @@ const AdvancedFilters = ({ onApply, initialFilters = {} }) => {
                   </div>
                 </div>
               </div>
-
-              {}
-              <div style={{
+<div style={{
                 padding: "16px 24px",
                 borderTop: "1px solid rgba(0,0,0,0.07)",
                 display: "flex",

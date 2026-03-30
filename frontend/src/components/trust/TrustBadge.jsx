@@ -140,8 +140,7 @@ export const HostReliabilityCard = ({ reliability, hostName }) => {
         boxShadow: '0 4px 12px rgba(0,0,0,0.08)',
       }}
     >
-      {}
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px' }}>
+<div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px' }}>
         <div>
           <h3 style={{ margin: '0 0 4px 0', fontSize: '18px', fontWeight: 700, color: '#1a1207' }}>
             Host: {hostName}
@@ -174,11 +173,8 @@ export const HostReliabilityCard = ({ reliability, hostName }) => {
           <div style={{ fontSize: '12px', color: '#7c7060', marginTop: '-4px' }}>out of 100</div>
         </div>
       </div>
-
-      {}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '12px' }}>
-        {}
-        <div style={{ padding: '12px', background: '#faf8f4', borderRadius: '12px' }}>
+<div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '12px' }}>
+<div style={{ padding: '12px', background: '#faf8f4', borderRadius: '12px' }}>
           <div style={{ fontSize: '11px', color: '#7c7060', marginBottom: '4px' }}>Response Rate</div>
           <div style={{ fontSize: '18px', fontWeight: 700, color: '#1a1207' }}>
             {reliability.responseMetrics?.responseRate?.toFixed(0) || 0}%
@@ -187,9 +183,7 @@ export const HostReliabilityCard = ({ reliability, hostName }) => {
             Avg: {reliability.responseMetrics?.avgResponseTime?.toFixed(1) || 0}hrs
           </div>
         </div>
-
-        {}
-        <div style={{ padding: '12px', background: '#faf8f4', borderRadius: '12px' }}>
+<div style={{ padding: '12px', background: '#faf8f4', borderRadius: '12px' }}>
           <div style={{ fontSize: '11px', color: '#7c7060', marginBottom: '4px' }}>Cancellation Rate</div>
           <div style={{ fontSize: '18px', fontWeight: 700, color: '#1a1207' }}>
             {reliability.cancellationMetrics?.cancellationRate?.toFixed(1) || 0}%
@@ -198,18 +192,14 @@ export const HostReliabilityCard = ({ reliability, hostName }) => {
             {reliability.cancellationMetrics?.totalBookings || 0} total bookings
           </div>
         </div>
-
-        {}
-        <div style={{ padding: '12px', background: '#faf8f4', borderRadius: '12px' }}>
+<div style={{ padding: '12px', background: '#faf8f4', borderRadius: '12px' }}>
           <div style={{ fontSize: '11px', color: '#7c7060', marginBottom: '4px' }}>Accuracy</div>
           <div style={{ fontSize: '18px', fontWeight: 700, color: '#1a1207' }}>
             {reliability.accuracyMetrics?.avgAccuracy?.toFixed(1) || 0}/10
           </div>
           <div style={{ fontSize: '10px', color: '#b0a090', marginTop: '2px' }}>Photos & description</div>
         </div>
-
-        {}
-        <div style={{ padding: '12px', background: '#faf8f4', borderRadius: '12px' }}>
+<div style={{ padding: '12px', background: '#faf8f4', borderRadius: '12px' }}>
           <div style={{ fontSize: '11px', color: '#7c7060', marginBottom: '4px' }}>Rating</div>
           <div style={{ fontSize: '18px', fontWeight: 700, color: '#1a1207' }}>
             ⭐ {reliability.reviewMetrics?.avgRating?.toFixed(1) || 0}
@@ -219,9 +209,7 @@ export const HostReliabilityCard = ({ reliability, hostName }) => {
           </div>
         </div>
       </div>
-
-      {}
-      {reliability.badges && reliability.badges.length > 0 && (
+{reliability.badges && reliability.badges.length > 0 && (
         <div style={{ marginTop: '16px', paddingTop: '16px', borderTop: '1px solid rgba(0,0,0,0.06)' }}>
           <div style={{ fontSize: '12px', color: '#7c7060', marginBottom: '8px', fontWeight: 600 }}>Achievements</div>
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>

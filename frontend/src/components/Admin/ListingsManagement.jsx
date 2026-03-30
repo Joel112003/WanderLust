@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { Search, Check, X, Star, Eye, AlertCircle, MapPin, DollarSign, Filter, TrendingUp } from 'lucide-react';
-import { toast } from 'react-toastify';
+import toast from 'react-hot-toast';
 import api from '../lib/api';
 
 const STATUS = {

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { Search, Shield, ShieldOff, ArrowUpDown, AlertCircle, Users as UsersIcon, UserCheck, TrendingUp } from 'lucide-react';
-import { toast } from 'react-toastify';
+import toast from 'react-hot-toast';
 import api from '../lib/api';
 
 const AVATAR_COLORS = [

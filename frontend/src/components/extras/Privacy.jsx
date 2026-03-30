@@ -109,8 +109,7 @@ export default function Privacy() {
       `}</style>
 
       <div className="prv-root">
-        {}
-        <div className="prv-hero" style={{ padding: "100px 24px 64px", textAlign: "center" }}>
+<div className="prv-hero" style={{ padding: "100px 24px 64px", textAlign: "center" }}>
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
             <span className="prv-badge">🔐 Legal</span>
             <h1 style={{ fontFamily: "'Lora', serif", fontSize: "clamp(36px, 5vw, 56px)", fontWeight: 600, color: "#fff", margin: "20px 0 16px", lineHeight: 1.15 }}>

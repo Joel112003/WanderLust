@@ -68,8 +68,7 @@ const ShareButton = ({ listing, buttonStyle = 'icon' }) => {
 
   return (
     <>
-      {}
-      {buttonStyle === 'icon' ? (
+{buttonStyle === 'icon' ? (
         <button
           onClick={handleNativeShare}
           style={{
@@ -126,9 +125,7 @@ const ShareButton = ({ listing, buttonStyle = 'icon' }) => {
           Share
         </button>
       )}
-
-      {}
-      <AnimatePresence>
+<AnimatePresence>
         {showModal && (
           <motion.div
             initial={{ opacity: 0 }}
@@ -163,8 +160,7 @@ const ShareButton = ({ listing, buttonStyle = 'icon' }) => {
                 boxShadow: '0 20px 60px rgba(0,0,0,0.3)'
               }}
             >
-              {}
-              <div style={{
+<div style={{
                 display: 'flex',
                 justifyContent: 'space-between',
                 alignItems: 'center',
@@ -195,9 +191,7 @@ const ShareButton = ({ listing, buttonStyle = 'icon' }) => {
                   <X size={20} />
                 </button>
               </div>
-
-              {}
-              <div style={{
+<div style={{
                 padding: 16,
                 background: '#f9fafb',
                 borderRadius: 12,
@@ -220,9 +214,7 @@ const ShareButton = ({ listing, buttonStyle = 'icon' }) => {
                   {listing.description?.substring(0, 120)}...
                 </p>
               </div>
-
-              {}
-              <div style={{
+<div style={{
                 display: 'flex',
                 gap: 12,
                 marginBottom: 24
@@ -271,15 +263,12 @@ const ShareButton = ({ listing, buttonStyle = 'icon' }) => {
                   )}
                 </button>
               </div>
-
-              {}
-              <div style={{
+<div style={{
                 display: 'grid',
                 gridTemplateColumns: 'repeat(2, 1fr)',
                 gap: 12
               }}>
-                {}
-                <button
+<button
                   onClick={handleEmailShare}
                   style={{
                     padding: '14px 20px',
@@ -317,9 +306,7 @@ const ShareButton = ({ listing, buttonStyle = 'icon' }) => {
                     Email
                   </span>
                 </button>
-
-                {}
-                <button
+<button
                   onClick={handleWhatsAppShare}
                   style={{
                     padding: '14px 20px',
@@ -357,9 +344,7 @@ const ShareButton = ({ listing, buttonStyle = 'icon' }) => {
                     WhatsApp
                   </span>
                 </button>
-
-                {}
-                <button
+<button
                   onClick={handleTwitterShare}
                   style={{
                     padding: '14px 20px',
@@ -399,9 +384,7 @@ const ShareButton = ({ listing, buttonStyle = 'icon' }) => {
                     Twitter
                   </span>
                 </button>
-
-                {}
-                <button
+<button
                   onClick={handleFacebookShare}
                   style={{
                     padding: '14px 20px',

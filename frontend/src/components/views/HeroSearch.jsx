@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import toast, { Toaster } from "react-hot-toast";
+import toast from "react-hot-toast";
 import {
   MapPin, Calendar, Users, Search,
   ChevronDown, ChevronLeft, ChevronRight,
@@ -59,8 +59,7 @@ const MiniCalendar = ({ checkIn, checkOut, onChange }) => {
 
   return (
     <div className="hs-cal">
-      {}
-      <div className="hs-cal-nav">
+<div className="hs-cal-nav">
         <button className="hs-cal-nav-btn" onClick={() => setView(new Date(yr, mo-1, 1))}>
           <ChevronLeft size={15}/>
         </button>
@@ -69,23 +68,15 @@ const MiniCalendar = ({ checkIn, checkOut, onChange }) => {
           <ChevronRight size={15}/>
         </button>
       </div>
-
-      {}
-      <p className="hs-cal-hint">
+<p className="hs-cal-hint">
         {phase === "pickIn"  ? "Select check-in date"  :
          phase === "pickOut" ? "Now select check-out"  :
          `${fmtD(checkIn)} → ${fmtD(checkOut)}`}
       </p>
-
-      {}
-      <div className="hs-cal-grid">
+<div className="hs-cal-grid">
         {WD.map(w => <div key={w} className="hs-cal-wh">{w}</div>)}
-
-        {}
-        {Array.from({length: fdw}, (_,i) => <div key={`e${i}`}/>)}
-
-        {}
-        {Array.from({length: dim}, (_,i) => {
+{Array.from({length: fdw}, (_,i) => <div key={`e${i}`}/>)}
+{Array.from({length: dim}, (_,i) => {
           const d      = sod(new Date(yr, mo, i+1));
           const isPast = d < today();
           const isCIn  = sameD(d, checkIn);
@@ -112,9 +103,7 @@ const MiniCalendar = ({ checkIn, checkOut, onChange }) => {
           );
         })}
       </div>
-
-      {}
-      <div className="hs-cal-footer">
+<div className="hs-cal-footer">
         <button className="hs-cal-clear" onClick={() => onChange(null, null)}>
           Clear dates
         </button>
@@ -248,13 +237,10 @@ const HeroSearch = () => {
 
   return (
     <>
-      <Toaster position="bottom-right" toastOptions={{style:{fontFamily:"'DM Sans',sans-serif",fontSize:13.5}}}/>
 
       <div className="hs-outer" ref={wrapRef}>
         <div className="hs-bar">
-
-          {}
-          <div className={`hs-segment${active==="dest"?" hs-segment--active":""}`}>
+<div className={`hs-segment${active==="dest"?" hs-segment--active":""}`}>
             <button className="hs-segment-btn" onClick={()=>toggle("dest")}>
               <MapPin size={15} className="hs-seg-icon"/>
               <div className="hs-seg-text">
@@ -269,8 +255,7 @@ const HeroSearch = () => {
             <AnimatePresence>
               {active==="dest" && (
                 <Dropdown>
-                  {}
-                  <div className="hs-dest-search">
+<div className="hs-dest-search">
                     <Search size={14} className="hs-dest-search-ico"/>
                     <input
                       autoFocus
@@ -285,9 +270,7 @@ const HeroSearch = () => {
                       </button>
                     )}
                   </div>
-
-                  {}
-                  <div className="hs-dest-list">
+<div className="hs-dest-list">
                     {filtered.length===0
                       ? <p className="hs-dest-empty">No destinations found</p>
                       : filtered.map(d => (
@@ -316,9 +299,7 @@ const HeroSearch = () => {
           </div>
 
           <div className="hs-sep"/>
-
-          {}
-          <div className={`hs-segment${active==="dates"?" hs-segment--active":""}`}>
+<div className={`hs-segment${active==="dates"?" hs-segment--active":""}`}>
             <button className="hs-segment-btn" onClick={()=>toggle("dates")}>
               <Calendar size={15} className="hs-seg-icon"/>
               <div className="hs-seg-text">
@@ -344,9 +325,7 @@ const HeroSearch = () => {
           </div>
 
           <div className="hs-sep"/>
-
-          {}
-          <div className={`hs-segment${active==="guests"?" hs-segment--active":""}`}>
+<div className={`hs-segment${active==="guests"?" hs-segment--active":""}`}>
             <button className="hs-segment-btn" onClick={()=>toggle("guests")}>
               <Users size={15} className="hs-seg-icon"/>
               <div className="hs-seg-text">
@@ -366,9 +345,7 @@ const HeroSearch = () => {
               )}
             </AnimatePresence>
           </div>
-
-          {}
-          <motion.button
+<motion.button
             className="hs-search-btn"
             onClick={handleSearch}
             disabled={loading}

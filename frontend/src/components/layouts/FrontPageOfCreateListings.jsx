@@ -200,21 +200,15 @@ export default function FrontPageOfCreateListings() {
         /* Visual card in hero */
         .hero-vis-card { background: white; border-radius: 18px; padding: 22px 24px; box-shadow: 0 12px 40px rgba(10,10,8,0.08); border: 1px solid #F0F0EC; }
       `}</style>
-
-      {}
-      <section ref={heroRef} style={{ maxWidth: 1240, margin: '0 auto', padding: 'clamp(80px,10vw,120px) clamp(20px,5vw,60px) 80px', position: 'relative' }}>
-
-        {}
-        <div style={{
+<section ref={heroRef} style={{ maxWidth: 1240, margin: '0 auto', padding: 'clamp(80px,10vw,120px) clamp(20px,5vw,60px) 80px', position: 'relative' }}>
+<div style={{
           position: 'absolute', right: -60, top: -40, width: 600, height: 600, pointerEvents: 'none', zIndex: 0,
           background: `radial-gradient(ellipse at ${50 + mousePos.x * 12}% ${50 + mousePos.y * 12}%, #FAE8E5 0%, #FFF5F4 40%, transparent 70%)`,
           transition: 'background 0.6s ease', borderRadius: '50%',
         }} />
 
         <div className={`hero-two-col`} style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 'clamp(40px,6vw,100px)', alignItems: 'center', position: 'relative', zIndex: 1 }}>
-
-          {}
-          <div>
+<div>
             <div className={`reveal p1 ${phase >= 1 ? 'visible' : ''}`} style={{ marginBottom: 28 }}>
               <span className="tag-pill">
                 <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#22C55E', display: 'inline-block', boxShadow: '0 0 6px rgba(34,197,94,0.6)' }} />
@@ -261,23 +255,16 @@ export default function FrontPageOfCreateListings() {
               ))}
             </div>
           </div>
-
-          {}
-          <div className={`hero-visuals reveal-right ${phase >= 2 ? 'visible' : ''}`} style={{ position: 'relative', height: 540, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            {}
-            <div style={{ position: 'absolute', inset: 20, borderRadius: 28, background: 'linear-gradient(145deg, #FFF5F3 0%, #FDF8F7 50%, #F5F5F2 100%)', border: '1px solid #F0EDE9' }} />
-
-            {}
-            <div className="hero-vis-card float-a" style={{ position: 'absolute', left: '8%', top: '12%', width: 200, zIndex: 3 }}>
+<div className={`hero-visuals reveal-right ${phase >= 2 ? 'visible' : ''}`} style={{ position: 'relative', height: 540, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+<div style={{ position: 'absolute', inset: 20, borderRadius: 28, background: 'linear-gradient(145deg, #FFF5F3 0%, #FDF8F7 50%, #F5F5F2 100%)', border: '1px solid #F0EDE9' }} />
+<div className="hero-vis-card float-a" style={{ position: 'absolute', left: '8%', top: '12%', width: 200, zIndex: 3 }}>
               <div style={{ fontFamily: 'var(--sans)', fontSize: 11, fontWeight: 600, color: 'var(--lighter)', letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: 10 }}>This month</div>
               <div style={{ fontFamily: 'var(--serif)', fontSize: 38, fontWeight: 700, color: 'var(--ink)', lineHeight: 1 }}>$3,240</div>
               <div style={{ fontFamily: 'var(--sans)', fontSize: 12, color: '#22C55E', marginTop: 6, fontWeight: 600, display: 'flex', alignItems: 'center', gap: 4 }}>
                 <span>↑</span> 18% vs last month
               </div>
             </div>
-
-            {}
-            <div className="hero-vis-card float-b" style={{ position: 'absolute', right: '6%', top: '22%', width: 190, zIndex: 3 }}>
+<div className="hero-vis-card float-b" style={{ position: 'absolute', right: '6%', top: '22%', width: 190, zIndex: 3 }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 12 }}>
                 <div style={{ width: 36, height: 36, borderRadius: 10, background: '#FEF3C7', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 18 }}>🏡</div>
                 <div>
@@ -287,9 +274,7 @@ export default function FrontPageOfCreateListings() {
               </div>
               <div style={{ fontFamily: 'var(--sans)', fontSize: 12, color: 'var(--muted)', lineHeight: 1.5 }}>Marcus T. booked 5 nights · <strong style={{ color: 'var(--accent)' }}>$890</strong></div>
             </div>
-
-            {}
-            <div className="hero-vis-card float-c" style={{ position: 'absolute', left: '12%', bottom: '16%', width: 170, zIndex: 3 }}>
+<div className="hero-vis-card float-c" style={{ position: 'absolute', left: '12%', bottom: '16%', width: 170, zIndex: 3 }}>
               <div style={{ fontFamily: 'var(--sans)', fontSize: 11, color: 'var(--lighter)', marginBottom: 8, fontWeight: 500 }}>Guest review</div>
               <div style={{ display: 'flex', gap: 3, marginBottom: 8 }}>
                 {[...Array(5)].map((_, i) => (
@@ -298,18 +283,14 @@ export default function FrontPageOfCreateListings() {
               </div>
               <div style={{ fontFamily: 'var(--serif)', fontSize: 14, color: 'var(--charcoal)', lineHeight: 1.5, fontStyle: 'italic' }}>"Absolutely stunning view, 10/10!"</div>
             </div>
-
-            {}
-            <div className="hero-vis-card float-b" style={{ position: 'absolute', right: '4%', bottom: '18%', width: 150, zIndex: 3, textAlign: 'center', padding: '20px 16px' }}>
+<div className="hero-vis-card float-b" style={{ position: 'absolute', right: '4%', bottom: '18%', width: 150, zIndex: 3, textAlign: 'center', padding: '20px 16px' }}>
               <div style={{ fontFamily: 'var(--serif)', fontWeight: 700, fontSize: 32, color: 'var(--ink)', lineHeight: 1 }}>190+</div>
               <div style={{ fontFamily: 'var(--sans)', fontSize: 12, color: 'var(--muted)', marginTop: 6, fontWeight: 400 }}>Countries<br />represented</div>
             </div>
           </div>
         </div>
       </section>
-
-      {}
-      <div style={{ borderTop: '1px solid #F0F0EC', borderBottom: '1px solid #F0F0EC', padding: '14px 0', overflow: 'hidden', background: '#FAFAF8' }}>
+<div style={{ borderTop: '1px solid #F0F0EC', borderBottom: '1px solid #F0F0EC', padding: '14px 0', overflow: 'hidden', background: '#FAFAF8' }}>
         <div className="marquee-outer">
           <div className="marquee-inner">
             {[...MARQUEE, ...MARQUEE, ...MARQUEE, ...MARQUEE].map((w, i) => (
@@ -327,18 +308,10 @@ export default function FrontPageOfCreateListings() {
           </div>
         </div>
       </div>
-
-      {}
-      <StatsSection />
-
-      {}
-      <FeaturesSection />
-
-      {}
-      <ProcessSection />
-
-      {}
-      <CtaSection goSignup={goSignup} goLogin={goLogin} />
+<StatsSection />
+<FeaturesSection />
+<ProcessSection />
+<CtaSection goSignup={goSignup} goLogin={goLogin} />
     </div>
   );
 }
@@ -507,8 +480,7 @@ function CtaSection({ goSignup, goLogin }) {
           opacity: inView ? 1 : 0, transform: inView ? 'translateY(0) scale(1)' : 'translateY(30px) scale(0.98)',
           transition: 'opacity 0.9s, transform 0.9s',
         }}>
-          {}
-          <div style={{ position: 'absolute', right: -80, top: -80, width: 500, height: 500, borderRadius: '50%', background: 'radial-gradient(ellipse, rgba(200,56,42,0.2) 0%, transparent 70%)', pointerEvents: 'none' }} />
+<div style={{ position: 'absolute', right: -80, top: -80, width: 500, height: 500, borderRadius: '50%', background: 'radial-gradient(ellipse, rgba(200,56,42,0.2) 0%, transparent 70%)', pointerEvents: 'none' }} />
           <div style={{ position: 'absolute', left: -40, bottom: -80, width: 300, height: 300, borderRadius: '50%', background: 'radial-gradient(ellipse, rgba(200,56,42,0.08) 0%, transparent 70%)', pointerEvents: 'none' }} />
           <div style={{ display: 'grid', gridTemplateColumns: '1fr auto', gap: 60, alignItems: 'center', position: 'relative', zIndex: 1 }}>
             <div>

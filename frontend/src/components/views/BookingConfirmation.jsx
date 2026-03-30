@@ -82,9 +82,7 @@ const BookingConfirmation = () => {
       <Confetti />
 
       <div className="bc-container">
-
-        {}
-        <motion.div
+<motion.div
           className="bc-hero"
           initial={{ opacity: 0, scale: 0.92 }}
           animate={{ opacity: 1, scale: 1 }}
@@ -120,16 +118,13 @@ const BookingConfirmation = () => {
             )}
           </motion.p>
         </motion.div>
-
-        {}
-        <motion.div
+<motion.div
           className="bc-card"
           initial={{ opacity: 0, y: 24 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.5, duration: 0.45 }}
         >
-          {}
-          <div className="bc-listing-strip">
+<div className="bc-listing-strip">
             {listing.image?.url
               ? <img src={listing.image.url} alt={listing.title} className="bc-listing-strip__img" />
               : <div className="bc-listing-strip__placeholder">🏠</div>
@@ -143,9 +138,7 @@ const BookingConfirmation = () => {
               </p>
             </div>
           </div>
-
-          {}
-          <div className="bc-details">
+<div className="bc-details">
             <h3 className="bc-details__title">Booking details</h3>
 
             <DetailRow
@@ -173,9 +166,7 @@ const BookingConfirmation = () => {
               sub="Paid via Razorpay"
             />
           </div>
-
-          {}
-          <div className="bc-breakdown">
+<div className="bc-breakdown">
             <h3 className="bc-breakdown__title">Price breakdown</h3>
             <div className="bc-breakdown__rows">
               <div className="bc-breakdown__row">
@@ -202,9 +193,7 @@ const BookingConfirmation = () => {
             </div>
           </div>
         </motion.div>
-
-        {}
-        <motion.div
+<motion.div
           className="bc-actions"
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
@@ -221,9 +210,7 @@ const BookingConfirmation = () => {
             <ArrowRight size={15} />
           </Link>
         </motion.div>
-
-        {}
-        <motion.div
+<motion.div
           className="bc-next"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}

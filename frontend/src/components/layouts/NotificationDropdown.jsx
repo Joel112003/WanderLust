@@ -143,8 +143,7 @@ const NotificationDropdown = () => {
 
   return (
     <div ref={dropdownRef} style={{ position: "relative" }}>
-      {}
-      <button
+<button
         onClick={() => {
           setIsOpen(!isOpen);
           if (!isOpen) setLoading(true);
@@ -190,9 +189,7 @@ const NotificationDropdown = () => {
           </span>
         )}
       </button>
-
-      {}
-      <AnimatePresence>
+<AnimatePresence>
         {isOpen && (
           <motion.div
             initial={{ opacity: 0, y: -10, scale: 0.95 }}
@@ -213,8 +210,7 @@ const NotificationDropdown = () => {
               zIndex: 1000,
             }}
           >
-            {}
-            <div style={{
+<div style={{
               padding: "16px 20px",
               borderBottom: "1px solid rgba(0,0,0,0.06)",
               display: "flex",
@@ -265,9 +261,7 @@ const NotificationDropdown = () => {
                 </button>
               )}
             </div>
-
-            {}
-            <div style={{
+<div style={{
               maxHeight: 400,
               overflowY: "auto",
             }}>
@@ -375,9 +369,7 @@ const NotificationDropdown = () => {
                 })
               )}
             </div>
-
-            {}
-            {notifications.length > 0 && (
+{notifications.length > 0 && (
               <div style={{
                 padding: "12px 20px",
                 borderTop: "1px solid rgba(0,0,0,0.06)",

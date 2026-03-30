@@ -95,8 +95,7 @@ const EnhancedListingCard = ({ listing }) => {
         e.currentTarget.style.boxShadow = '0 2px 8px rgba(0,0,0,0.06)';
       }}
     >
-      {}
-      <div style={{ position: 'relative', paddingTop: '66.67%', background: '#f3f0ea' }}>
+<div style={{ position: 'relative', paddingTop: '66.67%', background: '#f3f0ea' }}>
         <img
           src={listing.image?.url || '/placeholder.jpg'}
           alt={listing.title}
@@ -109,9 +108,7 @@ const EnhancedListingCard = ({ listing }) => {
             objectFit: 'cover',
           }}
         />
-
-        {}
-        <button
+<button
           onClick={toggleWishlist}
           style={{
             position: 'absolute',
@@ -137,9 +134,7 @@ const EnhancedListingCard = ({ listing }) => {
             strokeWidth={2}
           />
         </button>
-
-        {}
-        <div style={{ position: 'absolute', top: 12, left: 12, display: 'flex', flexDirection: 'column', gap: '6px' }}>
+<div style={{ position: 'absolute', top: 12, left: 12, display: 'flex', flexDirection: 'column', gap: '6px' }}>
           {trustMetrics?.host?.reliability?.overallScore >= 90 && (
             <TrustBadge type="host-reliability" value={trustMetrics.host.reliability.overallScore} size="sm" showLabel={false} />
           )}
@@ -151,11 +146,8 @@ const EnhancedListingCard = ({ listing }) => {
           )}
         </div>
       </div>
-
-      {}
-      <div style={{ padding: '16px' }}>
-        {}
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '8px' }}>
+<div style={{ padding: '16px' }}>
+<div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '8px' }}>
           <div style={{ flex: 1, minWidth: 0 }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '4px' }}>
               <MapPin size={14} style={{ color: '#c2633a', flexShrink: 0 }} />
@@ -189,9 +181,7 @@ const EnhancedListingCard = ({ listing }) => {
             </div>
           )}
         </div>
-
-        {}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '12px', flexWrap: 'wrap' }}>
+<div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '12px', flexWrap: 'wrap' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '13px', color: '#7c7060' }}>
             <Users size={14} />
             <span>{listing.guests} guests</span>
@@ -205,9 +195,7 @@ const EnhancedListingCard = ({ listing }) => {
             <span>{listing.baths} baths</span>
           </div>
         </div>
-
-        {}
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', marginBottom: '12px' }}>
+<div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', marginBottom: '12px' }}>
           {trustMetrics?.reviews?.verificationRate >= 80 && (
             <div style={{ display: 'flex', alignItems: 'center', gap: '4px', padding: '4px 8px', background: '#D3F9D8', borderRadius: '6px', fontSize: '11px', fontWeight: 600, color: '#51CF66' }}>
               <CheckCircle size={12} />
@@ -221,9 +209,7 @@ const EnhancedListingCard = ({ listing }) => {
             </div>
           )}
         </div>
-
-        {}
-        <div style={{ paddingTop: '12px', borderTop: '1px solid rgba(0,0,0,0.06)' }}>
+<div style={{ paddingTop: '12px', borderTop: '1px solid rgba(0,0,0,0.06)' }}>
           <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between' }}>
             <div>
               <span style={{ fontSize: '20px', fontWeight: 800, color: '#1a1207' }}>

@@ -103,15 +103,11 @@ export default function Footer() {
           viewport={{ once: true }}
           className="mx-auto max-w-2xl px-6 py-8 flex flex-col items-center gap-5"
         >
-
-          {}
-          <motion.p variants={item}
+<motion.p variants={item}
             className="text-xs font-semibold uppercase tracking-widest text-gray-400">
             Follow us on social media
           </motion.p>
-
-          {}
-          <motion.div variants={item} className="flex items-center gap-3">
+<motion.div variants={item} className="flex items-center gap-3">
             {SOCIALS.map(({ label, href, icon, color, bg, bgHover }) => (
               <motion.a
                 key={label}
@@ -135,13 +131,9 @@ export default function Footer() {
               </motion.a>
             ))}
           </motion.div>
-
-          {}
-          <motion.div variants={item}
+<motion.div variants={item}
             className="w-3/4 border-t border-gray-100" />
-
-          {}
-          <motion.nav variants={item} className="flex items-center gap-6 flex-wrap justify-center">
+<motion.nav variants={item} className="flex items-center gap-6 flex-wrap justify-center">
             {LINKS.map(({ label, to }) => (
               <motion.div key={to} whileHover={{ scale: 1.04 }}>
                 <Link
@@ -154,17 +146,13 @@ export default function Footer() {
               </motion.div>
             ))}
           </motion.nav>
-
-          {}
-          <motion.p variants={item} className="text-xs text-gray-400 text-center">
+<motion.p variants={item} className="text-xs text-gray-400 text-center">
             &copy; {new Date().getFullYear()} WanderLust Private Limited. All rights reserved.
           </motion.p>
 
         </motion.div>
       </footer>
-
-      {}
-      <AnimatePresence>
+<AnimatePresence>
         {showTop && (
           <motion.button
             key="back-to-top"

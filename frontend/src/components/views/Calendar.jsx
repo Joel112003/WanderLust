@@ -22,8 +22,7 @@ const Calendar = ({ onDateChange }) => {
 
   return (
     <div className="relative w-full max-w-sm">
-      {}
-      <button
+<button
         onClick={() => setShowCalendar(!showCalendar)}
         className="w-full p-3 border border-gray-300 rounded-lg flex justify-between items-center bg-white shadow-md hover:shadow-lg transition"
       >
@@ -33,9 +32,7 @@ const Calendar = ({ onDateChange }) => {
         </span>
         <span className="text-gray-500">📅</span>
       </button>
-
-      {}
-      <AnimatePresence>
+<AnimatePresence>
         {showCalendar && (
           <motion.div
             initial={{ opacity: 0, y: -10 }}

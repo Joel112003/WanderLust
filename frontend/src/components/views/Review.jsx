@@ -85,8 +85,7 @@ const ReviewCard = ({ review, currentUser, onDelete, deleting }) => {
       layout
     >
       <div className="rv-card__top">
-        {}
-        <div className="rv-avatar">
+<div className="rv-avatar">
           {(review.author?.username || "A")[0].toUpperCase()}
         </div>
 
@@ -96,9 +95,7 @@ const ReviewCard = ({ review, currentUser, onDelete, deleting }) => {
           </span>
           <span className="rv-card__date">{fmtDate(review.createdAt)}</span>
         </div>
-
-        {}
-        <div className="rv-card__stars">
+<div className="rv-card__stars">
           {[1,2,3,4,5].map(n => (
             <Star
               key={n} size={13}
@@ -222,8 +219,7 @@ body: JSON.stringify({ rating: Number(rating), comment: comment.trim() }),
     <>
 
       <div className="rv-root">
-        {}
-        <AnimatePresence>
+<AnimatePresence>
           {error && (
             <motion.div
               className="rv-error"
@@ -235,11 +231,8 @@ body: JSON.stringify({ rating: Number(rating), comment: comment.trim() }),
             </motion.div>
           )}
         </AnimatePresence>
-
-        {}
-        <div className="rv-summary">
-          {}
-          <div className="rv-score">
+<div className="rv-summary">
+<div className="rv-score">
             <span className="rv-score__num">{overall.toFixed(1)}</span>
             <div className="rv-score__stars">
               {[1,2,3,4,5].map(n=>(
@@ -253,9 +246,7 @@ body: JSON.stringify({ rating: Number(rating), comment: comment.trim() }),
               {reviews.length} review{reviews.length!==1?"s":""}
             </span>
           </div>
-
-          {}
-          {reviews.length > 0 && (
+{reviews.length > 0 && (
             <div className="rv-dist">
               {dist.map(({star,count})=>(
                 <RatingBar key={star} star={star} count={count} total={reviews.length}/>
@@ -263,9 +254,7 @@ body: JSON.stringify({ rating: Number(rating), comment: comment.trim() }),
             </div>
           )}
         </div>
-
-        {}
-        {token ? (
+{token ? (
           <motion.div
             className="rv-form-card"
             initial={{ opacity:0, y:12 }} animate={{ opacity:1, y:0 }}
@@ -321,9 +310,7 @@ body: JSON.stringify({ rating: Number(rating), comment: comment.trim() }),
             </span>
           </div>
         )}
-
-        {}
-        <div className="rv-list">
+<div className="rv-list">
           {loadingR ? (
             <div className="rv-loading">
               <Loader2 size={22} className="rv-spin rv-loading__ico"/>

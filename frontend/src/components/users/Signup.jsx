@@ -1,12 +1,13 @@
 import React, { useState, useContext } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import toast, { Toaster } from "react-hot-toast";
+import { Link, useNavigate, useLocation } from "react-router-dom";
+import toast from "react-hot-toast";
 import { AuthContext } from "../../AuthContext";
 import { motion } from "framer-motion";
 
 const Signup = () => {
   const { register } = useContext(AuthContext);
   const navigate = useNavigate();
+  const location = useLocation();
   const [inputValue, setInputValue] = useState({
     username: "",
     email: "",
@@ -155,8 +156,7 @@ const Signup = () => {
         overflow: "hidden",
       }}
     >
-      {}
-      <motion.div
+<motion.div
         variants={bgPatternVariants}
         style={{
           position: "absolute",
@@ -284,8 +284,7 @@ const Signup = () => {
           variants={containerVariants}
           style={{ display: "flex", flexDirection: "column", gap: "1.25rem" }}
         >
-          {}
-          <motion.div
+<motion.div
             variants={formItemVariants}
             style={{ display: "flex", flexDirection: "column", gap: 6 }}
           >
@@ -342,9 +341,7 @@ const Signup = () => {
               </div>
             )}
           </motion.div>
-
-          {}
-          <motion.div
+<motion.div
             variants={formItemVariants}
             style={{ display: "flex", flexDirection: "column", gap: 6 }}
           >
@@ -403,9 +400,7 @@ const Signup = () => {
               </div>
             )}
           </motion.div>
-
-          {}
-          <motion.div
+<motion.div
             variants={formItemVariants}
             style={{ display: "flex", flexDirection: "column", gap: 6 }}
           >
@@ -489,9 +484,7 @@ const Signup = () => {
                 )}
               </motion.button>
             </div>
-
-            {}
-            {password && (
+{password && (
               <motion.ul
                 initial={{ opacity: 0, height: 0 }}
                 animate={{ opacity: 1, height: "auto" }}
@@ -528,9 +521,7 @@ const Signup = () => {
                 ))}
               </motion.ul>
             )}
-
-            {}
-            {password && (
+{password && (
               <div style={{ marginTop: 8 }}>
                 <div
                   style={{
@@ -578,9 +569,7 @@ const Signup = () => {
               </div>
             )}
           </motion.div>
-
-          {}
-          <motion.button
+<motion.button
             variants={buttonVariants}
             whileHover="hover"
             whileTap="tap"
@@ -686,7 +675,6 @@ const Signup = () => {
         </motion.p>
       </motion.div>
 
-      <Toaster position="top-right" />
     </motion.div>
   );
 };

@@ -511,9 +511,7 @@ const ConversationsPage = () => {
 
       <div className="cp-root">
         <div className="cp-wrap">
-
-          {}
-          <div className="cp-header">
+<div className="cp-header">
             <button className="cp-back" onClick={() => navigate(-1)}>
               <ArrowLeft size={17} />
             </button>
@@ -525,12 +523,8 @@ const ConversationsPage = () => {
               </p>
             </div>
           </div>
-
-          {}
-          <div className={`cp-layout ${selectedConversation ? 'split' : 'solo'}`}>
-
-            {}
-            <div className="cp-sidebar">
+<div className={`cp-layout ${selectedConversation ? 'split' : 'solo'}`}>
+<div className="cp-sidebar">
               <div className="cp-search-wrap">
                 <div className="cp-search-inner">
                   <Search size={15} className="cp-search-icon" color={searchFocused ? '#dc2626' : '#c4c4c8'} />
@@ -585,9 +579,7 @@ const ConversationsPage = () => {
                 ))}
               </div>
             </div>
-
-            {}
-            <AnimatePresence mode="wait">
+<AnimatePresence mode="wait">
               {selectedConversation ? (
                 <motion.div
                   key={selectedConversation.listing._id}

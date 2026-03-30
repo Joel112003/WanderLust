@@ -1,6 +1,6 @@
 import React, { useState, useContext } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
-import toast, { Toaster } from "react-hot-toast";
+import toast from "react-hot-toast";
 import { AuthContext } from "../../AuthContext";
 
 const Login = () => {
@@ -157,7 +157,6 @@ const Login = () => {
         </p>
       </div>
 
-      <Toaster position="top-right" />
 
       <style>{`
         @keyframes slow-spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }

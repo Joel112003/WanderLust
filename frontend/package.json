@@ -36,7 +36,6 @@
     "react-icons": "^5.5.0",
     "react-map-gl": "^7.1.9",
     "react-router-dom": "^7.2.0",
-    "react-toastify": "^11.0.5",
     "recharts": "^2.15.2",
     "socket.io-client": "^4.8.3",
     "tailwind-merge": "^3.0.2",

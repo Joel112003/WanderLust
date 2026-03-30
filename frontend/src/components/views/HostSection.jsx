@@ -115,8 +115,7 @@ const ContactHostDialog = ({ isOpen, onClose, owner }) => {
           transition: "transform .28s cubic-bezier(.34,1.46,.64,1), opacity .28s ease",
         }}
       >
-        {}
-        <div style={{ padding: "20px 24px 18px", borderBottom: "1px solid #f3f4f6", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+<div style={{ padding: "20px 24px 18px", borderBottom: "1px solid #f3f4f6", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
           <div>
             <h3 className="host-serif" style={{ margin: 0, fontSize: 22, fontWeight: 600, color: "#111" }}>Contact Host</h3>
             <p style={{ margin: "3px 0 0", fontSize: 13, color: "#9ca3af" }}>Reach out directly to {name}</p>
@@ -130,9 +129,7 @@ const ContactHostDialog = ({ isOpen, onClose, owner }) => {
             <X size={16} />
           </button>
         </div>
-
-        {}
-        <div style={{ padding: "20px 24px 0", display: "flex", alignItems: "center", gap: 14 }}>
+<div style={{ padding: "20px 24px 0", display: "flex", alignItems: "center", gap: 14 }}>
           <div style={{ width: 52, height: 52, borderRadius: "50%", overflow: "hidden", border: "2px solid #fecaca", flexShrink: 0 }}>
             {owner?.profilePic
               ? <img src={owner.profilePic} alt={name} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
@@ -144,9 +141,7 @@ const ContactHostDialog = ({ isOpen, onClose, owner }) => {
             <div style={{ fontSize: 12, color: "#9ca3af", marginTop: 2 }}>Host since {new Date(owner?.createdAt || Date.now()).getFullYear()}</div>
           </div>
         </div>
-
-        {}
-        <div style={{ padding: "18px 24px", display: "flex", flexDirection: "column", gap: 10 }}>
+<div style={{ padding: "18px 24px", display: "flex", flexDirection: "column", gap: 10 }}>
           {[
             { icon: <Mail size={16} color="#ef4444" />, label: "Email", value: email, field: "email", bg: "#fff5f5" },
             { icon: <Phone size={16} color="#22c55e" />, label: "Phone", value: phone, field: "phone", bg: "#f0fdf4" },
@@ -172,9 +167,7 @@ const ContactHostDialog = ({ isOpen, onClose, owner }) => {
               </button>
             </div>
           ))}
-
-          {}
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, marginTop: 4 }}>
+<div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, marginTop: 4 }}>
             <div style={{ background: "#fff5f5", border: "1px solid #fecaca", borderRadius: 10, padding: "11px 14px" }}>
               <div style={{ fontSize: 10, color: "#ef4444", textTransform: "uppercase", letterSpacing: ".07em", marginBottom: 4 }}>Prefers</div>
               <div style={{ fontSize: 13, color: "#111", fontWeight: 500, display: "flex", alignItems: "center", gap: 5 }}>
@@ -189,9 +182,7 @@ const ContactHostDialog = ({ isOpen, onClose, owner }) => {
             </div>
           </div>
         </div>
-
-        {}
-        <div style={{ padding: "0 24px 22px" }}>
+<div style={{ padding: "0 24px 22px" }}>
           <button
             onClick={close}
             className="btn-contact"
@@ -239,14 +230,11 @@ const HostSection = ({ owner }) => {
       <GlobalStyle />
 
       <div style={{ borderTop: "1px solid #e5e7eb", paddingTop: 32, paddingBottom: 40 }}>
-
-        {}
-        <div
+<div
           className={`fade-up ${visible ? "in" : ""}`}
           style={{ display: "flex", alignItems: "flex-start", gap: 28, marginBottom: 32, flexWrap: "wrap" }}
         >
-          {}
-          <div
+<div
             className="avatar-wrap"
             onClick={() => setDialogOpen(true)}
             style={{ position: "relative", flexShrink: 0 }}
@@ -265,9 +253,7 @@ const HostSection = ({ owner }) => {
               </div>
             )}
           </div>
-
-          {}
-          <div style={{ flex: 1, minWidth: 200 }}>
+<div style={{ flex: 1, minWidth: 200 }}>
             <h2
               className="host-serif name-link"
               onClick={() => setDialogOpen(true)}
@@ -296,9 +282,7 @@ const HostSection = ({ owner }) => {
             </div>
           </div>
         </div>
-
-        {}
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(150px, 1fr))", gap: 14, marginBottom: 28 }}>
+<div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(150px, 1fr))", gap: 14, marginBottom: 28 }}>
           {stats.map((s, i) => (
             <div
               key={i}
@@ -313,9 +297,7 @@ const HostSection = ({ owner }) => {
             </div>
           ))}
         </div>
-
-        {}
-        <div
+<div
           className={`fade-up ${visible ? "in" : ""}`}
           style={{ background: "#fafafa", border: "1.5px solid #e5e7eb", borderRadius: 18, padding: "24px 26px", marginBottom: 28, transitionDelay: "400ms" }}
         >
@@ -326,9 +308,7 @@ const HostSection = ({ owner }) => {
             {owner?.bio || "Hello! I'm a passionate host who loves to share my space with travelers from around the world. I enjoy hiking, photography, and exploring new cultures. I'm always available to help make your stay comfortable and memorable."}
           </p>
         </div>
-
-        {}
-        <div
+<div
           className={`fade-up ${visible ? "in" : ""}`}
           style={{ display: "flex", gap: 12, flexWrap: "wrap", transitionDelay: "500ms" }}
         >

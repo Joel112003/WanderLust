@@ -236,6 +236,21 @@
     background:#fff; border:1px solid #e8e3e3;
     border-radius:16px; box-shadow:0 16px 48px rgba(0,0,0,0.14);
     z-index:200; padding:10px;
+    width:min(92vw, 360px);
+    max-width:360px;
+    max-height:min(70vh, 520px);
+    overflow:auto;
+  }
+
+  .ld-datefield__popover--start {
+    left: 0;
+    transform: none;
+  }
+
+  .ld-datefield__popover--end {
+    left: auto;
+    right: 0;
+    transform: none;
   }
 
   .rdp-sel .rdp-day_button { background:#e03030 !important; color:#fff !important; border-radius:50%; }
@@ -386,6 +401,7 @@
     background:none; border:none; cursor:pointer; text-align:right;
     font-family:'DM Sans',sans-serif; font-size:13.5px; font-weight:500;
     color:#111; outline:none;
+    max-width: 100%;
   }
 
   .ld-avail {
@@ -471,6 +487,13 @@
       z-index: 1001;
       padding: 8px;
       border-radius: 12px;
+    }
+
+    .ld-datefield__popover--start,
+    .ld-datefield__popover--end {
+      left: 50%;
+      right: auto;
+      transform: translate(-50%, -50%);
     }
     .ld-guests {
       padding: 8px 10px;

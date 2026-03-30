@@ -23,6 +23,11 @@ const compression = require("compression");
 
 const app = express();
 
+const normalizeOrigin = (value) => {
+  if (!value) return "";
+  return value.trim().replace(/\/+$/, "");
+};
+
 function configureMongoDns() {
   const mongoUri = process.env.ATLAS_DB;
   const isSrvUri = mongoUri?.startsWith("mongodb+srv://");
@@ -41,13 +46,22 @@ function configureMongoDns() {
 
 configureMongoDns();
 
-const allowedOrigins = [
+const configuredFrontendOrigins = [
   process.env.FRONTEND_URL,
+  process.env.FRONTEND_URLS,
+]
+  .filter(Boolean)
+  .flatMap((value) => value.split(","));
+
+const allowedOrigins = [
+  ...configuredFrontendOrigins,
   "http://localhost:5173",
   "http://localhost:3000",
   "http://127.0.0.1:5173",
   "http://127.0.0.1:3000",
-].filter(Boolean);
+]
+  .map(normalizeOrigin)
+  .filter(Boolean);
 
 console.log("[CORS] Allowed origins:", allowedOrigins);
 
@@ -58,7 +72,9 @@ app.use(
 
       if (!origin) return callback(null, true);
 
-      if (allowedOrigins.includes(origin)) {
+      const normalizedOrigin = normalizeOrigin(origin);
+
+      if (allowedOrigins.includes(normalizedOrigin)) {
         callback(null, true);
       } else {
         console.error("[CORS] Origin not allowed:", origin);

@@ -156,9 +156,7 @@ const AlternativeBookingsModal = ({ isOpen, onClose, alternatives = [], onAccept
           exit={{ scale: 0.9, opacity: 0 }}
           onClick={(e) => e.stopPropagation()}
           className="bg-white rounded-2xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-hidden">
-
-          {}
-          <div className="p-6 border-b border-gray-200 bg-gradient-to-r from-red-50 to-orange-50">
+<div className="p-6 border-b border-gray-200 bg-gradient-to-r from-red-50 to-orange-50">
             <div className="flex items-start justify-between">
               <div>
                 <h2 className="text-2xl font-bold text-gray-900 mb-1">

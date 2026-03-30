@@ -128,8 +128,7 @@ const CancelListingModal = ({
             boxShadow: '0 20px 60px rgba(0,0,0,0.3)'
           }}
         >
-          {}
-          <div style={{
+<div style={{
             padding: '24px',
             borderBottom: '1px solid #e5e7eb',
             display: 'flex',
@@ -156,11 +155,8 @@ const CancelListingModal = ({
               <X size={20} />
             </button>
           </div>
-
-          {}
-          <div style={{ padding: 24 }}>
-            {}
-            <div style={{
+<div style={{ padding: 24 }}>
+<div style={{
               background: '#f9fafb',
               padding: 16,
               borderRadius: 12,
@@ -173,9 +169,7 @@ const CancelListingModal = ({
                 {listing?.location || listing?.city}
               </p>
             </div>
-
-            {}
-            {affectedBookings.length > 0 && (
+{affectedBookings.length > 0 && (
               <div style={{
                 background: hasLastMinuteBookings ? '#fef2f2' : '#fffbeb',
                 border: `1px solid ${hasLastMinuteBookings ? '#fecaca' : '#fde68a'}`,
@@ -231,9 +225,7 @@ const CancelListingModal = ({
                 </div>
               </div>
             )}
-
-            {}
-            <div style={{ marginBottom: 20 }}>
+<div style={{ marginBottom: 20 }}>
               <label style={{
                 display: 'block',
                 fontSize: 14,
@@ -284,9 +276,7 @@ const CancelListingModal = ({
                 </label>
               </div>
             </div>
-
-            {}
-            <div style={{ marginBottom: 20 }}>
+<div style={{ marginBottom: 20 }}>
               <label style={{
                 display: 'block',
                 fontSize: 14,
@@ -320,9 +310,7 @@ const CancelListingModal = ({
                 {reason.length}/500
               </p>
             </div>
-
-            {}
-            {affectedBookings.length > 0 && (
+{affectedBookings.length > 0 && (
               <div style={{
                 marginBottom: 20,
                 padding: 16,
@@ -367,9 +355,7 @@ const CancelListingModal = ({
                 )}
               </div>
             )}
-
-            {}
-            <div style={{ display: 'flex', gap: 12 }}>
+<div style={{ display: 'flex', gap: 12 }}>
               <button
                 onClick={onClose}
                 disabled={cancelling}

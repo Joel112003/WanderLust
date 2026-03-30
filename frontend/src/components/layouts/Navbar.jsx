@@ -4,7 +4,7 @@ import { AuthContext } from "../../AuthContext";
 import NotificationDropdown from "./NotificationDropdown";
 import MessageDropdown from "./MessageDropdown";
 import "../../utilis/css/Navbar.css";
-import toast, { Toaster } from "react-hot-toast";
+import toast from "react-hot-toast";
 
 const Navbar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -38,10 +38,13 @@ const Navbar = () => {
     return () => document.removeEventListener("keydown", handler);
   }, []);
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
     setMenuOpen(false);
-    localStorage.removeItem("authToken");
-    if (logout) logout();
+    if (logout) {
+      await logout();
+    } else {
+      localStorage.removeItem("authToken");
+    }
     toast.success("Logged out successfully! See you soon 👋", {
       duration: 2000,
       style: {
@@ -66,7 +69,6 @@ const Navbar = () => {
 
   return (
     <>
-      <Toaster position="top-right" />
       <nav className={`navbar${scrolled ? " scrolled" : ""}`}>
         <div className="navbar-logo">
           <Link

@@ -71,8 +71,7 @@ const ReceiptForPDF = React.forwardRef(({ booking, user }, ref) => {
         boxSizing: "border-box",
       }}
     >
-      {}
-      {imgSrc && (
+{imgSrc && (
         <div style={{ marginBottom: 24, borderRadius: 12, overflow: "hidden", height: 180 }}>
           <img
             src={imgSrc}
@@ -82,9 +81,7 @@ const ReceiptForPDF = React.forwardRef(({ booking, user }, ref) => {
           />
         </div>
       )}
-
-      {}
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 28, paddingBottom: 18, borderBottom: "2px solid #c2633a" }}>
+<div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 28, paddingBottom: 18, borderBottom: "2px solid #c2633a" }}>
         <div>
           <h1 style={{ fontSize: 28, fontWeight: 700, color: "#c2633a", margin: "0 0 4px" }}>WanderLust</h1>
           <p style={{ margin: 0, fontSize: 12, color: "#7c7060" }}>Booking Receipt</p>
@@ -99,9 +96,7 @@ const ReceiptForPDF = React.forwardRef(({ booking, user }, ref) => {
           </p>
         </div>
       </div>
-
-      {}
-      <div style={{ display: "flex", gap: 40, marginBottom: 22 }}>
+<div style={{ display: "flex", gap: 40, marginBottom: 22 }}>
         <div style={{ flex: 1 }}>
           <p style={{ fontSize: 10, textTransform: "uppercase", letterSpacing: ".07em", color: "#b0a090", margin: "0 0 8px", fontWeight: 600 }}>Booked By</p>
           <p style={{ margin: "0 0 3px", fontWeight: 700, fontSize: 14 }}>{user?.username || "Guest"}</p>
@@ -119,9 +114,7 @@ const ReceiptForPDF = React.forwardRef(({ booking, user }, ref) => {
           </span>
         </div>
       </div>
-
-      {}
-      <div style={{ background: "#faf8f4", borderRadius: 10, padding: "14px 18px", marginBottom: 22, display: "flex", gap: 0 }}>
+<div style={{ background: "#faf8f4", borderRadius: 10, padding: "14px 18px", marginBottom: 22, display: "flex", gap: 0 }}>
         {[
           ["Check-in",  fmtDate(booking.checkIn)],
           ["Check-out", fmtDate(booking.checkOut)],
@@ -133,9 +126,7 @@ const ReceiptForPDF = React.forwardRef(({ booking, user }, ref) => {
           </div>
         ))}
       </div>
-
-      {}
-      <div style={{ marginBottom: 22 }}>
+<div style={{ marginBottom: 22 }}>
         <p style={{ fontSize: 10, textTransform: "uppercase", letterSpacing: ".07em", color: "#b0a090", margin: "0 0 10px", fontWeight: 600 }}>Price Breakdown</p>
         {[
           [`₹${fmt(pricePerNight)} × ${nights} night${nights > 1 ? "s" : ""}`, pricePerNight * nights],
@@ -152,17 +143,13 @@ const ReceiptForPDF = React.forwardRef(({ booking, user }, ref) => {
           <span style={{ color: "#c2633a", fontSize: 20 }}>₹{fmt(total)}</span>
         </div>
       </div>
-
-      {}
-      {booking.razorpay_payment_id && (
+{booking.razorpay_payment_id && (
         <div style={{ background: "#edf7f1", borderRadius: 8, padding: "10px 14px", marginBottom: 20 }}>
           <p style={{ margin: "0 0 3px", fontSize: 11, color: "#2d7a4f", fontWeight: 700 }}>✓ Payment Verified via Razorpay</p>
           <p style={{ margin: 0, fontSize: 11, color: "#4b7c58", fontFamily: "monospace" }}>ID: {booking.razorpay_payment_id}</p>
         </div>
       )}
-
-      {}
-      <div style={{ borderTop: "1px solid #e0d8cc", paddingTop: 14, display: "flex", justifyContent: "space-between", fontSize: 10, color: "#b0a090" }}>
+<div style={{ borderTop: "1px solid #e0d8cc", paddingTop: 14, display: "flex", justifyContent: "space-between", fontSize: 10, color: "#b0a090" }}>
         <span>WanderLust · wanderlust.com</span>
         <span>Computer-generated receipt</span>
       </div>
@@ -213,8 +200,7 @@ const BookingDetailModal = ({ booking, onClose, user }) => {
 
   return (
     <>
-      {}
-      <ReceiptForPDF ref={receiptRef} booking={booking} user={user} />
+<ReceiptForPDF ref={receiptRef} booking={booking} user={user} />
 
       <AnimatePresence>
         <motion.div
@@ -227,8 +213,7 @@ const BookingDetailModal = ({ booking, onClose, user }) => {
             transition={{ type: "spring", stiffness: 280, damping: 26 }}
             style={{ background: "#fff", borderRadius: 24, width: "100%", maxWidth: 580, maxHeight: "90vh", overflowY: "auto", boxShadow: "0 30px 80px rgba(0,0,0,0.22)" }}
           >
-            {}
-            <div style={{ position: "relative", height: 220, flexShrink: 0 }}>
+<div style={{ position: "relative", height: 220, flexShrink: 0 }}>
               <img
                 src={imgSrc}
                 alt={listing.title}
@@ -249,12 +234,8 @@ const BookingDetailModal = ({ booking, onClose, user }) => {
                 </p>
               </div>
             </div>
-
-            {}
-            <div style={{ padding: "24px 26px" }}>
-
-              {}
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 12, marginBottom: 22 }}>
+<div style={{ padding: "24px 26px" }}>
+<div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 12, marginBottom: 22 }}>
                 {[
                   { icon: Icon.Calendar, label: "Check-in",  val: fmtDate(booking.checkIn) },
                   { icon: Icon.Calendar, label: "Check-out", val: fmtDate(booking.checkOut) },
@@ -269,9 +250,7 @@ const BookingDetailModal = ({ booking, onClose, user }) => {
                   </div>
                 ))}
               </div>
-
-              {}
-              <div style={{ background: "#faf8f4", borderRadius: 14, padding: "16px 18px", marginBottom: 20 }}>
+<div style={{ background: "#faf8f4", borderRadius: 14, padding: "16px 18px", marginBottom: 20 }}>
                 <p style={{ margin: "0 0 12px", fontSize: 12, fontWeight: 600, color: "#7c7060", textTransform: "uppercase", letterSpacing: ".06em" }}>Price Breakdown</p>
                 {(() => {
                   const ppn = booking.pricePerNight || Math.round(total / (nights || 1));
@@ -291,17 +270,13 @@ const BookingDetailModal = ({ booking, onClose, user }) => {
                   <span style={{ fontFamily: "'Fraunces', serif", color: "#c2633a", fontSize: 20 }}>₹{fmt(total)}</span>
                 </div>
               </div>
-
-              {}
-              {booking.razorpay_payment_id && (
+{booking.razorpay_payment_id && (
                 <div style={{ background: "#edf7f1", border: "1px solid #a7d9ba", borderRadius: 10, padding: "10px 14px", marginBottom: 20 }}>
                   <p style={{ margin: "0 0 3px", fontSize: 11, fontWeight: 700, color: "#2d7a4f", textTransform: "uppercase", letterSpacing: ".06em" }}>✓ Payment Confirmed</p>
                   <p style={{ margin: 0, fontSize: 12, color: "#4b7c58", fontFamily: "monospace" }}>Razorpay ID: {booking.razorpay_payment_id}</p>
                 </div>
               )}
-
-              {}
-              <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+<div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
                 <div style={{ display: "flex", gap: 10 }}>
                   <button
                     onClick={handleDownloadReceipt}
@@ -322,9 +297,7 @@ const BookingDetailModal = ({ booking, onClose, user }) => {
                     Close
                   </button>
                 </div>
-
-                {}
-                <button
+<button
                   onClick={() => setReportModalOpen(true)}
                   style={{ width: "100%", display: "flex", alignItems: "center", justifyContent: "center", gap: 7, padding: "11px", background: "#fdf0ef", border: "1.5px solid #f5b8b4", borderRadius: 12, color: "#c0392b", fontSize: 13, fontWeight: 600, cursor: "pointer", transition: "all .15s", fontFamily: "inherit" }}
                   onMouseEnter={(e) => (e.currentTarget.style.background = "#fce4e2")}
@@ -338,9 +311,7 @@ const BookingDetailModal = ({ booking, onClose, user }) => {
           </motion.div>
         </motion.div>
       </AnimatePresence>
-
-      {}
-      <ReportListingModal
+<ReportListingModal
         isOpen={reportModalOpen}
         onClose={() => setReportModalOpen(false)}
         booking={booking}

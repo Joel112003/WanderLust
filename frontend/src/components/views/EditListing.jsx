@@ -4,7 +4,7 @@ import mapboxgl from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
 import { useNavigate, useParams } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import toast, { Toaster } from "react-hot-toast";
+import toast from "react-hot-toast";
 
 const API_BASE_URL = import.meta.env.VITE_APP_API_URL || "http://localhost:8000";
 mapboxgl.accessToken = import.meta.env.VITE_APP_MAPBOX_TOKEN || "YOUR_MAPBOX_ACCESS_TOKEN";
@@ -177,13 +177,6 @@ export default function EditListing() {
 
   return (
     <>
-      <Toaster
-        position="top-right"
-        toastOptions={{
-          style: { fontFamily: "'DM Sans', sans-serif", fontSize: "14px", borderRadius: "12px" },
-          success: { iconTheme: { primary: "#6366f1", secondary: "#fff" } },
-        }}
-      />
 
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=Playfair+Display:wght@700&display=swap');
@@ -407,16 +400,13 @@ export default function EditListing() {
 
       <div className="el-page">
         <div className="el-shell">
-          {}
-          <motion.div className="el-header"
+<motion.div className="el-header"
             initial={{ opacity: 0, y: -12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: .4 }}>
             <p className="el-header__eyebrow">Host Dashboard</p>
             <h1 className="el-header__title">Edit your listing</h1>
             <p className="el-header__sub">Changes are saved immediately and visible to guests.</p>
           </motion.div>
-
-          {}
-          <motion.div className="el-warning"
+<motion.div className="el-warning"
             initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: .1 }}>
             <span className="el-warning__icon">⚠️</span>
             <span>Please re-upload your photo when saving, even if you're not changing it — otherwise the current image will be removed.</span>

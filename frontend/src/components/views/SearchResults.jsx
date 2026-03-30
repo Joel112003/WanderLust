@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { MapPin, Calendar, Users, ArrowLeft, Search, Loader2 } from "lucide-react";
-import toast, { Toaster } from "react-hot-toast";
+import toast from "react-hot-toast";
 
 const fmtPrice = (price) =>
   new Intl.NumberFormat("en-IN", { style: "currency", currency: "INR", maximumFractionDigits: 0 })
@@ -29,8 +29,7 @@ const ListingCard = ({ listing, index }) => {
       transition={{ duration: 0.4, delay: index * 0.06, ease: "easeOut" }}
       whileHover={{ y: -7, boxShadow: "0 22px 44px rgba(0,0,0,0.11)" }}
     >
-      {}
-      <div className="sr-card__img-wrap">
+<div className="sr-card__img-wrap">
         {!loaded && <div className="sr-card__skeleton" />}
         <img
           src={src}
@@ -43,9 +42,7 @@ const ListingCard = ({ listing, index }) => {
         <div className="sr-card__overlay" />
         <div className="sr-card__price-badge">{fmtPrice(listing.price)}<span className="sr-card__per">/night</span></div>
       </div>
-
-      {}
-      <div className="sr-card__body">
+<div className="sr-card__body">
         <h3 className="sr-card__title">{listing.title || "Untitled property"}</h3>
 
         <p className="sr-card__location">
@@ -64,9 +61,7 @@ const ListingCard = ({ listing, index }) => {
           View details →
         </button>
       </div>
-
-      {}
-      <div className="sr-card__accent" />
+<div className="sr-card__accent" />
     </motion.article>
   );
 };
@@ -124,7 +119,6 @@ const SearchResults = () => {
   if (isLoading) return (
     <>
       <style>{CSS}</style>
-      <Toaster position="top-center" />
       <LoadingState />
     </>
   );
@@ -132,12 +126,9 @@ const SearchResults = () => {
   return (
     <>
       <style>{CSS}</style>
-      <Toaster position="top-center" toastOptions={{ style: { fontFamily: "'DM Sans', sans-serif", fontSize: 13.5 } }} />
 
       <div className="sr-page">
-
-        {}
-        <AnimatePresence>
+<AnimatePresence>
           {searchCriteria && (
             <motion.div
               className="sr-summary"
@@ -170,9 +161,7 @@ const SearchResults = () => {
             </motion.div>
           )}
         </AnimatePresence>
-
-        {}
-        {listings.length > 0 && (
+{listings.length > 0 && (
           <motion.p
             className="sr-count"
             initial={{ opacity: 0 }}
@@ -183,9 +172,7 @@ const SearchResults = () => {
             {" "}{listings.length === 1 ? "stay" : "stays"} found
           </motion.p>
         )}
-
-        {}
-        {listings.length === 0 ? (
+{listings.length === 0 ? (
           <EmptyState onReset={() => navigate("/")} />
         ) : (
           <div className="sr-grid">

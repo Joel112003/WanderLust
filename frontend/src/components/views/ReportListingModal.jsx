@@ -205,8 +205,7 @@ const ReportListingModal = ({
             boxShadow: '0 20px 60px rgba(0,0,0,0.3)'
           }}
         >
-          {}
-          <div style={{
+<div style={{
             padding: '24px',
             borderBottom: '1px solid #e5e7eb',
             display: 'flex',
@@ -240,11 +239,8 @@ const ReportListingModal = ({
               <X size={20} />
             </button>
           </div>
-
-          {}
-          <div style={{ padding: 24 }}>
-            {}
-            <div style={{
+<div style={{ padding: 24 }}>
+<div style={{
               background: '#f9fafb',
               padding: 16,
               borderRadius: 12,
@@ -276,9 +272,7 @@ const ReportListingModal = ({
                 </div>
               </div>
             </div>
-
-            {}
-            <div style={{ marginBottom: 20 }}>
+<div style={{ marginBottom: 20 }}>
               <label style={{
                 display: 'block',
                 fontSize: 14,
@@ -540,9 +534,7 @@ const ReportListingModal = ({
                 </label>
               </div>
             )}
-
-            {}
-            <div style={{ display: 'flex', gap: 12 }}>
+<div style={{ display: 'flex', gap: 12 }}>
               <button
                 onClick={onClose}
                 disabled={submitting}
@@ -598,9 +590,7 @@ const ReportListingModal = ({
                 )}
               </button>
             </div>
-
-            {}
-            <p style={{
+<p style={{
               margin: '16px 0 0 0',
               fontSize: 12,
               color: '#6b7280',

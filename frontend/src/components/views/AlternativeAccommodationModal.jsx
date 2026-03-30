@@ -139,8 +139,7 @@ const AlternativeAccommodationModal = ({
             boxShadow: '0 25px 80px rgba(0,0,0,0.4)'
           }}
         >
-          {}
-          <div style={{
+<div style={{
             background: 'linear-gradient(135deg, #0d9488 0%, #14b8a6 100%)',
             padding: 30,
             color: '#fff'

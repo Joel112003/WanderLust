@@ -842,8 +842,7 @@ const SuccessOverlay = () => (
       className="bg-white rounded-3xl p-10 shadow-2xl text-center max-w-sm w-full"
       style={{ animation: "bounceIn 0.5s cubic-bezier(.34,1.56,.64,1) both" }}
     >
-      {}
-      <div className="relative w-20 h-20 mx-auto mb-6">
+<div className="relative w-20 h-20 mx-auto mb-6">
         <div className="w-20 h-20 bg-amber-50 rounded-full flex items-center justify-center">
           <svg
             width="40"
@@ -862,8 +861,7 @@ const SuccessOverlay = () => (
             <polyline points="12 6 12 12 16 14" />
           </svg>
         </div>
-        {}
-        <div
+<div
           className="absolute -top-1 -right-1 w-7 h-7 bg-green-500 rounded-full flex items-center justify-center shadow-lg"
           style={{
             animation: "popIn 0.4s cubic-bezier(.34,1.56,.64,1) 0.7s both",
@@ -896,9 +894,7 @@ const SuccessOverlay = () => (
         . Once an admin reviews it, it will appear publicly on the listings
         page.
       </p>
-
-      {}
-      <div className="flex items-center justify-center gap-1">
+<div className="flex items-center justify-center gap-1">
         {[
           { icon: "✓", label: "Submitted", done: true, active: false },
           { icon: "⏳", label: "Under review", done: false, active: true },
@@ -1115,12 +1111,10 @@ export default function CreateListing() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-indigo-50/30 to-violet-50/40 py-10 px-4">
-      {}
-      {success && <SuccessOverlay />}
+{success && <SuccessOverlay />}
 
       <div className="max-w-2xl mx-auto space-y-5">
-        {}
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 mt-12">
+<div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 mt-12">
           <div className="flex items-center justify-between mb-5">
             <div>
               <h1 className="text-2xl font-bold text-gray-900">
@@ -1160,9 +1154,7 @@ export default function CreateListing() {
             ))}
           </div>
         </div>
-
-        {}
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-100">
+<div className="bg-white rounded-2xl shadow-sm border border-gray-100">
           <div className="p-6 sm:p-8" ref={contentRef}>
             {step === 0 && <StepBasics {...stepProps} />}
             {step === 1 && <StepLocation {...stepProps} />}
@@ -1212,9 +1204,7 @@ export default function CreateListing() {
           usually takes under 24 hours.
         </p>
       </div>
-
-      {}
-      {toast && (
+{toast && (
         <div
           key={toast.id}
           className={`fixed bottom-6 right-6 z-50 flex items-center gap-3 px-5 py-3.5 rounded-2xl shadow-xl

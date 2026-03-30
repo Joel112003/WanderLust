@@ -103,8 +103,7 @@ export default function Terms() {
       `}</style>
 
       <div className="trm-root">
-        {}
-        <div className="trm-hero" style={{ padding: "100px 24px 64px", textAlign: "center" }}>
+<div className="trm-hero" style={{ padding: "100px 24px 64px", textAlign: "center" }}>
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
             <span className="trm-badge">📄 Legal</span>
             <h1 style={{ fontFamily: "'Lora', serif", fontSize: "clamp(36px, 5vw, 56px)", fontWeight: 600, color: "#fff", margin: "20px 0 16px", lineHeight: 1.15 }}>
@@ -116,9 +115,7 @@ export default function Terms() {
             <span className="trm-chip">Last Updated: June 2023</span>
           </motion.div>
         </div>
-
-        {}
-        <div style={{ maxWidth: 780, margin: "0 auto", padding: "48px 24px 80px" }}>
+<div style={{ maxWidth: 780, margin: "0 auto", padding: "48px 24px 80px" }}>
           <motion.div variants={stagger} initial="hidden" animate="visible" style={{ display: "flex", flexDirection: "column", gap: 20 }}>
             {sections.map((s) => (
               <motion.div key={s.id} variants={fadeUp} className={`trm-section${s.highlight ? " highlight" : ""}`}>
@@ -144,9 +141,7 @@ export default function Terms() {
                 </div>
               </motion.div>
             ))}
-
-            {}
-            <motion.div variants={fadeUp} className="trm-contact">
+<motion.div variants={fadeUp} className="trm-contact">
               <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 12 }}>
                 <span style={{ fontSize: 28 }}>💬</span>
                 <h2 className="trm-contact-title">Contact Information</h2>

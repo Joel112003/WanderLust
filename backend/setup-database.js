@@ -7,7 +7,7 @@ dns.setDefaultResultOrder("ipv4first");
 try {
   dns.setServers(["8.8.8.8", "1.1.1.1"]);
 } catch (_) {
-  // Ignore if DNS override is not allowed in this environment.
+  
 }
 
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));

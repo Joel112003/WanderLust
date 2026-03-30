@@ -196,9 +196,7 @@ const BookingPage = () => {
 
   return (
     <div className="bp-page">
-
-      {}
-      <motion.div
+<motion.div
         className="bp-back"
         initial={{ opacity: 0, x: -12 }}
         animate={{ opacity: 1, x: 0 }}
@@ -211,9 +209,7 @@ const BookingPage = () => {
       </motion.div>
 
       <div className="bp-layout">
-
-        {}
-        <motion.div
+<motion.div
           className="bp-left"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -221,9 +217,7 @@ const BookingPage = () => {
         >
           <h1 className="bp-title">Confirm and pay</h1>
           <p className="bp-subtitle">Review your booking details before payment</p>
-
-          {}
-          <div className="bp-card">
+<div className="bp-card">
             <h3 className="bp-card__title">Your trip</h3>
 
             <div className="bp-trip-row">
@@ -245,9 +239,7 @@ const BookingPage = () => {
               </div>
             </div>
           </div>
-
-          {}
-          <div className="bp-card">
+<div className="bp-card">
             <button
               className="bp-card__title bp-card__title--toggle"
               onClick={() => setShowBreakdown((s) => !s)}
@@ -278,9 +270,7 @@ const BookingPage = () => {
               )}
             </AnimatePresence>
           </div>
-
-          {}
-          <div className="bp-card bp-card--policy">
+<div className="bp-card bp-card--policy">
             <ShieldCheck size={18} className="bp-policy-icon" />
             <div>
               <p className="bp-policy-title">Free cancellation before check-in</p>
@@ -289,9 +279,7 @@ const BookingPage = () => {
               </p>
             </div>
           </div>
-
-          {}
-          <AnimatePresence>
+<AnimatePresence>
             {status === "error" && (
               <motion.div
                 className="bp-error"
@@ -335,9 +323,7 @@ const BookingPage = () => {
               </motion.div>
             )}
           </AnimatePresence>
-
-          {}
-          <motion.button
+<motion.button
             className={`bp-pay-btn ${status === "loading" ? "bp-pay-btn--loading" : ""}`}
             onClick={handlePay}
             disabled={status === "loading"}
@@ -361,9 +347,7 @@ const BookingPage = () => {
             Secured by Razorpay · UPI, Cards, Netbanking & Wallets accepted
           </p>
         </motion.div>
-
-        {}
-        <motion.div
+<motion.div
           className="bp-right"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -389,9 +373,7 @@ const BookingPage = () => {
               </div>
             </div>
           </div>
-
-          {}
-          <div className="bp-trust">
+<div className="bp-trust">
             <div className="bp-trust__item">
               <span className="bp-trust__icon">🔒</span>
               <span>256-bit SSL secured</span>
