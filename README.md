@@ -1,11 +1,13 @@
-# 🏡 WanderLust
+#                                                       🏡 WanderLust
 
 A full-stack travel accommodation platform where hosts can list their properties and travelers can discover, book, and review unique stays around the world. Think of it as a simplified Airbnb — built from scratch with real payments, real-time messaging, and an admin dashboard.
 
 ![Node.js](https://img.shields.io/badge/Node.js-v20.15-339933?logo=nodedotjs&logoColor=white)
 ![React](https://img.shields.io/badge/React-18.3-61DAFB?logo=react&logoColor=black)
 ![MongoDB](https://img.shields.io/badge/MongoDB-Atlas-47A248?logo=mongodb&logoColor=white)
-![Socket.IO](https://img.shields.io/badge/Socket.IO-Realtime-010101?logo=socketdotio&logoColor=white)
+![Express.js](https://img.shields.io/badge/Express.js-Backend-339933?logo=express&logoColor=white)
+![Socket.IO](https://img.shields.io/badge/Socket.IO-Realtime-339933?logo=socketdotio&logoColor=white)
+
 
 ---
 
