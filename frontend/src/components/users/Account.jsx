@@ -5,10 +5,11 @@ import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import BookingDetailModal from "./BookingDetailModal";
 import AlternativeBookingsModal from "../views/AlternativeBookingsModal";
+import { getAuthToken, authHeaders } from "../lib/userApi";
 
 const API_URL = import.meta.env.VITE_APP_API_URL || "http://localhost:8000";
-const token = () => localStorage.getItem("authToken");
-const authH = () => ({ Authorization: `Bearer ${token()}` });
+const token = () => getAuthToken();
+const authH = () => authHeaders();
 
 const Styles = () => (
   <style>{`
@@ -66,6 +67,7 @@ const Styles = () => (
 
     /* main */
     .main{margin-left:var(--sw);min-height:100vh;display:flex;flex-direction:column;background:#fff;}
+    .mobile-topbar{display:none;}
     .ph{padding:36px 40px 0;border-bottom:1.5px solid var(--border);padding-bottom:24px;
       background:#fff;display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap;}
     .ph-eye{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--red);margin-bottom:5px;}
@@ -211,6 +213,7 @@ const Styles = () => (
       .main{margin-left:0;}
       .ph,.content{padding-left:20px;padding-right:20px;}
       .stats{grid-template-columns:repeat(2,1fr);}
+      .mobile-topbar{display:flex;}
     }
   `}</style>
 );
@@ -2663,7 +2666,6 @@ const Account = () => {
 <div className="main">
 <div
           style={{
-            display: "none",
             padding: "14px 20px",
             background: "#fff",
             borderBottom: "1.5px solid var(--border)",

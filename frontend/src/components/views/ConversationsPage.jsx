@@ -6,11 +6,9 @@ import {
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
-import axios from 'axios';
 import { useSocket } from '../hooks/useSocket';
 import { getCurrentUserId } from '../../utilis/js/storage';
-
-const API_URL = import.meta?.env?.VITE_APP_API_URL || 'http://localhost:8000';
+import userApi, { getAuthToken } from '../lib/userApi';
 
 const ConversationsPage = () => {
   const [conversations, setConversations] = useState([]);
@@ -63,12 +61,10 @@ const ConversationsPage = () => {
 
   const fetchConversations = async () => {
     try {
-      const token = localStorage.getItem('authToken');
+      const token = getAuthToken();
       if (!token) { navigate('/login'); return; }
       setLoading(true);
-      const response = await axios.get(`${API_URL}/messages/conversations`, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      const response = await userApi.get('/messages/conversations');
       setConversations(response.data.data || []);
     } catch (error) {
       console.error('Error fetching conversations:', error);
@@ -120,10 +116,8 @@ const ConversationsPage = () => {
     console.log('[Polling] Setting up message polling (socket disconnected)');
     const pollInterval = setInterval(async () => {
       try {
-        const token = localStorage.getItem('authToken');
-        const response = await axios.get(
-          `${API_URL}/messages/listing/${selectedConversation.listing._id}`,
-          { headers: { Authorization: `Bearer ${token}` } }
+        const response = await userApi.get(
+          `/messages/listing/${selectedConversation.listing._id}`
         );
         const newMessages = response.data.data || [];
         if (newMessages.length !== messages.length) {
@@ -155,20 +149,17 @@ const ConversationsPage = () => {
     }
 
     try {
-      const token = localStorage.getItem('authToken');
       console.log('[SelectConv] Fetching messages via REST');
-      const response = await axios.get(`${API_URL}/messages/listing/${conversation.listing._id}`, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      const response = await userApi.get(`/messages/listing/${conversation.listing._id}`);
       const fetchedMessages = response.data.data || [];
       console.log('[SelectConv] Loaded', fetchedMessages.length, 'messages');
       setMessages(fetchedMessages);
 
       if (!isConnected) {
-        await axios.post(`${API_URL}/messages/read`,
-          { listingId: conversation.listing._id, senderId: conversation.otherUser._id },
-          { headers: { Authorization: `Bearer ${token}` } }
-        );
+        await userApi.post('/messages/read', {
+          listingId: conversation.listing._id,
+          senderId: conversation.otherUser._id,
+        });
       }
     } catch (error) {
       console.error('[SelectConv] Error loading messages:', error);
@@ -217,60 +208,42 @@ const ConversationsPage = () => {
       setSending(true);
 
       if (isConnected) {
-
         console.log('[SendMsg] Using socket connection');
-        await socketSendMessage(selectedConversation.listing._id, selectedConversation.otherUser._id, messageText);
-        console.log('[SendMsg] Socket send successful');
-      } else {
-
-        console.log('[SendMsg] Socket offline, using REST API fallback');
-        const token = localStorage.getItem('authToken');
-        console.log('[SendMsg] Sending to:', `${API_URL}/messages`);
-        console.log('[SendMsg] Request data:', {
-          listingId: selectedConversation.listing._id,
-          recipientId: selectedConversation.otherUser._id,
-          message: messageText
-        });
-        console.log('[SendMsg] All values defined:', {
-          listingId: !!selectedConversation.listing._id,
-          recipientId: !!selectedConversation.otherUser._id,
-          message: !!messageText
-        });
-
-        const response = await axios.post(
-          `${API_URL}/messages`,
-          {
-            listingId: selectedConversation.listing._id,
-            recipientId: selectedConversation.otherUser._id,
-            message: messageText
-          },
-          { headers: { Authorization: `Bearer ${token}` } }
-        );
-
-        if (response.data.success) {
-          console.log('[SendMsg] REST API send successful');
-
-          setMessages(prev => prev.map(m =>
-            m.tempId === tempId ? response.data.data : m
-          ));
-        } else {
-          throw new Error(response.data.message || 'Failed to send message');
+        try {
+          await socketSendMessage(selectedConversation.listing._id, selectedConversation.otherUser._id, messageText);
+          console.log('[SendMsg] Socket send successful');
+          fetchConversations();
+          return;
+        } catch (socketError) {
+          console.warn('[SendMsg] Socket send failed, falling back to REST API:', socketError.message);
+          // Fall through to REST API on socket failure
         }
       }
 
+      // Use REST API (either socket was disconnected or socket send failed)
+      console.log('[SendMsg] Using REST API');
+      const response = await userApi.post('/messages', {
+        listingId: selectedConversation.listing._id,
+        recipientId: selectedConversation.otherUser._id,
+        message: messageText,
+      });
+
+      if (response.data.success) {
+        console.log('[SendMsg] REST API send successful');
+        setMessages(prev => prev.map(m =>
+          m.tempId === tempId ? response.data.data : m
+        ));
+        toast.success('Message sent');
+      } else {
+        throw new Error(response.data.message || 'Failed to send message');
+      }
       fetchConversations();
     } catch (error) {
       console.error('[SendMsg] Error sending message:', error);
       console.error('[SendMsg] Error response:', error.response?.data);
 
       const errorMsg = error.response?.data?.message || error.message || 'Unknown error';
-
-      if (isConnected) {
-        toast.error(`Could not send message: ${errorMsg}`);
-      } else {
-        toast.error(`Failed to send (offline): ${errorMsg}`);
-      }
-
+      toast.error(`Failed to send: ${errorMsg}`);
       setMessages(prev => prev.filter(m => m.tempId !== tempId));
     } finally {
       setSending(false);

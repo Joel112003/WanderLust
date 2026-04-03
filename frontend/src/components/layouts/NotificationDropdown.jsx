@@ -3,9 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Bell, Check, CheckCheck, Loader2, X, MessageCircle, Calendar, Star, AlertCircle } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
-import axios from "axios";
-
-const API_URL = import.meta?.env?.VITE_APP_API_URL || "http://localhost:8000";
+import userApi, { getAuthToken } from "../lib/userApi";
 
 const NotificationDropdown = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -16,7 +14,7 @@ const NotificationDropdown = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const token = localStorage.getItem("authToken");
+    const token = getAuthToken();
     if (token) {
       fetchNotifications();
 
@@ -38,16 +36,21 @@ const NotificationDropdown = () => {
 
   const fetchNotifications = async () => {
     try {
-      const token = localStorage.getItem("authToken");
+      const token = getAuthToken();
       if (!token) return;
 
-      const response = await axios.get(`${API_URL}/notifications`, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      const response = await userApi.get("/notifications");
 
       const data = response.data.data || (Array.isArray(response.data) ? response.data : []);
-      setNotifications(data.slice(0, 10));
-      setUnreadCount(data.filter(n => !n.isRead).length);
+      const notificationList = Array.isArray(data) ? data : [];
+      
+      setNotifications(notificationList.slice(0, 10));
+      
+      // Correctly count only unread notifications
+      const unreadNotifications = notificationList.filter(n => n.isRead === false);
+      setUnreadCount(unreadNotifications.length);
+      
+      console.log('[Notifications] Fetched:', notificationList.length, 'Total unread:', unreadNotifications.length);
     } catch (err) {
       console.error("Error fetching notifications:", err);
     }
@@ -55,10 +58,7 @@ const NotificationDropdown = () => {
 
   const markAsRead = async (notificationId) => {
     try {
-      const token = localStorage.getItem("authToken");
-      await axios.put(`${API_URL}/notifications/${notificationId}/read`, {}, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      await userApi.put(`/notifications/${notificationId}/read`, {});
 
       setNotifications(prev =>
         prev.map(n => n._id === notificationId ? { ...n, isRead: true } : n)
@@ -71,10 +71,7 @@ const NotificationDropdown = () => {
 
   const markAllAsRead = async () => {
     try {
-      const token = localStorage.getItem("authToken");
-      await axios.put(`${API_URL}/notifications/mark-all-read`, {}, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      await userApi.put("/notifications/mark-all-read", {});
 
       setNotifications(prev => prev.map(n => ({ ...n, isRead: true })));
       setUnreadCount(0);

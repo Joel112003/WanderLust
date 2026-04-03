@@ -1,11 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { MessageCircle } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
 import { useSocket } from "../hooks/useSocket";
 import { getCurrentUserId, safeGetItem } from "../../utilis/js/storage";
-
-const API_URL = import.meta?.env?.VITE_APP_API_URL || "http://localhost:8000";
+import userApi from "../lib/userApi";
 
 const MessageDropdown = () => {
   const [unreadCount, setUnreadCount] = useState(0);
@@ -83,9 +81,7 @@ const MessageDropdown = () => {
       const token = safeGetItem("authToken");
       if (!token) return;
 
-      const response = await axios.get(`${API_URL}/messages/unread/count`, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      const response = await userApi.get("/messages/unread/count");
 
       const count = response.data.data?.unreadCount || response.data.count || 0;
       setUnreadCount(count);
