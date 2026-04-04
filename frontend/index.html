@@ -9,18 +9,23 @@
       content="WanderLust - Holiday rentals, cabins, beach houses & more. Explore your next travel destination with ease."
     />
 
-    <!-- Open Graph Meta Tags -->
-    <meta
-      property="og:title"
-      content="WanderLust | Holiday rentals, cabins, beach houses & more"
-    />
-    <meta
-      property="og:description"
-      content="Explore your next travel destination with WanderLust. Find holiday rentals, cabins, beach houses, and more."
-    />
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="/favicon.png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+
+    <!-- Open Graph -->
+    <meta property="og:site_name" content="WanderLust" />
+    <meta property="og:title" content="WanderLust | Holiday rentals, cabins, beach houses & more" />
+    <meta property="og:description" content="Explore your next travel destination with WanderLust. Find holiday rentals, cabins, beach houses, and more." />
     <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://www.yourwebsite.com" />
-    <meta property="og:image" content="https://www.yourwebsite.com/logo.png" />
+    <meta property="og:url" content="wander-lust-zeta-orpin.vercel.app" />
+    <meta property="og:image" content="https://www.yourwebsite.com/og-cover.png" />
+
+    <!-- Twitter/X Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="WanderLust | Holiday rentals, cabins, beach houses & more" />
+    <meta name="twitter:description" content="Explore your next travel destination with WanderLust." />
+    <meta name="twitter:image" content="https://www.yourwebsite.com/og-cover.png" />
 
     <title>WanderLust | Holiday rentals, cabins, beach houses & more</title>
 
@@ -39,7 +44,7 @@
     </script>
 
     <!-- Google Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
       href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap"
@@ -52,7 +57,7 @@
       rel="stylesheet"
     />
 
-    <!-- Font Awesome (optional) -->
+    <!-- Font Awesome -->
     <link
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
       rel="stylesheet"
@@ -62,11 +67,8 @@
   <body>
     <div id="root"></div>
 
-    <!-- Mapbox JS -->
-    <script
-      src="https://api.mapbox.com/mapbox-gl-js/v3.10.0/mapbox-gl.js"
-      defer
-    ></script>
+    <!-- Mapbox JS (no defer — must load before React) -->
+    <script src="https://api.mapbox.com/mapbox-gl-js/v3.10.0/mapbox-gl.js"></script>
 
     <!-- React entry point -->
     <script type="module" src="/src/main.jsx"></script>
