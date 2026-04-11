@@ -24,7 +24,7 @@ function NotFound() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-blue-50 flex items-center justify-center px-4 py-16">
+    <div className="flex min-h-screen items-center justify-center bg-gray-50 px-4 py-16">
       <motion.div
         variants={containerVariants}
         initial="hidden"
@@ -37,14 +37,14 @@ function NotFound() {
         >
           <motion.h1
             animate={{
-              scale: [1, 1.05, 1],
+              scale: [1, 1.02, 1],
             }}
             transition={{
               duration: 2,
               repeat: Infinity,
               ease: "easeInOut"
             }}
-            className="text-9xl md:text-[12rem] font-bold bg-gradient-to-r from-purple-600 via-pink-600 to-blue-600 bg-clip-text text-transparent"
+            className="text-9xl font-bold text-red-600 md:text-[12rem]"
           >
             404
           </motion.h1>
@@ -64,18 +64,18 @@ function NotFound() {
             }}
             className="inline-block"
           >
-            <FaCompass className="text-6xl text-purple-500 mx-auto" />
+            <FaCompass className="mx-auto text-6xl text-gray-700" />
           </motion.div>
         </motion.div>
 <motion.div variants={itemVariants} className="mb-8">
-          <h2 className="text-3xl md:text-4xl font-bold text-gray-800 mb-4">
+          <h2 className="mb-4 text-3xl font-bold text-stone-900 md:text-4xl">
             Oops! You've Lost Your Way
           </h2>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto mb-2">
+          <p className="mx-auto mb-2 max-w-2xl text-lg text-stone-600">
             The page you're looking for seems to have wandered off the map.
             Don't worry, even the best explorers get lost sometimes!
           </p>
-          <p className="text-md text-gray-500">
+          <p className="text-md text-stone-500">
             Let's get you back on track to discover amazing destinations.
           </p>
         </motion.div>
@@ -87,7 +87,7 @@ function NotFound() {
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             onClick={() => navigate(-1)}
-            className="inline-flex items-center gap-2 px-8 py-3 bg-white text-purple-600 rounded-full font-semibold shadow-lg hover:shadow-xl transition-all duration-300 border-2 border-purple-200"
+            className="inline-flex items-center gap-2 rounded-full border-2 border-gray-200 bg-white px-8 py-3 font-semibold text-gray-700 shadow-lg transition-all duration-300 hover:shadow-xl"
           >
             <FaArrowLeft />
             Go Back
@@ -97,7 +97,7 @@ function NotFound() {
             <motion.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              className="inline-flex items-center gap-2 px-8 py-3 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-full font-semibold shadow-lg hover:shadow-xl transition-all duration-300"
+              className="inline-flex items-center gap-2 rounded-full bg-red-600 px-8 py-3 font-semibold text-white shadow-lg transition-all duration-300 hover:bg-red-700 hover:shadow-xl"
             >
               <FaHome />
               Go to Homepage
@@ -108,7 +108,7 @@ function NotFound() {
             <motion.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              className="inline-flex items-center gap-2 px-8 py-3 bg-white text-pink-600 rounded-full font-semibold shadow-lg hover:shadow-xl transition-all duration-300 border-2 border-pink-200"
+              className="inline-flex items-center gap-2 rounded-full border-2 border-red-200 bg-white px-8 py-3 font-semibold text-red-600 shadow-lg transition-all duration-300 hover:shadow-xl"
             >
               <FaSearch />
               Browse Listings

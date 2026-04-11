@@ -5,9 +5,14 @@ const stagger = {
   hidden: {},
   visible: { transition: { staggerChildren: 0.08 } },
 };
+
 const fadeUp = {
   hidden: { opacity: 0, y: 24 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.55, ease: [0.22, 1, 0.36, 1] } },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.55, ease: [0.22, 1, 0.36, 1] },
+  },
 };
 
 const sections = [
@@ -76,93 +81,75 @@ const sections = [
 
 export default function Terms() {
   return (
-    <>
-      <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@300;400;500&display=swap');
-        .trm-root { font-family: 'DM Sans', sans-serif; background: #f9f7f4; min-height: 100vh; color: #1c1a17; }
-        .trm-hero { background: linear-gradient(160deg, #1a2332 0%, #1e2d42 60%, #243451 100%); }
-        .trm-badge { display: inline-flex; align-items: center; gap: 6px; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); color: rgba(255,255,255,0.7); font-size: 12px; letter-spacing: .1em; text-transform: uppercase; padding: 6px 14px; border-radius: 100px; }
-        .trm-section { border: 1.5px solid #ebe8e2; border-radius: 20px; background: #fff; overflow: hidden; transition: border-color .2s, box-shadow .2s; }
-        .trm-section:hover { border-color: #d4cfc6; box-shadow: 0 8px 32px rgba(0,0,0,0.07); }
-        .trm-section.highlight { background: linear-gradient(135deg, #1a2332 0%, #243451 100%); border-color: #1a2332; }
-        .trm-num { font-family: 'Lora', serif; font-size: 13px; color: #b5afa5; letter-spacing: .06em; }
-        .trm-section.highlight .trm-num { color: rgba(255,255,255,0.35); }
-        .trm-title { font-family: 'Lora', serif; font-size: 22px; font-weight: 600; margin: 0; color: #1c1a17; }
-        .trm-section.highlight .trm-title { color: #fff; }
-        .trm-item-label { font-size: 13px; font-weight: 500; color: #1c1a17; margin: 0 0 2px; }
-        .trm-section.highlight .trm-item-label { color: rgba(255,255,255,0.9); }
-        .trm-item-desc { font-size: 13px; color: #7a7265; line-height: 1.6; margin: 0; }
-        .trm-section.highlight .trm-item-desc { color: rgba(255,255,255,0.5); }
-        .trm-dot { width: 6px; height: 6px; border-radius: 50%; background: #3b7dd8; flex-shrink: 0; margin-top: 6px; }
-        .trm-section.highlight .trm-dot { background: #7ab3f0; }
-        .trm-contact { background: linear-gradient(135deg, #1a2332 0%, #2a4a7a 100%); border-radius: 20px; padding: 40px; color: #fff; }
-        .trm-contact-title { font-family: 'Lora', serif; font-size: 28px; font-weight: 600; margin: 0 0 8px; }
-        .trm-link { color: #7ab3f0; text-decoration: underline; text-underline-offset: 3px; }
-        .trm-divider { height: 1px; background: rgba(255,255,255,0.15); margin: 20px 0; }
-        .trm-chip { display: inline-flex; align-items: center; padding: 4px 12px; border-radius: 100px; background: rgba(59,125,216,0.12); border: 1px solid rgba(59,125,216,0.2); color: #3b7dd8; font-size: 12px; font-weight: 500; }
-      `}</style>
+    <div className="min-h-screen bg-gradient-to-br from-amber-50 via-orange-50 to-white text-stone-900">
+      <div className="bg-gradient-to-br from-stone-900 via-stone-800 to-stone-700 px-6 pb-16 pt-28 text-center">
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
+          <span className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-4 py-1 text-[11px] font-semibold uppercase tracking-[0.12em] text-white/80">
+            📄 Legal
+          </span>
+          <h1 className="mx-auto mt-5 max-w-3xl font-serif text-[clamp(2.1rem,5vw,3.6rem)] font-semibold leading-tight text-white">
+            Terms & Conditions
+          </h1>
+          <p className="mx-auto mt-4 max-w-2xl text-sm leading-7 text-white/70 md:text-base">
+            By accessing or using WanderLust, you agree to be bound by these terms. Please read them carefully.
+          </p>
+          <span className="mt-3 inline-block text-xs text-white/45">Last Updated: June 2023</span>
+        </motion.div>
+      </div>
 
-      <div className="trm-root">
-<div className="trm-hero" style={{ padding: "100px 24px 64px", textAlign: "center" }}>
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
-            <span className="trm-badge">📄 Legal</span>
-            <h1 style={{ fontFamily: "'Lora', serif", fontSize: "clamp(36px, 5vw, 56px)", fontWeight: 600, color: "#fff", margin: "20px 0 16px", lineHeight: 1.15 }}>
-              Terms & Conditions
-            </h1>
-            <p style={{ fontSize: 16, color: "rgba(255,255,255,0.5)", maxWidth: 520, margin: "0 auto 24px", lineHeight: 1.7 }}>
-              By accessing or using WanderLust, you agree to be bound by these terms. Please read them carefully.
-            </p>
-            <span className="trm-chip">Last Updated: June 2023</span>
-          </motion.div>
-        </div>
-<div style={{ maxWidth: 780, margin: "0 auto", padding: "48px 24px 80px" }}>
-          <motion.div variants={stagger} initial="hidden" animate="visible" style={{ display: "flex", flexDirection: "column", gap: 20 }}>
-            {sections.map((s) => (
-              <motion.div key={s.id} variants={fadeUp} className={`trm-section${s.highlight ? " highlight" : ""}`}>
-                <div style={{ padding: "28px 32px" }}>
-                  <div style={{ display: "flex", alignItems: "flex-start", gap: 16, marginBottom: 20 }}>
-                    <span style={{ fontSize: 28, flexShrink: 0 }}>{s.icon}</span>
-                    <div style={{ flex: 1 }}>
-                      <p className="trm-num">{s.number}</p>
-                      <h2 className="trm-title">{s.title}</h2>
-                    </div>
-                  </div>
-                  <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
-                    {s.items.map((item, i) => (
-                      <div key={i} style={{ display: "flex", gap: 12 }}>
-                        <div className="trm-dot" />
-                        <div>
-                          <p className="trm-item-label">{item.label}</p>
-                          <p className="trm-item-desc">{item.desc}</p>
-                        </div>
-                      </div>
-                    ))}
+      <div className="mx-auto max-w-4xl px-6 pb-20 pt-12">
+        <motion.div variants={stagger} initial="hidden" animate="visible" className="space-y-5">
+          {sections.map((s) => (
+            <motion.div
+              key={s.id}
+              variants={fadeUp}
+              className={`overflow-hidden rounded-2xl border ${s.highlight ? "border-stone-800 bg-gradient-to-br from-stone-900 to-stone-800 text-white" : "border-amber-200 bg-white"}`}
+            >
+              <div className="p-7 md:p-8">
+                <div className="mb-5 flex items-start gap-4">
+                  <span className="text-3xl">{s.icon}</span>
+                  <div>
+                    <p className={`text-xs font-semibold uppercase tracking-[0.1em] ${s.highlight ? "text-white/50" : "text-stone-400"}`}>
+                      {s.number}
+                    </p>
+                    <h2 className="font-serif text-2xl font-semibold">{s.title}</h2>
                   </div>
                 </div>
-              </motion.div>
-            ))}
-<motion.div variants={fadeUp} className="trm-contact">
-              <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 12 }}>
-                <span style={{ fontSize: 28 }}>💬</span>
-                <h2 className="trm-contact-title">Contact Information</h2>
+
+                <div className="space-y-3.5">
+                  {s.items.map((item, i) => (
+                    <div key={i} className="flex gap-3">
+                      <div className={`mt-2 h-1.5 w-1.5 shrink-0 rounded-full ${s.highlight ? "bg-amber-300" : "bg-amber-600"}`} />
+                      <div>
+                        <p className={`text-sm font-semibold ${s.highlight ? "text-white/90" : "text-stone-900"}`}>{item.label}</p>
+                        <p className={`text-sm leading-6 ${s.highlight ? "text-white/70" : "text-stone-600"}`}>{item.desc}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
               </div>
-              <p style={{ margin: "0 0 6px", fontSize: 14, opacity: .75, lineHeight: 1.7 }}>
-                Questions about these Terms? Reach our legal team:
-              </p>
-              <div className="trm-divider" />
-              <p style={{ margin: "0 0 4px", fontSize: 14, opacity: .9 }}>
-                📧 <a href="mailto:support@wanderlust.com" className="trm-link">support@wanderlust.com</a>
-              </p>
-              <p style={{ margin: "0 0 16px", fontSize: 13, opacity: .55, lineHeight: 1.6 }}>
-                Legal Department · WanderLust Inc. · 123 Travel Street, Suite 100 · San Francisco, CA 94107
-              </p>
-              <p style={{ margin: 0, fontSize: 12.5, opacity: .45, fontStyle: "italic" }}>
-                These terms may be updated periodically. Continued use after changes constitutes acceptance.
-              </p>
             </motion.div>
+          ))}
+
+          <motion.div variants={fadeUp} className="rounded-2xl bg-gradient-to-r from-rose-700 to-amber-600 p-8 text-white">
+            <h2 className="font-serif text-3xl font-semibold">Contact Information</h2>
+            <p className="mt-3 text-sm leading-7 text-white/85">Questions about these Terms? Reach our legal team:</p>
+            <div className="my-5 h-px bg-white/25" />
+            <p className="text-sm">
+              📧{" "}
+              <a href="mailto:support@wanderlust.com" className="underline decoration-white/70 underline-offset-4">
+                support@wanderlust.com
+              </a>
+            </p>
+            <p className="mt-2 text-xs leading-6 text-white/75">
+              Legal Department · WanderLust Inc. · 123 Travel Street, Suite 100 · San Francisco, CA 94107
+            </p>
+            <p className="mt-4 text-xs italic text-white/70">
+              These terms may be updated periodically. Continued use after changes constitutes acceptance.
+            </p>
           </motion.div>
-        </div>
+        </motion.div>
       </div>
-    </>
+    </div>
   );
 }

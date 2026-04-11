@@ -7,7 +7,6 @@ import {
   CreditCard, Loader2, AlertTriangle, ChevronDown, ChevronUp,
 } from "lucide-react";
 import { AuthContext } from "../../AuthContext";
-import "../../utilis/css/BookingPage.css";
 
 const API_URL = import.meta?.env?.VITE_APP_API_URL || "http://localhost:8000";
 
@@ -26,7 +25,11 @@ const fmt = (n) =>
   (n ?? 0).toLocaleString("en-IN", { minimumFractionDigits: 0, maximumFractionDigits: 0 });
 
 const PriceRow = ({ label, value, bold, muted }) => (
-  <div className={`bp-price-row ${bold ? "bp-price-row--bold" : ""} ${muted ? "bp-price-row--muted" : ""}`}>
+  <div
+    className={`flex justify-between py-1.5 text-sm ${
+      bold ? "text-base font-bold text-[#111827]" : muted ? "text-[#9ca3af]" : "text-[#374151]"
+    }`}
+  >
     <span>{label}</span>
     <span>₹{fmt(value)}</span>
   </div>
@@ -195,53 +198,58 @@ const BookingPage = () => {
   };
 
   return (
-    <div className="bp-page">
+    <div className="min-h-screen bg-[#fafaf9] px-6 pb-20 pt-8 font-sans max-[640px]:px-3 max-[640px]:pb-14 max-[640px]:pt-[18px]">
 <motion.div
-        className="bp-back"
+        className="mx-auto mb-7 max-w-[1100px] max-[640px]:mb-3.5"
         initial={{ opacity: 0, x: -12 }}
         animate={{ opacity: 1, x: 0 }}
         transition={{ duration: 0.3 }}
       >
-        <Link to={`/listings/${id}`} className="bp-back__btn">
+        <Link
+          to={`/listings/${id}`}
+          className="inline-flex items-center gap-1.5 rounded-full border border-[#e5e7eb] bg-white px-3.5 py-[7px] text-sm font-semibold text-[#374151] no-underline transition-colors hover:border-[#d1d5db] hover:bg-[#f3f4f6]"
+        >
           <ArrowLeft size={17} />
           Back to listing
         </Link>
       </motion.div>
 
-      <div className="bp-layout">
+      <div className="mx-auto grid max-w-[1100px] grid-cols-[1fr_400px] items-start gap-12 max-[860px]:grid-cols-1 max-[860px]:gap-7">
 <motion.div
-          className="bp-left"
+          className=""
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4, delay: 0.1 }}
         >
-          <h1 className="bp-title">Confirm and pay</h1>
-          <p className="bp-subtitle">Review your booking details before payment</p>
-<div className="bp-card">
-            <h3 className="bp-card__title">Your trip</h3>
+          <h1 className="m-0 font-sans text-[28px] font-extrabold tracking-[-0.5px] text-[#111827] max-[640px]:text-[22px]">
+            Confirm and pay
+          </h1>
+          <p className="mb-7 mt-1.5 text-sm text-[#6b7280] max-[640px]:mb-[18px]">Review your booking details before payment</p>
+          <div className="mb-[18px] rounded-2xl border border-[#e5e7eb] bg-white px-6 py-[22px] max-[640px]:px-3.5 max-[640px]:py-3.5">
+            <h3 className="mb-4 block font-sans text-base font-bold text-[#111827]">Your trip</h3>
 
-            <div className="bp-trip-row">
-              <div className="bp-trip-row__icon"><CalendarDays size={18} /></div>
-              <div className="bp-trip-row__body">
-                <span className="bp-trip-row__label">Dates</span>
-                <span className="bp-trip-row__val">
+            <div className="flex items-start gap-3.5 border-t border-[#f3f4f6] py-3 first:border-t-0 first:pt-0">
+              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-[10px] bg-[#fef2f2] text-[#e11d48]"><CalendarDays size={18} /></div>
+              <div className="flex flex-col gap-0.5">
+                <span className="text-[11px] font-bold uppercase tracking-[0.07em] text-[#9ca3af]">Dates</span>
+                <span className="text-[15px] font-semibold text-[#111827]">
                   {format(checkInDate, "d MMM yyyy")} → {format(checkOutDate, "d MMM yyyy")}
                 </span>
-                <span className="bp-trip-row__sub">{nights} night{nights > 1 ? "s" : ""}</span>
+                <span className="text-xs text-[#9ca3af]">{nights} night{nights > 1 ? "s" : ""}</span>
               </div>
             </div>
 
-            <div className="bp-trip-row">
-              <div className="bp-trip-row__icon"><Users size={18} /></div>
-              <div className="bp-trip-row__body">
-                <span className="bp-trip-row__label">Guests</span>
-                <span className="bp-trip-row__val">{guests} guest{guests > 1 ? "s" : ""}</span>
+            <div className="flex items-start gap-3.5 border-t border-[#f3f4f6] py-3 first:border-t-0 first:pt-0">
+              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-[10px] bg-[#fef2f2] text-[#e11d48]"><Users size={18} /></div>
+              <div className="flex flex-col gap-0.5">
+                <span className="text-[11px] font-bold uppercase tracking-[0.07em] text-[#9ca3af]">Guests</span>
+                <span className="text-[15px] font-semibold text-[#111827]">{guests} guest{guests > 1 ? "s" : ""}</span>
               </div>
             </div>
           </div>
-<div className="bp-card">
+          <div className="mb-[18px] rounded-2xl border border-[#e5e7eb] bg-white px-6 py-[22px] max-[640px]:px-3.5 max-[640px]:py-3.5">
             <button
-              className="bp-card__title bp-card__title--toggle"
+              className="mb-4 flex w-full items-center justify-between border-none bg-transparent p-0 text-left font-sans text-base font-bold text-[#111827]"
               onClick={() => setShowBreakdown((s) => !s)}
             >
               Price breakdown
@@ -264,17 +272,17 @@ const BookingPage = () => {
                   <PriceRow label="Cleaning fee" value={cleaningFee} />
                   <PriceRow label="Service fee"  value={serviceFee} />
                   <PriceRow label="Tax (12%)"    value={tax} muted />
-                  <div className="bp-divider" />
+                  <div className="my-2.5 h-px bg-[#f3f4f6]" />
                   <PriceRow label="Total (INR)"  value={totalPrice} bold />
                 </motion.div>
               )}
             </AnimatePresence>
           </div>
-<div className="bp-card bp-card--policy">
-            <ShieldCheck size={18} className="bp-policy-icon" />
+          <div className="mb-4 flex items-start gap-3.5 rounded-2xl border border-[#bbf7d0] bg-[#f0fdf4] px-6 py-[22px] max-[640px]:px-3.5 max-[640px]:py-3.5">
+            <ShieldCheck size={18} className="mt-0.5 shrink-0 text-[#16a34a]" />
             <div>
-              <p className="bp-policy-title">Free cancellation before check-in</p>
-              <p className="bp-policy-desc">
+              <p className="mb-1 text-sm font-semibold text-[#15803d]">Free cancellation before check-in</p>
+              <p className="m-0 text-[13px] leading-relaxed text-[#4b7c58]">
                 Cancel within 5 days of booking for a full refund. After that, the first night is non-refundable.
               </p>
             </div>
@@ -282,7 +290,7 @@ const BookingPage = () => {
 <AnimatePresence>
             {status === "error" && (
               <motion.div
-                className="bp-error"
+                className="mb-4 flex items-center gap-2.5 rounded-xl border border-[#fecaca] bg-[#fff1f2] px-4 py-3 text-sm text-[#dc2626]"
                 initial={{ opacity: 0, y: -8 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0 }}
@@ -324,7 +332,11 @@ const BookingPage = () => {
             )}
           </AnimatePresence>
 <motion.button
-            className={`bp-pay-btn ${status === "loading" ? "bp-pay-btn--loading" : ""}`}
+            className={`flex w-full items-center justify-center gap-2.5 rounded-[14px] border-none px-4 py-4 font-sans text-base font-bold tracking-[-0.2px] text-white shadow-[0_4px_18px_rgba(225,29,72,0.35)] transition-all disabled:cursor-not-allowed disabled:opacity-75 disabled:shadow-none max-[640px]:py-3.5 max-[640px]:text-[15px] ${
+              status === "loading"
+                ? "bg-gradient-to-br from-[#9f1239] to-[#881337]"
+                : "bg-gradient-to-br from-[#e11d48] to-[#be123c]"
+            }`}
             onClick={handlePay}
             disabled={status === "loading"}
             whileHover={status !== "loading" ? { scale: 1.015 } : {}}
@@ -332,7 +344,7 @@ const BookingPage = () => {
           >
             {status === "loading" ? (
               <>
-                <Loader2 size={18} className="bp-spin" />
+                <Loader2 size={18} className="animate-spin" />
                 Opening payment…
               </>
             ) : (
@@ -343,47 +355,47 @@ const BookingPage = () => {
             )}
           </motion.button>
 
-          <p className="bp-pay-note">
+          <p className="mt-2.5 text-center text-xs text-[#9ca3af]">
             Secured by Razorpay · UPI, Cards, Netbanking & Wallets accepted
           </p>
         </motion.div>
 <motion.div
-          className="bp-right"
+          className="max-[860px]:order-[-1]"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4, delay: 0.2 }}
         >
-          <div className="bp-listing-card">
-            <div className="bp-listing-card__img-wrap">
+          <div className="sticky top-[100px] overflow-hidden rounded-[20px] border border-[#e5e7eb] bg-white shadow-[0_4px_24px_rgba(0,0,0,0.07)] max-[640px]:static">
+            <div className="h-[220px] overflow-hidden max-[640px]:h-[180px]">
               {listing.image?.url
-                ? <img src={listing.image.url} alt={listing.title} className="bp-listing-card__img" />
-                : <div className="bp-listing-card__img-placeholder">🏠</div>
+                ? <img src={listing.image.url} alt={listing.title} className="block h-full w-full object-cover transition-transform duration-300 hover:scale-[1.03]" />
+                : <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-[#fef2f2] to-[#ffe4e6] text-5xl">🏠</div>
               }
             </div>
-            <div className="bp-listing-card__body">
-              <p className="bp-listing-card__category">{listing.category || "Entire home"}</p>
-              <h3 className="bp-listing-card__title">{listing.title}</h3>
-              <p className="bp-listing-card__location">
+            <div className="px-[22px] pb-[22px] pt-5 max-[640px]:p-3.5">
+              <p className="mb-1.5 text-[11px] font-bold uppercase tracking-[0.08em] text-[#e11d48]">{listing.category || "Entire home"}</p>
+              <h3 className="mb-[5px] font-sans text-[17px] font-bold leading-[1.3] text-[#111827]">{listing.title}</h3>
+              <p className="m-0 text-[13px] text-[#6b7280]">
                 📍 {listing.location}{listing.country ? `, ${listing.country}` : ""}
               </p>
-              <div className="bp-listing-card__divider" />
-              <div className="bp-listing-card__price-row">
-                <span className="bp-listing-card__price">₹{fmt(listing.price)}</span>
-                <span className="bp-listing-card__per">/ night</span>
+              <div className="my-3.5 h-px bg-[#f3f4f6]" />
+              <div className="flex items-baseline gap-1.5">
+                <span className="font-sans text-xl font-extrabold text-[#111827]">₹{fmt(listing.price)}</span>
+                <span className="text-[13px] text-[#9ca3af]">/ night</span>
               </div>
             </div>
           </div>
-<div className="bp-trust">
-            <div className="bp-trust__item">
-              <span className="bp-trust__icon">🔒</span>
+          <div className="mt-4 flex flex-col gap-2.5 px-1">
+            <div className="flex items-center gap-2.5 text-[13px] text-[#4b5563]">
+              <span className="text-base">🔒</span>
               <span>256-bit SSL secured</span>
             </div>
-            <div className="bp-trust__item">
-              <span className="bp-trust__icon">✅</span>
+            <div className="flex items-center gap-2.5 text-[13px] text-[#4b5563]">
+              <span className="text-base">✅</span>
               <span>Verified Razorpay gateway</span>
             </div>
-            <div className="bp-trust__item">
-              <span className="bp-trust__icon">💳</span>
+            <div className="flex items-center gap-2.5 text-[13px] text-[#4b5563]">
+              <span className="text-base">💳</span>
               <span>UPI · Cards · Wallets</span>
             </div>
           </div>
