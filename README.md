@@ -2,6 +2,7 @@
 
 A full-stack travel accommodation platform where hosts can list their properties and travelers can discover, book, and review unique stays around the world. Think of it as a simplified Airbnb — built from scratch with real payments, real-time messaging, and an admin dashboard.
 
+
 ![Node.js](https://img.shields.io/badge/Node.js-v20.15-339933?logo=nodedotjs&logoColor=white)
 ![React](https://img.shields.io/badge/React-18.3-61DAFB?logo=react&logoColor=black)
 ![MongoDB](https://img.shields.io/badge/MongoDB-Atlas-47A248?logo=mongodb&logoColor=white)
@@ -355,12 +356,15 @@ If I had more time, here's what I'd add:
 - **Proper CI/CD** — GitHub Actions for automated testing and deployment
 - **Error monitoring** — Sentry or similar for production error tracking
 
+## Status
+🚧 Actively developed — some features like tests and Redis caching are planned but not yet implemented.
+
 ---
 
 ## Contributing
 
 Pull requests are welcome! If you find a bug or have a feature idea:
-
+If this project helped you, consider giving it a ⭐ — it helps a lot!
 1. Fork the repo
 2. Create your branch (`git checkout -b feature/cool-feature`)
 3. Commit your changes (`git commit -m 'Add cool feature'`)
