@@ -30,7 +30,7 @@ jobs:
             frontend/package-lock.json
 
       - name: Install backend dependencies
-        run: npm ci
+        run: npm install --legacy-peer-deps
         working-directory: backend
 
       - name: Backend syntax check
@@ -43,7 +43,7 @@ jobs:
           fi
 
       - name: Install frontend dependencies
-        run: npm ci
+        run: npm install --legacy-peer-deps
         working-directory: frontend
 
       - name: Build frontend
