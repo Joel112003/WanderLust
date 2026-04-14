@@ -179,8 +179,6 @@ export default function EditListing() {
     <>
 
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=Playfair+Display:wght@700&display=swap');
-
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
         .el-page {
@@ -251,6 +249,8 @@ export default function EditListing() {
           color: #aaa;
         }
         .el-card__body { padding: 28px; }
+        .el-stack-20 { display: flex; flex-direction: column; gap: 20px; }
+        .el-grid-no-pad { padding: 0; }
         .el-card__body--grid {
           display: grid;
           grid-template-columns: 1fr 1fr;
@@ -417,7 +417,7 @@ export default function EditListing() {
             <motion.div className="el-card"
               initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: .15 }}>
               <div className="el-card__head">Basic info</div>
-              <div className="el-card__body" style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
+              <div className="el-card__body el-stack-20">
                 <Field label="Title">
                   <input className="el-input" name="title" value={formData.title}
                     onChange={handleChange} placeholder="Give your listing a great name" />
@@ -502,8 +502,8 @@ export default function EditListing() {
             <motion.div className="el-card"
               initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: .35 }}>
               <div className="el-card__head">Location</div>
-              <div className="el-card__body" style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
-                <div className="el-card__body--grid" style={{ padding: 0 }}>
+              <div className="el-card__body el-stack-20">
+                <div className="el-card__body--grid el-grid-no-pad">
                   <Field label="City / neighbourhood">
                     <input className="el-input" name="location" value={formData.location}
                       onChange={handleLocation} placeholder="e.g. Brooklyn, New York" />

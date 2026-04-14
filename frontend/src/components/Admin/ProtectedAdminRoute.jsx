@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Navigate } from 'react-router-dom';
+import { Compass } from 'lucide-react';
 import api from '../lib/api';
 
 const ProtectedAdminRoute = ({ children }) => {
@@ -20,8 +21,14 @@ const ProtectedAdminRoute = ({ children }) => {
 
   if (status === 'checking') {
     return (
-      <div className="flex items-center justify-center h-screen bg-neutral-50">
-        <div className="w-8 h-8 border-2 border-neutral-900 border-t-transparent rounded-full animate-spin" />
+      <div className="flex flex-col items-center justify-center h-screen bg-gray-50 gap-4">
+        <div className="relative">
+          <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-red-600 shadow-xl shadow-red-200/60">
+            <Compass size={24} className="text-white" />
+          </div>
+          <div className="absolute -inset-1.5 rounded-3xl border-2 border-red-200 border-t-red-500 animate-spin" />
+        </div>
+        <p className="text-sm font-semibold text-gray-400 tracking-wide">Verifying session…</p>
       </div>
     );
   }

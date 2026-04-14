@@ -1,13 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { Outlet, Link, useNavigate, useLocation } from 'react-router-dom';
 import toast from 'react-hot-toast';
-import { LayoutDashboard, Users, ListChecks, MessageSquare, LogOut, Menu, X, Compass, ChevronRight, Home } from 'lucide-react';
+import {
+  LayoutDashboard, Users, ListChecks, MessageSquare,
+  LogOut, Menu, X, Compass, ChevronRight, Home,
+} from 'lucide-react';
 
 const NAV = [
-  { path: '/admin',          icon: LayoutDashboard, label: 'Dashboard', breadcrumb: 'Dashboard' },
-  { path: '/admin/users',    icon: Users,            label: 'Users',     breadcrumb: 'User Management' },
-  { path: '/admin/listings', icon: ListChecks,       label: 'Listings',  breadcrumb: 'Listings Management' },
-  { path: '/admin/reviews',  icon: MessageSquare,    label: 'Reviews',   breadcrumb: 'Reviews Management' },
+  { path: '/admin',          icon: LayoutDashboard, label: 'Dashboard',  breadcrumb: 'Dashboard'           },
+  { path: '/admin/users',    icon: Users,            label: 'Users',      breadcrumb: 'User Management'     },
+  { path: '/admin/listings', icon: ListChecks,       label: 'Listings',   breadcrumb: 'Listings Management' },
+  { path: '/admin/reviews',  icon: MessageSquare,    label: 'Reviews',    breadcrumb: 'Reviews Management'  },
 ];
 
 const AdminLayout = () => {
@@ -32,110 +35,177 @@ const AdminLayout = () => {
   };
 
   if (!adminData) return null;
+
   const initials = adminData.username?.slice(0, 2).toUpperCase() ?? 'AD';
   const currentNav = NAV.find(n => n.path === pathname);
   const currentPage = currentNav?.label ?? 'Admin';
   const breadcrumb = currentNav?.breadcrumb ?? currentPage;
 
   return (
-    <div className="flex h-screen overflow-hidden bg-gray-50 font-sans">
-      {sidebarOpen && (
-        <div className="fixed inset-0 bg-black/40 z-20 md:hidden" onClick={() => setSidebarOpen(false)} />
-      )}
+    <>
+      <style>{`
 
-      <aside className={`
-        fixed md:relative inset-y-0 left-0 z-30 flex flex-col
-        w-72 border-r border-gray-200 bg-white shadow-xl md:shadow-none
-        transition-transform duration-300 ease-in-out
-        ${sidebarOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}
-      `}>
-        <div className="flex h-20 items-center justify-between border-b border-gray-200 px-6">
-          <div className="flex items-center gap-3">
-            <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-red-600 text-white shadow-lg shadow-red-200/60">
-              <Compass size={20} className="text-white" />
+        .wl-root { font-family: 'DM Sans', sans-serif; }
+        .wl-root h1, .wl-root h2, .wl-root h3, .wl-root .display { font-family: 'Sora', sans-serif; }
+
+        .sidebar-enter { animation: slideInLeft 0.28s cubic-bezier(.22,1,.36,1) both; }
+        @keyframes slideInLeft { from { transform: translateX(-100%); opacity:0; } to { transform: translateX(0); opacity:1; } }
+
+        .nav-link-active { position: relative; }
+        .nav-link-active::before {
+          content: '';
+          position: absolute;
+          left: 0; top: 50%; transform: translateY(-50%);
+          width: 3px; height: 60%; border-radius: 0 4px 4px 0;
+          background: #dc2626;
+        }
+
+        .sidebar-nav-item { transition: all 0.18s ease; }
+        .sidebar-nav-item:hover { transform: translateX(3px); }
+
+        .pulse-dot { animation: pulseDot 2s infinite; }
+        @keyframes pulseDot {
+          0%, 100% { transform: scale(1); opacity: 1; }
+          50% { transform: scale(1.4); opacity: 0.6; }
+        }
+
+        .header-fade-in { animation: fadeDown 0.4s ease both; }
+        @keyframes fadeDown { from { opacity:0; transform:translateY(-6px); } to { opacity:1; transform:translateY(0); } }
+
+        .logo-mark { transition: transform 0.3s ease; }
+        .logo-mark:hover { transform: rotate(-8deg) scale(1.08); }
+      `}</style>
+
+      <div className="wl-root flex h-screen overflow-hidden bg-[#f7f7f8]">
+      
+        {sidebarOpen && (
+          <div
+            className="fixed inset-0 bg-black/30 backdrop-blur-[2px] z-20 md:hidden"
+            onClick={() => setSidebarOpen(false)}
+          />
+        )}
+
+      
+        <aside className={`
+          fixed md:relative inset-y-0 left-0 z-30 flex flex-col
+          w-[260px] bg-white border-r border-gray-100
+          shadow-[4px_0_24px_rgba(0,0,0,0.06)] md:shadow-none
+          transition-transform duration-300 ease-[cubic-bezier(.22,1,.36,1)]
+          ${sidebarOpen ? 'translate-x-0 sidebar-enter' : '-translate-x-full md:translate-x-0'}
+        `}>
+         
+          <div className="flex h-[68px] items-center justify-between px-5 border-b border-gray-100">
+            <div className="flex items-center gap-3">
+              <div className="logo-mark flex h-9 w-9 items-center justify-center rounded-xl bg-red-600 shadow-lg shadow-red-200/60">
+                <Compass size={18} className="text-white" />
+              </div>
+              <span className="display text-[17px] font-extrabold tracking-tight text-gray-900">
+                Wander<span className="text-red-600">lust</span>
+              </span>
             </div>
-            <span className="text-lg font-extrabold tracking-tight text-stone-900">Wanderlust</span>
+            <button
+              onClick={() => setSidebarOpen(false)}
+              className="flex h-8 w-8 items-center justify-center rounded-lg text-gray-400 hover:bg-gray-100 hover:text-gray-700 transition-all md:hidden"
+            >
+              <X size={16} />
+            </button>
           </div>
-          <button onClick={() => setSidebarOpen(false)} className="text-stone-400 hover:text-stone-700 md:hidden">
-            <X size={20} />
-          </button>
+
+      
+          <nav className="flex-1 px-3 py-5 overflow-y-auto space-y-0.5">
+            <p className="mb-3 px-3 text-[10px] font-bold uppercase tracking-[0.22em] text-gray-400">
+              Main Menu
+            </p>
+            {NAV.map(({ path, icon: Icon, label }) => {
+              const active = pathname === path;
+              return (
+                <Link
+                  key={path}
+                  to={path}
+                  onClick={() => window.innerWidth < 768 && setSidebarOpen(false)}
+                  className={`sidebar-nav-item flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold transition-all
+                    ${active
+                      ? 'nav-link-active bg-red-50 text-red-600 pl-4'
+                      : 'text-gray-500 hover:bg-gray-50 hover:text-gray-900'
+                    }`}
+                >
+                  <div className={`flex h-8 w-8 items-center justify-center rounded-lg transition-colors
+                    ${active ? 'bg-red-100 text-red-600' : 'bg-gray-100 text-gray-500'}`}>
+                    <Icon size={16} />
+                  </div>
+                  {label}
+                  {active && (
+                    <div className="ml-auto w-1.5 h-1.5 rounded-full bg-red-500" />
+                  )}
+                </Link>
+              );
+            })}
+          </nav>
+
+          <div className="border-t border-gray-100 p-3 space-y-1">
+            <div className="flex items-center gap-3 rounded-xl bg-gray-50 px-3 py-2.5">
+              <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full bg-red-600 text-xs font-bold text-white shadow-md shadow-red-100">
+                {initials}
+              </div>
+              <div className="min-w-0 flex-1">
+                <p className="truncate text-sm font-bold text-gray-900">{adminData.username}</p>
+                <p className="truncate text-[11px] text-gray-400">{adminData.email}</p>
+              </div>
+            </div>
+            <button
+              onClick={handleLogout}
+              className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-semibold text-gray-500 hover:bg-red-50 hover:text-red-600 transition-all duration-150"
+            >
+              <LogOut size={16} />
+              Sign out
+            </button>
+          </div>
+        </aside>
+
+       
+        <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
+       
+          <header className="header-fade-in flex h-[68px] flex-shrink-0 items-center gap-4 border-b border-gray-100 bg-white px-6 shadow-[0_1px_0_rgba(0,0,0,0.05)]">
+            <button
+              onClick={() => setSidebarOpen(v => !v)}
+              className="flex h-9 w-9 items-center justify-center rounded-lg text-gray-500 hover:bg-gray-100 hover:text-gray-900 transition-all md:hidden"
+            >
+              <Menu size={20} />
+            </button>
+
+            <div className="flex-1 min-w-0">
+              <div className="flex items-center gap-1.5 text-[11px] mb-0.5">
+                <Link to="/admin" className="flex items-center gap-1 font-medium text-gray-400 hover:text-red-600 transition-colors">
+                  <Home size={12} />
+                  <span>Admin</span>
+                </Link>
+                {pathname !== '/admin' && (
+                  <>
+                    <ChevronRight size={11} className="text-gray-300" />
+                    <span className="font-semibold text-gray-600">{breadcrumb}</span>
+                  </>
+                )}
+              </div>
+              <h1 className="display truncate text-lg font-extrabold text-gray-900 tracking-tight">{currentPage}</h1>
+            </div>
+
+            <div className="flex items-center gap-2.5">
+              <div className="hidden items-center gap-1.5 rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 text-[11px] font-bold text-emerald-700 sm:flex">
+                <span className="pulse-dot w-1.5 h-1.5 rounded-full bg-emerald-500" />
+                Live
+              </div>
+              <div className="flex h-8 w-8 items-center justify-center rounded-full bg-red-600 text-[11px] font-bold text-white shadow-md shadow-red-100">
+                {initials}
+              </div>
+            </div>
+          </header>
+
+          <main className="flex-1 overflow-y-auto bg-[#f7f7f8] p-4 sm:p-6 lg:p-8">
+            <Outlet />
+          </main>
         </div>
-
-        <nav className="flex-1 px-4 py-6 space-y-1 overflow-y-auto">
-          <p className="mb-4 px-3 text-xs font-bold uppercase tracking-[0.2em] text-stone-400">Navigation</p>
-          {NAV.map(({ path, icon: Icon, label }) => {
-            const active = pathname === path;
-            return (
-              <Link key={path} to={path}
-                onClick={() => window.innerWidth < 768 && setSidebarOpen(false)}
-                className={`flex items-center gap-3 px-4 py-3 rounded-xl text-base font-semibold transition-all duration-150
-                  ${active
-                    ? 'bg-red-600 text-white shadow-md shadow-red-200/50'
-                    : 'text-stone-500 hover:bg-gray-100 hover:text-stone-900'
-                  }`}
-              >
-                <Icon size={20} />
-                {label}
-              </Link>
-            );
-          })}
-        </nav>
-
-        <div className="border-t border-gray-200 px-4 pb-6 pt-4">
-          <div className="mb-2 flex items-center gap-3 rounded-xl bg-gray-50 px-4 py-3">
-            <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-red-600 text-sm font-bold text-white">
-              {initials}
-            </div>
-            <div className="min-w-0">
-              <p className="truncate text-base font-bold text-stone-900">{adminData.username}</p>
-              <p className="truncate text-sm text-stone-500">{adminData.email}</p>
-            </div>
-          </div>
-          <button onClick={handleLogout}
-            className="flex w-full items-center gap-3 rounded-xl px-4 py-3 text-base font-semibold text-stone-500
-                       transition-all duration-150 hover:bg-red-50 hover:text-red-600">
-            <LogOut size={18} />
-            Sign out
-          </button>
-        </div>
-      </aside>
-
-      <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
-        <header className="flex h-20 flex-shrink-0 items-center gap-4 border-b border-gray-200 bg-white px-8 shadow-sm">
-          <button onClick={() => setSidebarOpen(v => !v)} className="text-stone-500 transition-colors hover:text-stone-900 md:hidden">
-            <Menu size={24} />
-          </button>
-          <div className="flex-1 min-w-0">
-            <div className="flex items-center gap-2 text-sm mb-1">
-              <Link to="/admin" className="flex items-center gap-1.5 font-medium text-stone-400 transition-colors hover:text-stone-700">
-                <Home size={14} />
-                <span>Admin</span>
-              </Link>
-              {pathname !== '/admin' && (
-                <>
-                  <ChevronRight size={14} className="text-stone-300" />
-                  <span className="truncate font-semibold text-stone-700">{breadcrumb}</span>
-                </>
-              )}
-            </div>
-            <h1 className="truncate text-xl font-extrabold text-stone-900">{currentPage}</h1>
-          </div>
-          <div className="flex items-center gap-3">
-            <div className="hidden items-center gap-2 rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1.5 text-xs font-bold text-emerald-700 sm:flex">
-              <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
-              Online
-            </div>
-            <div className="flex h-9 w-9 items-center justify-center rounded-full bg-gray-100 text-sm font-bold text-stone-700">
-              {initials}
-            </div>
-          </div>
-        </header>
-
-        <main className="flex-1 overflow-y-auto bg-gray-50 p-4 sm:p-6 lg:p-8">
-          <Outlet />
-        </main>
       </div>
-    </div>
+    </>
   );
 };
 

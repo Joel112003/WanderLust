@@ -36,25 +36,16 @@ const SOCIALS = [
     label: "Instagram",
     href: "https://www.instagram.com/airbnb/",
     icon: <InstagramIcon />,
-    color: "#E4405F",
-    bg: "rgba(228,64,95,0.08)",
-    bgHover: "rgba(228,64,95,0.15)",
   },
   {
     label: "Facebook",
     href: "https://www.facebook.com/airbnb/",
     icon: <FacebookIcon />,
-    color: "#4267B2",
-    bg: "rgba(66,103,178,0.08)",
-    bgHover: "rgba(66,103,178,0.15)",
   },
   {
     label: "LinkedIn",
     href: "https://www.linkedin.com/in/joelkunjumon",
     icon: <LinkedInIcon />,
-    color: "#0A66C2",
-    bg: "rgba(10,102,194,0.08)",
-    bgHover: "rgba(10,102,194,0.15)",
   },
 ];
 
@@ -78,7 +69,6 @@ const item = {
 
 export default function Footer() {
   const [showTop, setShowTop] = useState(false);
-  const [hovered, setHovered] = useState(null);
 
   useEffect(() => {
     const onScroll = () => setShowTop(window.scrollY > 100);
@@ -88,14 +78,7 @@ export default function Footer() {
 
   return (
     <>
-      <footer
-        className="w-full mt-auto relative"
-        style={{
-          background: "linear-gradient(180deg, #f9f9fb 0%, #ffffff 100%)",
-          borderTop: "1px solid #ebebef",
-          boxShadow: "0 -4px 24px rgba(0,0,0,0.04)",
-        }}
-      >
+      <footer className="relative mt-auto w-full border-t border-gray-200 bg-gradient-to-b from-gray-50 to-white shadow-[0_-4px_24px_rgba(0,0,0,0.04)]">
         <motion.div
           variants={container}
           initial="hidden"
@@ -108,24 +91,22 @@ export default function Footer() {
             Follow us on social media
           </motion.p>
 <motion.div variants={item} className="flex items-center gap-3">
-            {SOCIALS.map(({ label, href, icon, color, bg, bgHover }) => (
+            {SOCIALS.map(({ label, href, icon }) => (
               <motion.a
                 key={label}
                 href={href}
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label={label}
-                onHoverStart={() => setHovered(label)}
-                onHoverEnd={() => setHovered(null)}
                 whileHover={{ scale: 1.1, y: -2 }}
                 whileTap={{ scale: 0.92 }}
-                style={{
-                  width: 42, height: 42, borderRadius: 12,
-                  display: "flex", alignItems: "center", justifyContent: "center",
-                  color,
-                  backgroundColor: hovered === label ? bgHover : bg,
-                  transition: "background-color 0.2s ease",
-                }}
+                className={`flex h-[42px] w-[42px] items-center justify-center rounded-xl transition-colors duration-200 ${
+                  label === "Instagram"
+                    ? "bg-rose-100 text-rose-600 hover:bg-rose-200"
+                    : label === "Facebook"
+                      ? "bg-blue-100 text-blue-700 hover:bg-blue-200"
+                      : "bg-sky-100 text-sky-700 hover:bg-sky-200"
+                }`}
               >
                 {icon}
               </motion.a>
@@ -139,7 +120,6 @@ export default function Footer() {
                 <Link
                   to={to}
                   className="text-sm font-medium text-indigo-500 hover:text-indigo-700 transition-colors duration-150"
-                  style={{ textDecoration: "none" }}
                 >
                   {label}
                 </Link>
@@ -164,10 +144,7 @@ export default function Footer() {
             whileTap={{ scale: 0.9 }}
             onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
             aria-label="Scroll back to top"
-            className="fixed bottom-8 right-8 z-50 w-11 h-11 rounded-full
-              flex items-center justify-center text-white shadow-lg
-              transition-shadow hover:shadow-xl"
-            style={{ background: "linear-gradient(135deg, #6366f1, #4f46e5)" }}
+            className="fixed bottom-8 right-8 z-50 flex h-11 w-11 items-center justify-center rounded-full bg-indigo-600 text-white shadow-lg transition-shadow hover:shadow-xl"
           >
             <ArrowUpIcon />
           </motion.button>

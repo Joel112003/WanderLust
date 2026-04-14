@@ -19,9 +19,10 @@ const AlternativeBookingsModal = ({ isOpen, onClose, alternatives = [], onAccept
   }, [isOpen]);
 
   const now = new Date();
-  const pendingAlternatives = alternatives.filter(alt =>
-    alt.status === 'pending_user_response' &&
-    new Date(alt.expiresAt) > now
+  const pendingAlternatives = alternatives.filter(
+    (alt) =>
+      alt.status === "pending_user_response" &&
+      (!alt.expiresAt || new Date(alt.expiresAt) > now)
   );
 
   useEffect(() => {
@@ -175,7 +176,7 @@ const AlternativeBookingsModal = ({ isOpen, onClose, alternatives = [], onAccept
           </div>
 
           {/* Alternatives List */}
-          <div className="p-6 overflow-y-auto" style={{ maxHeight: "calc(90vh - 180px)" }}>
+          <div className="max-h-[calc(90vh-180px)] overflow-y-auto p-6">
             {pendingAlternatives.map((alt) => {
               const timer = timeRemaining[alt._id];
               const originalListing = alt.originalBooking?.listing;

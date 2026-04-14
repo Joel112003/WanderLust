@@ -4,10 +4,10 @@ import toast from "react-hot-toast";
 import { DayPicker } from "react-day-picker";
 import { isBefore, addDays, differenceInCalendarDays, format } from "date-fns";
 import "react-day-picker/dist/style.css";
-import { motion, useScroll, useTransform, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import {
   Star, Heart, Share2, Wifi, ShieldCheck, Briefcase,
-  CalendarCheck, Tag, Sparkles, ChevronDown, Users,
+  CalendarCheck, Tag, Sparkles, ChevronDown, ChevronUp, Users,
   MapPin, Eye, ImageOff, Loader2, AlertTriangle,
 } from "lucide-react";
 
@@ -184,7 +184,7 @@ const DateField = ({ label, value, onChange, disabledDays, minDate, align = "sta
             transition={{ duration: 0.18 }}
           >
             {(existingBookings.length > 0 || ownerBlockedDates.length > 0) && (
-              <div className="rounded-t-lg border-b-2 border-red-600 bg-gradient-to-br from-red-100 to-red-50 px-3.5 py-2.5 text-xs">
+              <div className="rounded-t-lg border-b border-red-200 bg-red-50 px-3.5 py-2.5 text-xs">
                 <div className="mb-1.5 flex items-center gap-1.5 font-bold text-red-600">
                   <span className="text-base">🔴</span> Unavailable Date Ranges:
                 </div>
@@ -216,39 +216,142 @@ const DateField = ({ label, value, onChange, disabledDays, minDate, align = "sta
               showOutsideDays
               fixedWeeks
               modifiersStyles={{
+                selected: {
+                  backgroundColor: "#111827",
+                  color: "#ffffff",
+                  borderRadius: "999px",
+                  fontWeight: 700,
+                },
                 booked: {
-                  backgroundColor: "#fee2e2",
-                  color: "#991b1b",
-                  border: "2px solid #f87171",
+                  backgroundColor: "#f5f5f4",
+                  color: "#44403c",
+                  border: "1px solid #d6d3d1",
                   borderRadius: "6px",
                   fontWeight: 700,
                 },
                 bookedStart: {
-                  background: "linear-gradient(135deg, #dc2626 0%, #ef4444 100%)",
+                  background: "#57534e",
                   color: "#fff",
-                  border: "2px solid #991b1b",
+                  border: "2px solid #292524",
                   borderRadius: "999px 8px 8px 999px",
                   fontWeight: 800,
                 },
                 bookedEnd: {
-                  background: "linear-gradient(135deg, #dc2626 0%, #ef4444 100%)",
+                  background: "#57534e",
                   color: "#fff",
-                  border: "2px solid #991b1b",
+                  border: "2px solid #292524",
                   borderRadius: "8px 999px 999px 8px",
                   fontWeight: 800,
                 },
                 bookedMiddle: {
-                  background: "linear-gradient(90deg, #fecaca 0%, #fca5a5 50%, #fecaca 100%)",
-                  color: "#7f1d1d",
-                  borderTop: "2px solid #dc2626",
-                  borderBottom: "2px solid #dc2626",
-                  borderLeft: "1px solid #f87171",
-                  borderRight: "1px solid #f87171",
+                  background: "#e7e5e4",
+                  color: "#292524",
+                  borderTop: "1px solid #78716c",
+                  borderBottom: "1px solid #78716c",
+                  borderLeft: "1px solid #a8a29e",
+                  borderRight: "1px solid #a8a29e",
                   borderRadius: "4px",
                   fontWeight: 700,
                 },
               }}
             />
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+};
+
+const GuestDropdown = ({ value, onChange, maxGuests = 10 }) => {
+  const [open, setOpen] = useState(false);
+  const ref = useRef(null);
+
+  useEffect(() => {
+    const onClick = (e) => {
+      if (ref.current && !ref.current.contains(e.target)) setOpen(false);
+    };
+    const onEsc = (e) => {
+      if (e.key === "Escape") setOpen(false);
+    };
+    document.addEventListener("mousedown", onClick);
+    document.addEventListener("keydown", onEsc);
+    return () => {
+      document.removeEventListener("mousedown", onClick);
+      document.removeEventListener("keydown", onEsc);
+    };
+  }, []);
+
+  const dec = () => onChange(Math.max(1, value - 1));
+  const inc = () => onChange(Math.min(maxGuests, value + 1));
+
+  return (
+    <div className="relative" ref={ref}>
+      <button
+        type="button"
+        className="flex w-full items-center justify-between rounded-xl border-[1.5px] border-stone-300 px-3.5 py-2.5 text-left transition hover:border-red-300 hover:bg-red-50"
+        onClick={() => setOpen((o) => !o)}
+        aria-expanded={open}
+      >
+        <div className="flex items-center gap-2">
+          <Users size={14} className="text-zinc-500" />
+          <div>
+            <p className="m-0 text-[10px] font-semibold tracking-[0.08em] text-zinc-500">GUESTS</p>
+            <p className="m-0 text-[13.5px] font-medium text-zinc-900">
+              {value} {value === 1 ? "guest" : "guests"}
+            </p>
+          </div>
+        </div>
+        {open ? <ChevronUp size={15} className="text-zinc-500" /> : <ChevronDown size={15} className="text-zinc-500" />}
+      </button>
+
+      <AnimatePresence>
+        {open && (
+          <motion.div
+            className="absolute left-0 right-0 top-[calc(100%+8px)] z-[220] rounded-xl border border-stone-200 bg-white p-3 shadow-xl"
+            initial={{ opacity: 0, y: 8, scale: 0.98 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 6, scale: 0.98 }}
+            transition={{ duration: 0.18 }}
+          >
+            <div className="mb-2 flex items-center justify-between rounded-lg border border-stone-200 px-2.5 py-2">
+              <button
+                type="button"
+                onClick={dec}
+                className="h-7 w-7 rounded-full border border-stone-300 text-sm font-bold text-zinc-700 transition hover:border-red-400 hover:text-red-600 disabled:cursor-not-allowed disabled:opacity-40"
+                disabled={value <= 1}
+              >
+                -
+              </button>
+              <span className="text-sm font-semibold text-zinc-900">{value} {value === 1 ? "guest" : "guests"}</span>
+              <button
+                type="button"
+                onClick={inc}
+                className="h-7 w-7 rounded-full border border-stone-300 text-sm font-bold text-zinc-700 transition hover:border-red-400 hover:text-red-600 disabled:cursor-not-allowed disabled:opacity-40"
+                disabled={value >= maxGuests}
+              >
+                +
+              </button>
+            </div>
+
+            <div className="grid grid-cols-5 gap-1.5">
+              {Array.from({ length: maxGuests }, (_, i) => i + 1).map((n) => (
+                <button
+                  type="button"
+                  key={n}
+                  onClick={() => {
+                    onChange(n);
+                    setOpen(false);
+                  }}
+                  className={`rounded-md border px-2 py-1 text-xs font-semibold transition ${
+                    n === value
+                      ? "border-red-600 bg-red-50 text-red-600"
+                      : "border-stone-200 bg-white text-zinc-700 hover:border-red-300 hover:bg-red-50"
+                  }`}
+                >
+                  {n}
+                </button>
+              ))}
+            </div>
           </motion.div>
         )}
       </AnimatePresence>
@@ -283,8 +386,6 @@ const ListingDetail = () => {
   const [blockTo,          setBlockTo]          = useState(null);
   const [savingBlock,      setSavingBlock]      = useState(false);
 
-  const { scrollY }    = useScroll();
-  const bookingOpacity = useTransform(scrollY, [0, 900, 1400], [1, 1, 0]);
 
   useEffect(() => {
     if (!id || !/^[0-9a-fA-F]{24}$/.test(id)) {
@@ -710,9 +811,8 @@ const ListingDetail = () => {
               />
             </section>
           </div>
-<motion.aside
+          <motion.aside
             className="sticky top-24"
-            style={{ opacity: bookingOpacity }}
             initial={{ opacity: 0, y: 22 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.35 }}
@@ -751,19 +851,12 @@ const ListingDetail = () => {
                   ownerBlockedDates={listing?.unavailableDates || []}
                 />
               </div>
-<div className="mb-4 flex items-center justify-between rounded-xl border-[1.5px] border-stone-300 px-3.5 py-2.5 max-sm:mb-3">
-                <div className="flex items-center gap-1.5 text-[10px] font-semibold tracking-[0.08em] text-zinc-500">
-                  <Users size={14} /><span>GUESTS</span>
-                </div>
-                <select
-                  className="max-w-full cursor-pointer border-none bg-transparent text-right text-[13.5px] font-medium text-zinc-900 outline-none"
+              <div className="mb-4 max-sm:mb-3">
+                <GuestDropdown
                   value={guestCount}
-                  onChange={(e) => setGuestCount(+e.target.value)}
-                >
-                  {Array.from({ length: listing.maxGuests || 10 }, (_, i) => i + 1).map((n) => (
-                    <option key={n} value={n}>{n} {n === 1 ? "guest" : "guests"}</option>
-                  ))}
-                </select>
+                  onChange={setGuestCount}
+                  maxGuests={listing.maxGuests || 10}
+                />
               </div>
 {listing?.unavailableDates && listing.unavailableDates.length > 0 && (
                 <motion.div

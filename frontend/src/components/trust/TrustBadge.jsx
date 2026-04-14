@@ -1,19 +1,25 @@
 import React from 'react';
 import { Shield, Wifi, CheckCircle, Star, Award, Zap, Heart, Lock } from 'lucide-react';
 
-const PALETTE = {
-  neutral: { color: '#6b7280', bgColor: '#f3f4f6', border: '#d1d5db' },
-  success: { color: '#16a34a', bgColor: '#dcfce7', border: '#86efac' },
-  warning: { color: '#f59e0b', bgColor: '#fef3c7', border: '#fcd34d' },
-  error: { color: '#dc2626', bgColor: '#fee2e2', border: '#fecaca' },
-  accent: { color: '#dc2626', bgColor: '#fee2e2', border: '#fecaca' },
+const TONE = {
+  neutral: { text: 'text-gray-500', bg: 'bg-gray-100', border: 'border-gray-300' },
+  success: { text: 'text-green-600', bg: 'bg-green-100', border: 'border-green-300' },
+  warning: { text: 'text-amber-600', bg: 'bg-amber-100', border: 'border-amber-300' },
+  error: { text: 'text-red-600', bg: 'bg-red-100', border: 'border-red-200' },
+  accent: { text: 'text-red-600', bg: 'bg-red-100', border: 'border-red-200' },
+};
+
+const SIZE = {
+  sm: { pad: 'px-2 py-1', text: 'text-[11px]', icon: 12 },
+  md: { pad: 'px-3 py-1.5', text: 'text-[13px]', icon: 16 },
+  lg: { pad: 'px-4 py-2', text: 'text-sm', icon: 18 },
 };
 
 const TrustBadge = ({ type, value, label, size = 'md', showLabel = true }) => {
   const getBadgeConfig = () => {
     switch (type) {
       case 'host-reliability': {
-        const tone = value >= 90 ? PALETTE.success : value >= 75 ? PALETTE.warning : PALETTE.neutral;
+        const tone = value >= 90 ? TONE.success : value >= 75 ? TONE.warning : TONE.neutral;
         return {
           icon: Award,
           ...tone,
@@ -23,7 +29,7 @@ const TrustBadge = ({ type, value, label, size = 'md', showLabel = true }) => {
       }
 
       case 'review-authenticity': {
-        const tone = value >= 80 ? PALETTE.success : value >= 60 ? PALETTE.warning : PALETTE.error;
+        const tone = value >= 80 ? TONE.success : value >= 60 ? TONE.warning : TONE.error;
         return {
           icon: Lock,
           ...tone,
@@ -35,13 +41,13 @@ const TrustBadge = ({ type, value, label, size = 'md', showLabel = true }) => {
       case 'wifi-verified':
         return {
           icon: Wifi,
-          ...PALETTE.neutral,
+          ...TONE.neutral,
           text: 'WiFi Verified',
           score: `${value} Mbps`,
         };
 
       case 'safety-score': {
-        const tone = value >= 80 ? PALETTE.success : value >= 60 ? PALETTE.warning : PALETTE.error;
+        const tone = value >= 80 ? TONE.success : value >= 60 ? TONE.warning : TONE.error;
         return {
           icon: Shield,
           ...tone,
@@ -53,7 +59,7 @@ const TrustBadge = ({ type, value, label, size = 'md', showLabel = true }) => {
       case 'quick-responder':
         return {
           icon: Zap,
-          ...PALETTE.accent,
+          ...TONE.accent,
           text: 'Quick Responder',
           score: `< ${value}hr`,
         };
@@ -61,7 +67,7 @@ const TrustBadge = ({ type, value, label, size = 'md', showLabel = true }) => {
       case 'guest-favorite':
         return {
           icon: Heart,
-          ...PALETTE.accent,
+          ...TONE.accent,
           text: 'Guest Favorite',
           score: `${value}★`,
         };
@@ -69,7 +75,7 @@ const TrustBadge = ({ type, value, label, size = 'md', showLabel = true }) => {
       case 'identity-verified':
         return {
           icon: CheckCircle,
-          ...PALETTE.success,
+          ...TONE.success,
           text: 'Identity Verified',
           score: '✓',
         };
@@ -77,7 +83,7 @@ const TrustBadge = ({ type, value, label, size = 'md', showLabel = true }) => {
       default:
         return {
           icon: Star,
-          ...PALETTE.neutral,
+          ...TONE.neutral,
           text: label || 'Verified',
           score: value,
         };
@@ -87,33 +93,14 @@ const TrustBadge = ({ type, value, label, size = 'md', showLabel = true }) => {
   const config = getBadgeConfig();
   const Icon = config.icon;
 
-  const sizeClasses = {
-    sm: { padding: '4px 8px', fontSize: '11px', iconSize: 12 },
-    md: { padding: '6px 12px', fontSize: '13px', iconSize: 16 },
-    lg: { padding: '8px 16px', fontSize: '14px', iconSize: 18 },
-  };
-
-  const styles = sizeClasses[size];
+  const styles = SIZE[size] || SIZE.md;
 
   return (
-    <div
-      style={{
-        display: 'inline-flex',
-        alignItems: 'center',
-        gap: '6px',
-        padding: styles.padding,
-        borderRadius: '8px',
-        background: config.bgColor,
-        border: `1px solid ${config.border}`,
-        fontSize: styles.fontSize,
-        fontWeight: 600,
-        color: config.color,
-      }}
-    >
-      <Icon size={styles.iconSize} />
+    <div className={`inline-flex items-center gap-1.5 rounded-lg border font-semibold ${styles.pad} ${styles.text} ${config.bg} ${config.border} ${config.text}`}>
+      <Icon size={styles.icon} />
       {showLabel && (
         <span>
-          {config.text} {config.score && <span style={{ fontWeight: 700 }}>· {config.score}</span>}
+          {config.text} {config.score && <span className="font-bold">· {config.score}</span>}
         </span>
       )}
     </div>
@@ -125,11 +112,11 @@ export const HostReliabilityCard = ({ reliability, hostName }) => {
 
   const getTierBadge = (tier) => {
     const tiers = {
-      superhero: { icon: '★', ...PALETTE.success, label: 'Superhost' },
-      trusted: { icon: '✓', ...PALETTE.warning, label: 'Trusted Host' },
-      good: { icon: '•', ...PALETTE.neutral, label: 'Good Host' },
-      average: { icon: '•', ...PALETTE.neutral, label: 'Average Host' },
-      new: { icon: '•', ...PALETTE.neutral, label: 'New Host' },
+      superhero: { icon: '★', ...TONE.success, label: 'Superhost' },
+      trusted: { icon: '✓', ...TONE.warning, label: 'Trusted Host' },
+      good: { icon: '•', ...TONE.neutral, label: 'Good Host' },
+      average: { icon: '•', ...TONE.neutral, label: 'Average Host' },
+      new: { icon: '•', ...TONE.neutral, label: 'New Host' },
     };
     return tiers[tier] || tiers.new;
   };
@@ -138,105 +125,76 @@ export const HostReliabilityCard = ({ reliability, hostName }) => {
 
   const overallColor =
     reliability.overallScore >= 90
-      ? PALETTE.success.color
+      ? 'text-green-600'
       : reliability.overallScore >= 75
-      ? PALETTE.warning.color
-      : PALETTE.neutral.color;
+      ? 'text-amber-600'
+      : 'text-gray-500';
 
   return (
-    <div
-      style={{
-        padding: '20px',
-        background: '#ffffff',
-        borderRadius: '16px',
-        border: '1px solid #e5e7eb',
-        boxShadow: '0 4px 12px rgba(17,24,39,0.08)',
-      }}
-    >
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px' }}>
+    <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-[0_4px_12px_rgba(17,24,39,0.08)]">
+      <div className="mb-4 flex items-center justify-between">
         <div>
-          <h3 style={{ margin: '0 0 4px 0', fontSize: '18px', fontWeight: 700, color: '#111827' }}>
+          <h3 className="mb-1 text-lg font-bold text-gray-900">
             Host: {hostName}
           </h3>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <span
-              style={{
-                padding: '4px 12px',
-                borderRadius: '20px',
-                background: tierBadge.bgColor,
-                color: tierBadge.color,
-                border: `1px solid ${tierBadge.border}`,
-                fontSize: '13px',
-                fontWeight: 600,
-              }}
-            >
+          <div className="flex items-center gap-2">
+            <span className={`rounded-full border px-3 py-1 text-[13px] font-semibold ${tierBadge.bg} ${tierBadge.border} ${tierBadge.text}`}>
               {tierBadge.icon} {tierBadge.label}
             </span>
           </div>
         </div>
-        <div style={{ textAlign: 'center' }}>
-          <div style={{ fontSize: '32px', fontWeight: 800, color: overallColor }}>{reliability.overallScore}</div>
-          <div style={{ fontSize: '12px', color: '#6b7280', marginTop: '-4px' }}>out of 100</div>
+        <div className="text-center">
+          <div className={`text-[32px] font-extrabold ${overallColor}`}>{reliability.overallScore}</div>
+          <div className="-mt-1 text-xs text-gray-500">out of 100</div>
         </div>
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '12px' }}>
-        <div style={{ padding: '12px', background: '#f9fafb', borderRadius: '12px', border: '1px solid #e5e7eb' }}>
-          <div style={{ fontSize: '11px', color: '#6b7280', marginBottom: '4px' }}>Response Rate</div>
-          <div style={{ fontSize: '18px', fontWeight: 700, color: '#111827' }}>
+      <div className="grid grid-cols-2 gap-3">
+        <div className="rounded-xl border border-gray-200 bg-gray-50 p-3">
+          <div className="mb-1 text-[11px] text-gray-500">Response Rate</div>
+          <div className="text-lg font-bold text-gray-900">
             {reliability.responseMetrics?.responseRate?.toFixed(0) || 0}%
           </div>
-          <div style={{ fontSize: '10px', color: '#9ca3af', marginTop: '2px' }}>
+          <div className="mt-0.5 text-[10px] text-gray-400">
             Avg: {reliability.responseMetrics?.avgResponseTime?.toFixed(1) || 0}hrs
           </div>
         </div>
 
-        <div style={{ padding: '12px', background: '#f9fafb', borderRadius: '12px', border: '1px solid #e5e7eb' }}>
-          <div style={{ fontSize: '11px', color: '#6b7280', marginBottom: '4px' }}>Cancellation Rate</div>
-          <div style={{ fontSize: '18px', fontWeight: 700, color: '#111827' }}>
+        <div className="rounded-xl border border-gray-200 bg-gray-50 p-3">
+          <div className="mb-1 text-[11px] text-gray-500">Cancellation Rate</div>
+          <div className="text-lg font-bold text-gray-900">
             {reliability.cancellationMetrics?.cancellationRate?.toFixed(1) || 0}%
           </div>
-          <div style={{ fontSize: '10px', color: '#9ca3af', marginTop: '2px' }}>
+          <div className="mt-0.5 text-[10px] text-gray-400">
             {reliability.cancellationMetrics?.totalBookings || 0} total bookings
           </div>
         </div>
 
-        <div style={{ padding: '12px', background: '#f9fafb', borderRadius: '12px', border: '1px solid #e5e7eb' }}>
-          <div style={{ fontSize: '11px', color: '#6b7280', marginBottom: '4px' }}>Accuracy</div>
-          <div style={{ fontSize: '18px', fontWeight: 700, color: '#111827' }}>
+        <div className="rounded-xl border border-gray-200 bg-gray-50 p-3">
+          <div className="mb-1 text-[11px] text-gray-500">Accuracy</div>
+          <div className="text-lg font-bold text-gray-900">
             {reliability.accuracyMetrics?.avgAccuracy?.toFixed(1) || 0}/10
           </div>
-          <div style={{ fontSize: '10px', color: '#9ca3af', marginTop: '2px' }}>Photos and description</div>
+          <div className="mt-0.5 text-[10px] text-gray-400">Photos and description</div>
         </div>
 
-        <div style={{ padding: '12px', background: '#f9fafb', borderRadius: '12px', border: '1px solid #e5e7eb' }}>
-          <div style={{ fontSize: '11px', color: '#6b7280', marginBottom: '4px' }}>Rating</div>
-          <div style={{ fontSize: '18px', fontWeight: 700, color: '#111827' }}>
+        <div className="rounded-xl border border-gray-200 bg-gray-50 p-3">
+          <div className="mb-1 text-[11px] text-gray-500">Rating</div>
+          <div className="text-lg font-bold text-gray-900">
             ★ {reliability.reviewMetrics?.avgRating?.toFixed(1) || 0}
           </div>
-          <div style={{ fontSize: '10px', color: '#9ca3af', marginTop: '2px' }}>
+          <div className="mt-0.5 text-[10px] text-gray-400">
             {reliability.reviewMetrics?.totalReviews || 0} reviews
           </div>
         </div>
       </div>
 
       {reliability.badges && reliability.badges.length > 0 && (
-        <div style={{ marginTop: '16px', paddingTop: '16px', borderTop: '1px solid #e5e7eb' }}>
-          <div style={{ fontSize: '12px', color: '#6b7280', marginBottom: '8px', fontWeight: 600 }}>Achievements</div>
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+        <div className="mt-4 border-t border-gray-200 pt-4">
+          <div className="mb-2 text-xs font-semibold text-gray-500">Achievements</div>
+          <div className="flex flex-wrap gap-2">
             {reliability.badges.map((badge, index) => (
-              <span
-                key={index}
-                style={{
-                  padding: '6px 12px',
-                  borderRadius: '20px',
-                  background: '#f3f4f6',
-                  color: '#374151',
-                  border: '1px solid #d1d5db',
-                  fontSize: '12px',
-                  fontWeight: 600,
-                }}
-              >
+              <span key={index} className="rounded-full border border-gray-300 bg-gray-100 px-3 py-1.5 text-xs font-semibold text-gray-700">
                 {badge.icon} {badge.name}
               </span>
             ))}
@@ -251,68 +209,60 @@ export const TransparentPricingCard = ({ pricing, nights = 1 }) => {
   if (!pricing) return null;
 
   return (
-    <div
-      style={{
-        padding: '20px',
-        background: '#ffffff',
-        borderRadius: '16px',
-        border: '2px solid #16a34a',
-        boxShadow: '0 4px 16px rgba(22,163,74,0.12)',
-      }}
-    >
-      <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '16px' }}>
-        <CheckCircle size={20} style={{ color: '#16a34a' }} />
-        <h3 style={{ margin: 0, fontSize: '16px', fontWeight: 700, color: '#16a34a' }}>
+    <div className="rounded-2xl border-2 border-green-600 bg-white p-5 shadow-[0_4px_16px_rgba(22,163,74,0.12)]">
+      <div className="mb-4 flex items-center gap-2">
+        <CheckCircle size={20} className="text-green-600" />
+        <h3 className="m-0 text-base font-bold text-green-600">
           100% Transparent Pricing
         </h3>
       </div>
 
-      <div style={{ fontSize: '36px', fontWeight: 800, color: '#111827', marginBottom: '8px' }}>
+      <div className="mb-2 text-4xl font-extrabold text-gray-900">
         ₹{pricing.finalPrice?.toLocaleString()}
       </div>
-      <div style={{ fontSize: '14px', color: '#6b7280', marginBottom: '20px' }}>
+      <div className="mb-5 text-sm text-gray-500">
         Total for {nights} {nights === 1 ? 'night' : 'nights'} · All-inclusive
       </div>
 
-      <div style={{ padding: '16px', background: '#f9fafb', borderRadius: '12px', marginBottom: '16px', border: '1px solid #e5e7eb' }}>
-        <div style={{ fontSize: '13px', fontWeight: 600, color: '#111827', marginBottom: '12px' }}>Price Breakdown</div>
+      <div className="mb-4 rounded-xl border border-gray-200 bg-gray-50 p-4">
+        <div className="mb-3 text-[13px] font-semibold text-gray-900">Price Breakdown</div>
 
-        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
-          <span style={{ fontSize: '13px', color: '#6b7280' }}>Base price ({nights} {nights === 1 ? 'night' : 'nights'})</span>
-          <span style={{ fontSize: '13px', fontWeight: 600, color: '#111827' }}>
+        <div className="mb-2 flex justify-between">
+          <span className="text-[13px] text-gray-500">Base price ({nights} {nights === 1 ? 'night' : 'nights'})</span>
+          <span className="text-[13px] font-semibold text-gray-900">
             ₹{pricing.hostEarnings?.toLocaleString()}
           </span>
         </div>
 
-        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
-          <span style={{ fontSize: '13px', color: '#6b7280' }}>Platform fee (from host)</span>
-          <span style={{ fontSize: '13px', fontWeight: 600, color: '#111827' }}>
+        <div className="mb-2 flex justify-between">
+          <span className="text-[13px] text-gray-500">Platform fee (from host)</span>
+          <span className="text-[13px] font-semibold text-gray-900">
             ₹{pricing.platformFee?.toLocaleString()}
           </span>
         </div>
 
-        <div style={{ display: 'flex', justifyContent: 'space-between', paddingTop: '12px', borderTop: '1px solid #e5e7eb' }}>
-          <span style={{ fontSize: '14px', fontWeight: 700, color: '#111827' }}>You pay</span>
-          <span style={{ fontSize: '14px', fontWeight: 700, color: '#111827' }}>
+        <div className="flex justify-between border-t border-gray-200 pt-3">
+          <span className="text-sm font-bold text-gray-900">You pay</span>
+          <span className="text-sm font-bold text-gray-900">
             ₹{pricing.finalPrice?.toLocaleString()}
           </span>
         </div>
       </div>
 
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '12px', color: '#16a34a' }}>
+      <div className="flex flex-col gap-2">
+        <div className="flex items-center gap-2 text-xs text-green-600">
           <CheckCircle size={14} />
           <span>No hidden fees</span>
         </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '12px', color: '#16a34a' }}>
+        <div className="flex items-center gap-2 text-xs text-green-600">
           <CheckCircle size={14} />
           <span>No service charges</span>
         </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '12px', color: '#16a34a' }}>
+        <div className="flex items-center gap-2 text-xs text-green-600">
           <CheckCircle size={14} />
           <span>No cleaning fees</span>
         </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '12px', color: '#16a34a' }}>
+        <div className="flex items-center gap-2 text-xs text-green-600">
           <CheckCircle size={14} />
           <span>Free cancellation until 48hrs before</span>
         </div>

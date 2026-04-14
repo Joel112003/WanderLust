@@ -210,14 +210,13 @@ const DD_ANIM = {
   exit: { opacity: 0, y: -8, scale: 0.97, transition: { duration: 0.14 } },
 };
 
-const Dropdown = ({ children, style = {} }) => (
+const Dropdown = ({ children, className = "" }) => (
   <motion.div
     variants={DD_ANIM}
     initial="hidden"
     animate="show"
     exit="exit"
-    className="absolute left-0 top-[calc(100%+10px)] z-[9999] min-w-[300px] rounded-[22px] border border-[#ede8e8] bg-white p-5 shadow-[0_24px_60px_rgba(0,0,0,0.12),0_6px_16px_rgba(0,0,0,0.06)] max-[680px]:fixed max-[680px]:left-3 max-[680px]:right-3 max-[680px]:w-auto max-[680px]:min-w-0 max-[420px]:left-2 max-[420px]:right-2 max-[420px]:rounded-[14px] max-[420px]:p-3"
-    style={style}
+    className={`absolute left-0 top-[calc(100%+10px)] z-[9999] min-w-[300px] rounded-[22px] border border-[#ede8e8] bg-white p-5 shadow-[0_24px_60px_rgba(0,0,0,0.12),0_6px_16px_rgba(0,0,0,0.06)] max-[680px]:fixed max-[680px]:left-3 max-[680px]:right-3 max-[680px]:w-auto max-[680px]:min-w-0 max-[420px]:left-2 max-[420px]:right-2 max-[420px]:rounded-[14px] max-[420px]:p-3 ${className}`}
   >
     {children}
   </motion.div>
@@ -386,7 +385,7 @@ const HeroSearch = () => {
 
           <AnimatePresence>
             {active === "dates" && (
-              <Dropdown style={{ minWidth: 340 }}>
+              <Dropdown className="min-w-[340px]">
                 <MiniCalendar
                   checkIn={checkIn}
                   checkOut={checkOut}
@@ -424,7 +423,7 @@ const HeroSearch = () => {
 
           <AnimatePresence>
             {active === "guests" && (
-              <Dropdown style={{ minWidth: 320, right: 0, left: "auto" }}>
+              <Dropdown className="left-auto right-0 min-w-[320px]">
                 <GuestsPanel guests={guests} onChange={setGuests} />
               </Dropdown>
             )}

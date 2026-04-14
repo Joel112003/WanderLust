@@ -91,46 +91,15 @@ const MessageDropdown = () => {
   };
 
   return (
-    <div style={{ position: "relative" }}>
-<button
+    <div className="relative">
+      <button
         onClick={() => navigate('/conversations')}
-        style={{
-          position: "relative",
-          width: 40,
-          height: 40,
-          borderRadius: "50%",
-          border: "none",
-          background: "transparent",
-          color: "#0d9488",
-          cursor: "pointer",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          transition: "all .2s",
-        }}
-        onMouseEnter={(e) => e.currentTarget.style.background = "#f0fdfa"}
-        onMouseLeave={(e) => e.currentTarget.style.background = "transparent"}
+        className="relative flex h-10 w-10 items-center justify-center rounded-full border-none bg-transparent text-teal-600 transition-all hover:bg-teal-50"
         title="Messages"
       >
         <MessageCircle size={20} />
         {unreadCount > 0 && (
-          <span style={{
-            position: "absolute",
-            top: 6,
-            right: 6,
-            minWidth: 18,
-            height: 18,
-            borderRadius: "50%",
-            background: "#0d9488",
-            color: "#fff",
-            fontSize: 10,
-            fontWeight: 700,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            padding: "0 4px",
-            boxShadow: "0 2px 6px rgba(13, 148, 136, 0.4)",
-          }}>
+          <span className="absolute right-1.5 top-1.5 flex h-[18px] min-w-[18px] items-center justify-center rounded-full bg-teal-600 px-1 text-[10px] font-bold text-white shadow-[0_2px_6px_rgba(13,148,136,0.4)]">
             {unreadCount > 9 ? "9+" : unreadCount}
           </span>
         )}

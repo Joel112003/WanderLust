@@ -13,7 +13,6 @@ const authH = () => authHeaders();
 
 const Styles = () => (
   <style>{`
-    @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400&family=Manrope:wght@300;400;500;600;700&display=swap');
     *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
     :root{
       --red:#C0392B; --red-d:#96281B; --red-l:#FDF0EF; --red-m:#E74C3C;
@@ -2218,6 +2217,15 @@ const Account = () => {
           });
         }
       } catch {}
+      const getActiveAlternatives = (alts = []) => {
+        const now = new Date();
+        return alts.filter(
+          (alt) =>
+            alt.status === "pending_user_response" &&
+            (!alt.expiresAt || new Date(alt.expiresAt) > now),
+        );
+      };
+
       await Promise.allSettled([
         axios
           .get(`${API_URL}/listings/user`, { headers: authH() })
@@ -2240,12 +2248,7 @@ const Account = () => {
           .then((r) => {
             const alts = r.data?.data || [];
 
-            const now = new Date();
-            const pendingAlts = alts.filter(
-              (alt) =>
-                alt.status === "pending_user_response" &&
-                new Date(alt.expiresAt) > now
-            );
+            const pendingAlts = getActiveAlternatives(alts);
             setAlternatives(pendingAlts);
             if (pendingAlts.length > 0) {
 
@@ -2272,7 +2275,7 @@ const Account = () => {
         const pendingAlts = alts.filter(
           (alt) =>
             alt.status === "pending_user_response" &&
-            new Date(alt.expiresAt) > now
+            (!alt.expiresAt || new Date(alt.expiresAt) > now)
         );
 
         if (pendingAlts.length > alternatives.length && pendingAlts.length > 0) {
@@ -2847,7 +2850,6 @@ const Account = () => {
         isOpen={altModalOpen}
         onClose={() => {
           setAltModalOpen(false);
-          setAlternatives([]);
         }}
         alternatives={alternatives}
         onAccept={(data) => {
@@ -2856,7 +2858,20 @@ const Account = () => {
             .get(`${API_URL}/bookings/my-bookings`, { headers: authH() })
             .then((r) => setBookings(Array.isArray(r.data) ? r.data : []));
 
-          setAlternatives([]);
+          axios
+            .get(`${API_URL}/api/alternative-bookings`, { headers: authH() })
+            .then((r) => {
+              const all = r.data?.data || [];
+              const now = new Date();
+              const active = all.filter(
+                (alt) =>
+                  alt.status === "pending_user_response" &&
+                  (!alt.expiresAt || new Date(alt.expiresAt) > now)
+              );
+              setAlternatives(active);
+            })
+            .catch(() => {});
+
           setAltModalOpen(false);
         }}
       />

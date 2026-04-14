@@ -187,7 +187,6 @@ const SearchResults = () => {
 };
 
 const CSS = `
-  @import url('https://fonts.googleapis.com/css2?family=Lora:wght@400;600;700&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap');
 
   @keyframes sr-fadeUp  { from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);} }
   @keyframes sr-shimmer { from{background-position:-400px 0;}to{background-position:400px 0;} }

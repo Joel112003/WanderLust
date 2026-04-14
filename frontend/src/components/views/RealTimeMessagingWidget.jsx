@@ -402,114 +402,51 @@ const RealTimeMessagingWidget = ({
 
   return (
     <>
-<motion.button
+      <motion.button
         onClick={() => setIsOpen(!isOpen)}
-        style={{
-          position: 'fixed',
-          bottom: 24,
-          right: 24,
-          width: 56,
-          height: 56,
-          borderRadius: '50%',
-          background: 'linear-gradient(135deg, #C0392B 0%, #E74C3C 100%)',
-          border: 'none',
-          color: 'white',
-          cursor: 'pointer',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          boxShadow: '0 6px 20px rgba(192, 57, 43, 0.4), 0 0 0 0 rgba(192, 57, 43, 0.4)',
-          zIndex: 1000,
-          animation: 'pulse 2s infinite'
-        }}
-        whileHover={{ scale: 1.1, boxShadow: '0 8px 24px rgba(192, 57, 43, 0.5)' }}
+        className="fixed bottom-6 right-6 z-[1000] flex h-14 w-14 items-center justify-center rounded-full border-none bg-gradient-to-br from-[#C0392B] to-[#E74C3C] text-white shadow-[0_6px_20px_rgba(192,57,43,0.4)] transition-transform duration-200"
+        whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.9 }}
         initial={{ scale: 0, rotate: -180 }}
         animate={{ scale: 1, rotate: 0 }}
         transition={{ type: 'spring', stiffness: 260, damping: 20 }}
       >
         <MessageCircle size={26} strokeWidth={2} />
-{isConnected ? (
+        {isConnected ? (
           <Circle
             size={12}
             fill="#22c55e"
             color="#22c55e"
-            style={{
-              position: 'absolute',
-              top: 6,
-              right: 6,
-              filter: 'drop-shadow(0 1px 2px rgba(0,0,0,0.2))'
-            }}
+            className="absolute right-1.5 top-1.5 drop-shadow-[0_1px_2px_rgba(0,0,0,0.2)]"
           />
         ) : (
           <Circle
             size={12}
             fill="#ef4444"
             color="#ef4444"
-            style={{
-              position: 'absolute',
-              top: 6,
-              right: 6,
-              filter: 'drop-shadow(0 1px 2px rgba(0,0,0,0.2))'
-            }}
+            className="absolute right-1.5 top-1.5 drop-shadow-[0_1px_2px_rgba(0,0,0,0.2)]"
           />
         )}
       </motion.button>
-<AnimatePresence>
+      <AnimatePresence>
         {isOpen && (
           <motion.div
             initial={{ opacity: 0, y: 20, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 20, scale: 0.95 }}
             transition={{ duration: 0.25, ease: "easeOut" }}
-            style={{
-              position: 'fixed',
-              bottom: 100,
-              right: 24,
-              width: 340,
-              maxHeight: 480,
-              background: 'white',
-              borderRadius: 20,
-              boxShadow: '0 12px 40px rgba(0,0,0,0.15), 0 0 0 1px rgba(0,0,0,0.05)',
-              display: 'flex',
-              flexDirection: 'column',
-              overflow: 'hidden',
-              zIndex: 1000
-            }}
+            className="fixed bottom-[100px] right-6 z-[1000] flex w-[340px] max-h-[480px] flex-col overflow-hidden rounded-[20px] bg-white shadow-[0_12px_40px_rgba(0,0,0,0.15),0_0_0_1px_rgba(0,0,0,0.05)]"
           >
-<div style={{
-              background: 'linear-gradient(135deg, #C0392B 0%, #E74C3C 100%)',
-              color: 'white',
-              padding: '14px 16px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-between'
-            }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                <div style={{
-                  width: 36,
-                  height: 36,
-                  borderRadius: '50%',
-                  background: 'rgba(255,255,255,0.25)',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  border: '2px solid rgba(255,255,255,0.3)'
-                }}>
+            <div className="flex items-center justify-between bg-gradient-to-br from-[#C0392B] to-[#E74C3C] px-4 py-3.5 text-white">
+              <div className="flex items-center gap-2.5">
+                <div className="flex h-9 w-9 items-center justify-center rounded-full border-2 border-white/30 bg-white/25">
                   <User size={18} />
                 </div>
                 <div>
-                  <div style={{ fontWeight: 600, fontSize: 15, letterSpacing: '-0.01em' }}>
+                  <div className="text-[15px] font-semibold tracking-[-0.01em]">
                     {recipientName}
                   </div>
-                  <div style={{
-                    fontSize: 11,
-                    opacity: 0.9,
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: 4,
-                    marginTop: 2
-                  }}>
+                  <div className="mt-0.5 flex items-center gap-1 text-[11px] opacity-90">
                     {isConnected ? (
                       <>
                         <Circle size={6} fill="#22c55e" color="#22c55e" />
@@ -526,75 +463,28 @@ const RealTimeMessagingWidget = ({
               </div>
               <button
                 onClick={() => setIsOpen(false)}
-                style={{
-                  background: 'rgba(255,255,255,0.2)',
-                  border: 'none',
-                  color: 'white',
-                  width: 28,
-                  height: 28,
-                  borderRadius: '50%',
-                  cursor: 'pointer',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  transition: 'all 0.2s'
-                }}
-                onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(255,255,255,0.3)'}
-                onMouseLeave={(e) => e.currentTarget.style.background = 'rgba(255,255,255,0.2)'}
+                className="flex h-7 w-7 items-center justify-center rounded-full border-none bg-white/20 text-white transition-colors hover:bg-white/30"
               >
                 <X size={16} />
               </button>
             </div>
-<div style={{
-              flex: 1,
-              overflowY: 'auto',
-              overflowX: 'hidden',
-              padding: '16px 14px',
-              background: 'linear-gradient(to bottom, #f8f9fa 0%, #ffffff 100%)',
-              maxHeight: 360,
-              scrollBehavior: 'smooth'
-            }}>
+            <div className="max-h-[360px] flex-1 overflow-x-hidden overflow-y-auto bg-gradient-to-b from-gray-50 to-white px-3.5 py-4">
               {loading ? (
-                <div style={{
-                  display: 'flex',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  height: '100%',
-                  minHeight: 200
-                }}>
+                <div className="flex min-h-[200px] h-full items-center justify-center">
                   <Loader2 size={28} className="animate-spin" color="#C0392B" />
                 </div>
               ) : messages.length === 0 ? (
-                <div style={{
-                  textAlign: 'center',
-                  color: '#6b7280',
-                  padding: '50px 20px',
-                  minHeight: 200,
-                  display: 'flex',
-                  flexDirection: 'column',
-                  justifyContent: 'center'
-                }}>
-                  <MessageCircle size={42} style={{ margin: '0 auto 14px', opacity: 0.25 }} />
-                  <p style={{
-                    margin: 0,
-                    fontSize: 15,
-                    fontWeight: 600,
-                    color: '#374151',
-                    marginBottom: 6
-                  }}>
+                <div className="flex min-h-[200px] flex-col justify-center px-5 py-[50px] text-center text-gray-500">
+                  <MessageCircle size={42} className="mx-auto mb-3.5 opacity-25" />
+                  <p className="mb-1.5 text-[15px] font-semibold text-gray-700">
                     No messages yet
                   </p>
-                  <p style={{
-                    fontSize: 13,
-                    margin: 0,
-                    color: '#9ca3af',
-                    lineHeight: 1.5
-                  }}>
+                  <p className="m-0 text-[13px] leading-[1.5] text-gray-400">
                     Say hi to {recipientName}!
                   </p>
                 </div>
               ) : (
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+                <div className="flex flex-col gap-2.5">
                   {messages.map((msg, index) => {
                     const isOwn = isOwnMessage(msg);
                     return (
@@ -603,46 +493,19 @@ const RealTimeMessagingWidget = ({
                         initial={{ opacity: 0, y: 12, scale: 0.95 }}
                         animate={{ opacity: 1, y: 0, scale: 1 }}
                         transition={{ duration: 0.3, ease: "easeOut" }}
-                        style={{
-                          display: 'flex',
-                          justifyContent: isOwn ? 'flex-end' : 'flex-start',
-                          paddingLeft: isOwn ? 30 : 0,
-                          paddingRight: isOwn ? 0 : 30
-                        }}
+                        className={`flex ${isOwn ? 'justify-end pl-[30px]' : 'justify-start pr-[30px]'}`}
                       >
-                        <div style={{
-                          maxWidth: '85%',
-                          background: isOwn
-                            ? 'linear-gradient(135deg, #C0392B 0%, #E74C3C 100%)'
-                            : '#ffffff',
-                          color: isOwn ? '#ffffff' : '#1f2937',
-                          padding: '10px 13px',
-                          borderRadius: 18,
-                          borderTopRightRadius: isOwn ? 4 : 18,
-                          borderTopLeftRadius: isOwn ? 18 : 4,
-                          boxShadow: isOwn
-                            ? '0 2px 8px rgba(192, 57, 43, 0.25)'
-                            : '0 1px 3px rgba(0,0,0,0.08)',
-                          border: isOwn ? 'none' : '1px solid #f3f4f6'
-                        }}>
-                          <div style={{
-                            wordWrap: 'break-word',
-                            fontSize: 14,
-                            lineHeight: 1.5,
-                            letterSpacing: '-0.01em'
-                          }}>
+                        <div
+                          className={`max-w-[85%] px-[13px] py-[10px] ${
+                            isOwn
+                              ? 'rounded-[18px] rounded-tr-[4px] border-none bg-gradient-to-br from-[#C0392B] to-[#E74C3C] text-white shadow-[0_2px_8px_rgba(192,57,43,0.25)]'
+                              : 'rounded-[18px] rounded-tl-[4px] border border-gray-100 bg-white text-gray-800 shadow-[0_1px_3px_rgba(0,0,0,0.08)]'
+                          }`}
+                        >
+                          <div className="break-words text-sm leading-[1.5] tracking-[-0.01em]">
                             {msg.message}
                           </div>
-                          <div style={{
-                            fontSize: 10,
-                            marginTop: 5,
-                            opacity: isOwn ? 0.85 : 0.6,
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'flex-end',
-                            gap: 4,
-                            letterSpacing: '0.01em'
-                          }}>
+                          <div className={`mt-1.5 flex items-center justify-end gap-1 text-[10px] tracking-[0.01em] ${isOwn ? 'opacity-85' : 'opacity-60'}`}>
                             {formatTime(msg.createdAt)}
                             {isOwn && msg.isRead && <CheckCheck size={12} />}
                           </div>
@@ -655,23 +518,23 @@ const RealTimeMessagingWidget = ({
                       initial={{ opacity: 0, y: 10 }}
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0, y: 10 }}
-                      style={{
-                        display: 'flex',
-                        gap: 3,
-                        padding: '10px 12px',
-                        background: '#ffffff',
-                        border: '1px solid #f3f4f6',
-                        borderRadius: 18,
-                        borderTopLeftRadius: 4,
-                        width: 'fit-content',
-                        boxShadow: '0 1px 3px rgba(0,0,0,0.08)',
-                        alignItems: 'center',
-                        height: 36
-                      }}
+                      className="flex h-9 w-fit items-center gap-1 rounded-[18px] rounded-tl-[4px] border border-gray-100 bg-white px-3 py-2.5 shadow-[0_1px_3px_rgba(0,0,0,0.08)]"
                     >
-                      <span className="typing-dot" />
-                      <span className="typing-dot" style={{ animationDelay: '0.2s' }} />
-                      <span className="typing-dot" style={{ animationDelay: '0.4s' }} />
+                      <motion.span
+                        className="h-[7px] w-[7px] rounded-full bg-gray-400"
+                        animate={{ y: [0, -6, 0], opacity: [0.6, 1, 0.6] }}
+                        transition={{ duration: 1.4, repeat: Infinity, ease: 'easeInOut' }}
+                      />
+                      <motion.span
+                        className="h-[7px] w-[7px] rounded-full bg-gray-400"
+                        animate={{ y: [0, -6, 0], opacity: [0.6, 1, 0.6] }}
+                        transition={{ duration: 1.4, repeat: Infinity, ease: 'easeInOut', delay: 0.2 }}
+                      />
+                      <motion.span
+                        className="h-[7px] w-[7px] rounded-full bg-gray-400"
+                        animate={{ y: [0, -6, 0], opacity: [0.6, 1, 0.6] }}
+                        transition={{ duration: 1.4, repeat: Infinity, ease: 'easeInOut', delay: 0.4 }}
+                      />
                     </motion.div>
                   )}
 
@@ -679,16 +542,9 @@ const RealTimeMessagingWidget = ({
                 </div>
               )}
             </div>
-<form
+            <form
               onSubmit={handleSendMessage}
-              style={{
-                padding: '12px 14px',
-                background: '#ffffff',
-                borderTop: '1px solid #f0f0f0',
-                display: 'flex',
-                gap: 8,
-                alignItems: 'center'
-              }}
+              className="flex items-center gap-2 border-t border-gray-100 bg-white px-3.5 py-3"
             >
               <input
                 ref={inputRef}
@@ -700,56 +556,16 @@ const RealTimeMessagingWidget = ({
                 }}
                 placeholder={isConnected ? "Message..." : "Message (offline mode)..."}
                 disabled={sending}
-                style={{
-                  flex: 1,
-                  padding: '10px 14px',
-                  border: '1px solid #e5e7eb',
-                  borderRadius: 20,
-                  outline: 'none',
-                  fontSize: 13,
-                  transition: 'all 0.2s',
-                  background: '#fafafa',
-                  letterSpacing: '-0.01em'
-                }}
-                onFocus={(e) => {
-                  e.target.style.borderColor = '#C0392B';
-                  e.target.style.background = '#ffffff';
-                }}
-                onBlur={(e) => {
-                  e.target.style.borderColor = '#e5e7eb';
-                  e.target.style.background = '#fafafa';
-                }}
+                className="flex-1 rounded-[20px] border border-gray-200 bg-white px-3.5 py-2.5 text-[13px] tracking-[-0.01em] outline-none transition-all focus:border-[#C0392B]"
               />
               <button
                 type="submit"
                 disabled={!newMessage.trim() || sending}
-                style={{
-                  width: 36,
-                  height: 36,
-                  borderRadius: '50%',
-                  border: 'none',
-                  background: (!newMessage.trim() || sending)
-                    ? '#e5e7eb'
-                    : 'linear-gradient(135deg, #C0392B 0%, #E74C3C 100%)',
-                  color: 'white',
-                  cursor: (!newMessage.trim() || sending) ? 'not-allowed' : 'pointer',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  transition: 'all 0.2s',
-                  boxShadow: (!newMessage.trim() || sending)
-                    ? 'none'
-                    : '0 2px 8px rgba(192, 57, 43, 0.3)',
-                  flexShrink: 0
-                }}
-                onMouseEnter={(e) => {
-                  if (newMessage.trim() && !sending) {
-                    e.currentTarget.style.transform = 'scale(1.05)';
-                  }
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.transform = 'scale(1)';
-                }}
+                className={`flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full border-none text-white transition-transform ${
+                  !newMessage.trim() || sending
+                    ? 'cursor-not-allowed bg-gray-200 shadow-none'
+                    : 'cursor-pointer bg-gradient-to-br from-[#C0392B] to-[#E74C3C] shadow-[0_2px_8px_rgba(192,57,43,0.3)] hover:scale-105'
+                }`}
               >
                 {sending ? (
                   <Loader2 size={16} className="animate-spin" />
@@ -761,51 +577,6 @@ const RealTimeMessagingWidget = ({
           </motion.div>
         )}
       </AnimatePresence>
-<style>{`
-        .typing-dot {
-          width: 7px;
-          height: 7px;
-          borderRadius: 50%;
-          background: #9ca3af;
-          animation: typing 1.4s ease-in-out infinite;
-        }
-
-        @keyframes typing {
-          0%, 60%, 100% {
-            transform: translateY(0);
-            opacity: 0.6;
-          }
-          30% {
-            transform: translateY(-8px);
-            opacity: 1;
-          }
-        }
-
-        @keyframes pulse {
-          0% {
-            box-shadow: 0 6px 20px rgba(192, 57, 43, 0.4), 0 0 0 0 rgba(192, 57, 43, 0.4);
-          }
-          50% {
-            box-shadow: 0 6px 20px rgba(192, 57, 43, 0.4), 0 0 0 8px rgba(192, 57, 43, 0);
-          }
-          100% {
-            box-shadow: 0 6px 20px rgba(192, 57, 43, 0.4), 0 0 0 0 rgba(192, 57, 43, 0);
-          }
-        }
-
-        .animate-spin {
-          animation: spin 1s linear infinite;
-        }
-
-        @keyframes spin {
-          from {
-            transform: rotate(0deg);
-          }
-          to {
-            transform: rotate(360deg);
-          }
-        }
-      `}</style>
     </>
   );
 };

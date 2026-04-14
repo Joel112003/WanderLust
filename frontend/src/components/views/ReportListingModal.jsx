@@ -175,19 +175,7 @@ const ReportListingModal = ({
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
-        style={{
-          position: 'fixed',
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-          background: 'rgba(0, 0, 0, 0.6)',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          zIndex: 9999,
-          padding: 20
-        }}
+        className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/60 p-5"
         onClick={onClose}
       >
         <motion.div
@@ -195,126 +183,65 @@ const ReportListingModal = ({
           animate={{ scale: 1, opacity: 1 }}
           exit={{ scale: 0.9, opacity: 0 }}
           onClick={(e) => e.stopPropagation()}
-          style={{
-            background: '#fff',
-            borderRadius: 16,
-            width: '100%',
-            maxWidth: 700,
-            maxHeight: '90vh',
-            overflow: 'auto',
-            boxShadow: '0 20px 60px rgba(0,0,0,0.3)'
-          }}
+          className="max-h-[90vh] w-full max-w-[700px] overflow-auto rounded-2xl bg-white shadow-[0_20px_60px_rgba(0,0,0,0.3)]"
         >
-<div style={{
-            padding: '24px',
-            borderBottom: '1px solid #e5e7eb',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            background: 'linear-gradient(135deg, #fee2e2 0%, #fef3c7 100%)'
-          }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+          <div className="flex items-center justify-between border-b border-gray-200 bg-gradient-to-br from-red-100 to-amber-100 p-6">
+            <div className="flex items-center gap-3">
               <AlertTriangle size={24} color="#dc2626" />
               <div>
-                <h2 style={{ margin: 0, fontSize: 20, fontWeight: 600 }}>
+                <h2 className="m-0 text-xl font-semibold">
                   Report Listing Issue
                 </h2>
-                <p style={{ margin: '4px 0 0 0', fontSize: 13, color: '#6b7280' }}>
+                <p className="mb-0 mt-1 text-[13px] text-gray-500">
                   Help us resolve this problem quickly
                 </p>
               </div>
             </div>
             <button
               onClick={onClose}
-              style={{
-                background: '#fff',
-                border: 'none',
-                padding: 8,
-                cursor: 'pointer',
-                borderRadius: 8,
-                display: 'flex',
-                boxShadow: '0 1px 3px rgba(0,0,0,0.1)'
-              }}
+              className="flex rounded-lg bg-white p-2 shadow-sm transition-colors hover:bg-gray-50"
             >
               <X size={20} />
             </button>
           </div>
-<div style={{ padding: 24 }}>
-<div style={{
-              background: '#f9fafb',
-              padding: 16,
-              borderRadius: 12,
-              marginBottom: 20,
-              border: '1px solid #e5e7eb'
-            }}>
-              <div style={{ display: 'flex', alignItems: 'start', gap: 12 }}>
+          <div className="p-6">
+            <div className="mb-5 rounded-xl border border-gray-200 bg-gray-50 p-4">
+              <div className="flex items-start gap-3">
                 <Home size={20} color="#0d9488" />
-                <div style={{ flex: 1 }}>
-                  <h3 style={{ margin: '0 0 4px 0', fontSize: 16, fontWeight: 600 }}>
+                <div className="flex-1">
+                  <h3 className="mb-1 mt-0 text-base font-semibold">
                     {listing?.title}
                   </h3>
-                  <p style={{
-                    margin: 0,
-                    fontSize: 14,
-                    color: '#6b7280',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: 4
-                  }}>
+                  <p className="m-0 flex items-center gap-1 text-sm text-gray-500">
                     <MapPin size={14} />
                     {listing?.location || listing?.city}
                   </p>
                   {booking && (
-                    <p style={{ margin: '8px 0 0 0', fontSize: 13, color: '#6b7280' }}>
+                    <p className="mb-0 mt-2 text-[13px] text-gray-500">
                       Booking ID: {booking._id}
                     </p>
                   )}
                 </div>
               </div>
             </div>
-<div style={{ marginBottom: 20 }}>
-              <label style={{
-                display: 'block',
-                fontSize: 14,
-                fontWeight: 600,
-                marginBottom: 12
-              }}>
+            <div className="mb-5">
+              <label className="mb-3 block text-sm font-semibold">
                 What's the problem? *
               </label>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
+              <div className="grid grid-cols-2 gap-2.5">
                 {reportTypes.map(type => (
                   <label
                     key={type.value}
-                    style={{
-                      padding: 14,
-                      border: `2px solid ${
-                        reportType === type.value
-                          ? type.severity === 'critical' ? '#ef4444' : '#0d9488'
-                          : '#e5e7eb'
-                      }`,
-                      borderRadius: 10,
-                      cursor: 'pointer',
-                      background: reportType === type.value
-                        ? type.severity === 'critical' ? '#fef2f2' : '#f0fdfa'
-                        : '#fff',
-                      transition: 'all 0.2s',
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: 10
-                    }}
+                    className={`flex cursor-pointer items-center gap-2.5 rounded-[10px] border-2 p-3.5 transition-all ${reportType === type.value ? (type.severity === 'critical' ? 'border-red-500 bg-red-50' : 'border-teal-600 bg-teal-50') : 'border-gray-200 bg-white'}`}
                   >
                     <input
                       type="radio"
                       value={type.value}
                       checked={reportType === type.value}
                       onChange={(e) => setReportType(e.target.value)}
-                      style={{ width: 18, height: 18 }}
+                      className="h-[18px] w-[18px]"
                     />
-                    <span style={{
-                      fontSize: 13,
-                      fontWeight: 500,
-                      flex: 1
-                    }}>
+                    <span className="flex-1 text-[13px] font-medium">
                       {type.label}
                     </span>
                     {type.severity === 'critical' && (
@@ -326,49 +253,25 @@ const ReportListingModal = ({
             </div>
 
             {/* Description */}
-            <div style={{ marginBottom: 20 }}>
-              <label style={{
-                display: 'block',
-                fontSize: 14,
-                fontWeight: 600,
-                marginBottom: 8
-              }}>
+            <div className="mb-5">
+              <label className="mb-2 block text-sm font-semibold">
                 Describe the Issue *
               </label>
               <textarea
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
                 placeholder="Please provide detailed information about the problem. Include what you expected vs. what you found..."
-                style={{
-                  width: '100%',
-                  minHeight: 120,
-                  padding: 12,
-                  border: '1px solid #d1d5db',
-                  borderRadius: 8,
-                  fontSize: 14,
-                  fontFamily: 'inherit',
-                  resize: 'vertical'
-                }}
+                className="min-h-[120px] w-full resize-y rounded-lg border border-gray-300 p-3 text-sm"
                 maxLength={1000}
               />
-              <p style={{
-                margin: '4px 0 0 0',
-                fontSize: 12,
-                color: '#6b7280',
-                textAlign: 'right'
-              }}>
+              <p className="mb-0 mt-1 text-right text-xs text-gray-500">
                 {description.length}/1000
               </p>
             </div>
 
             {/* Photo Upload */}
-            <div style={{ marginBottom: 20 }}>
-              <label style={{
-                display: 'block',
-                fontSize: 14,
-                fontWeight: 600,
-                marginBottom: 8
-              }}>
+            <div className="mb-5">
+              <label className="mb-2 block text-sm font-semibold">
                 Evidence Photos * ({photos.length}/10)
               </label>
 
@@ -377,50 +280,28 @@ const ReportListingModal = ({
                 accept="image/*"
                 multiple
                 onChange={handlePhotoUpload}
-                style={{ display: 'none' }}
+                className="hidden"
                 id="photo-upload"
                 disabled={uploading || photos.length >= 10}
               />
 
               <label
                 htmlFor="photo-upload"
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  gap: 12,
-                  padding: 24,
-                  border: '2px dashed #d1d5db',
-                  borderRadius: 12,
-                  cursor: uploading || photos.length >= 10 ? 'not-allowed' : 'pointer',
-                  background: '#fafafa',
-                  transition: 'all 0.2s',
-                  opacity: uploading || photos.length >= 10 ? 0.5 : 1
-                }}
-                onMouseEnter={(e) => {
-                  if (photos.length < 10 && !uploading) {
-                    e.currentTarget.style.borderColor = '#0d9488';
-                    e.currentTarget.style.background = '#f0fdfa';
-                  }
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.borderColor = '#d1d5db';
-                  e.currentTarget.style.background = '#fafafa';
-                }}
+                className={`flex items-center justify-center gap-3 rounded-xl border-2 border-dashed border-gray-300 bg-gray-50 p-6 transition-all ${uploading || photos.length >= 10 ? 'cursor-not-allowed opacity-50' : 'cursor-pointer hover:border-teal-600 hover:bg-teal-50'}`}
               >
                 {uploading ? (
                   <>
-                    <Loader2 size={24} style={{ animation: 'spin 1s linear infinite' }} />
-                    <span style={{ fontSize: 14, fontWeight: 500 }}>Processing photos...</span>
+                    <Loader2 size={24} className="animate-spin" />
+                    <span className="text-sm font-medium">Processing photos...</span>
                   </>
                 ) : (
                   <>
                     <Camera size={24} color="#0d9488" />
                     <div>
-                      <p style={{ margin: 0, fontSize: 14, fontWeight: 500 }}>
+                      <p className="m-0 text-sm font-medium">
                         Click to upload photos
                       </p>
-                      <p style={{ margin: '4px 0 0 0', fontSize: 12, color: '#6b7280' }}>
+                      <p className="mb-0 mt-1 text-xs text-gray-500">
                         Take photos of the issue (max 5MB each)
                       </p>
                     </div>
@@ -430,64 +311,24 @@ const ReportListingModal = ({
 
               {/* Photo Preview Grid */}
               {photos.length > 0 && (
-                <div style={{
-                  display: 'grid',
-                  gridTemplateColumns: 'repeat(auto-fill, minmax(120px, 1fr))',
-                  gap: 12,
-                  marginTop: 16
-                }}>
+                <div className="mt-4 grid grid-cols-[repeat(auto-fill,minmax(120px,1fr))] gap-3">
                   {photos.map((photo, index) => (
                     <div
                       key={index}
-                      style={{
-                        position: 'relative',
-                        paddingTop: '75%',
-                        borderRadius: 8,
-                        overflow: 'hidden',
-                        border: '1px solid #e5e7eb'
-                      }}
+                      className="relative overflow-hidden rounded-lg border border-gray-200 pt-[75%]"
                     >
                       <img
                         src={photo.preview}
                         alt={`Evidence ${index + 1}`}
-                        style={{
-                          position: 'absolute',
-                          top: 0,
-                          left: 0,
-                          width: '100%',
-                          height: '100%',
-                          objectFit: 'cover'
-                        }}
+                        className="absolute inset-0 h-full w-full object-cover"
                       />
                       <button
                         onClick={() => removePhoto(index)}
-                        style={{
-                          position: 'absolute',
-                          top: 8,
-                          right: 8,
-                          background: 'rgba(0, 0, 0, 0.7)',
-                          border: 'none',
-                          borderRadius: 6,
-                          padding: 6,
-                          cursor: 'pointer',
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center'
-                        }}
+                        className="absolute right-2 top-2 flex items-center justify-center rounded-md bg-black/70 p-1.5"
                       >
                         <Trash2 size={14} color="#fff" />
                       </button>
-                      <div style={{
-                        position: 'absolute',
-                        bottom: 0,
-                        left: 0,
-                        right: 0,
-                        background: 'rgba(0, 0, 0, 0.6)',
-                        padding: '4px 8px',
-                        fontSize: 11,
-                        color: '#fff',
-                        textAlign: 'center'
-                      }}>
+                      <div className="absolute inset-x-0 bottom-0 bg-black/60 px-2 py-1 text-center text-[11px] text-white">
                         {index + 1}
                       </div>
                     </div>
@@ -498,35 +339,19 @@ const ReportListingModal = ({
 
             {/* Rebooking Option */}
             {isCriticalIssue && (
-              <div style={{
-                background: '#f0fdfa',
-                border: '1px solid #14b8a6',
-                borderRadius: 12,
-                padding: 16,
-                marginBottom: 20
-              }}>
-                <label style={{
-                  display: 'flex',
-                  alignItems: 'start',
-                  gap: 12,
-                  cursor: 'pointer'
-                }}>
+              <div className="mb-5 rounded-xl border border-teal-500 bg-teal-50 p-4">
+                <label className="flex cursor-pointer items-start gap-3">
                   <input
                     type="checkbox"
                     checked={requestRebooking}
                     onChange={(e) => setRequestRebooking(e.target.checked)}
-                    style={{ width: 18, height: 18, marginTop: 2 }}
+                    className="mt-0.5 h-[18px] w-[18px]"
                   />
                   <div>
-                    <p style={{
-                      margin: '0 0 4px 0',
-                      fontSize: 14,
-                      fontWeight: 600,
-                      color: '#115e59'
-                    }}>
+                    <p className="mb-1 mt-0 text-sm font-semibold text-teal-900">
                       🏠 Request Automatic Rebooking
                     </p>
-                    <p style={{ margin: 0, fontSize: 13, color: '#0f766e' }}>
+                    <p className="m-0 text-[13px] text-teal-700">
                       We'll immediately find you alternative accommodation matching your
                       original booking criteria (price, location, dates) at no extra cost.
                     </p>
@@ -534,21 +359,11 @@ const ReportListingModal = ({
                 </label>
               </div>
             )}
-<div style={{ display: 'flex', gap: 12 }}>
+            <div className="flex gap-3">
               <button
                 onClick={onClose}
                 disabled={submitting}
-                style={{
-                  flex: 1,
-                  padding: '14px 24px',
-                  border: '1px solid #d1d5db',
-                  borderRadius: 10,
-                  background: '#fff',
-                  fontSize: 14,
-                  fontWeight: 600,
-                  cursor: submitting ? 'not-allowed' : 'pointer',
-                  opacity: submitting ? 0.5 : 1
-                }}
+                className="flex-1 rounded-[10px] border border-gray-300 bg-white px-6 py-3.5 text-sm font-semibold disabled:cursor-not-allowed disabled:opacity-50"
               >
                 Cancel
               </button>
@@ -556,30 +371,11 @@ const ReportListingModal = ({
               <button
                 onClick={handleSubmit}
                 disabled={submitting || !reportType || !description.trim() || photos.length === 0}
-                style={{
-                  flex: 2,
-                  padding: '14px 24px',
-                  border: 'none',
-                  borderRadius: 10,
-                  background: (submitting || !reportType || !description.trim() || photos.length === 0)
-                    ? '#d1d5db'
-                    : 'linear-gradient(135deg, #0d9488 0%, #14b8a6 100%)',
-                  color: '#fff',
-                  fontSize: 14,
-                  fontWeight: 600,
-                  cursor: (submitting || !reportType || !description.trim() || photos.length === 0)
-                    ? 'not-allowed'
-                    : 'pointer',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  gap: 8,
-                  boxShadow: '0 4px 12px rgba(13, 148, 136, 0.3)'
-                }}
+                className={`flex flex-[2] items-center justify-center gap-2 rounded-[10px] px-6 py-3.5 text-sm font-semibold text-white shadow-[0_4px_12px_rgba(13,148,136,0.3)] ${(submitting || !reportType || !description.trim() || photos.length === 0) ? 'cursor-not-allowed bg-gray-300' : 'bg-gradient-to-br from-teal-600 to-teal-500'}`}
               >
                 {submitting ? (
                   <>
-                    <Loader2 size={18} style={{ animation: 'spin 1s linear infinite' }} />
+                    <Loader2 size={18} className="animate-spin" />
                     Submitting Report...
                   </>
                 ) : (
@@ -590,12 +386,7 @@ const ReportListingModal = ({
                 )}
               </button>
             </div>
-<p style={{
-              margin: '16px 0 0 0',
-              fontSize: 12,
-              color: '#6b7280',
-              textAlign: 'center'
-            }}>
+            <p className="mb-0 mt-4 text-center text-xs text-gray-500">
               Our support team will review your report within 15 minutes and take appropriate action.
             </p>
           </div>

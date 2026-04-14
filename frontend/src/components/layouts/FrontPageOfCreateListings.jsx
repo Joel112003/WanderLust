@@ -63,7 +63,6 @@ export default function FrontPageOfCreateListings() {
 
     <div style={{ fontFamily: "'Cormorant Garamond', Georgia, serif", background: '#FFFFFF', minHeight: '100vh', overflowX: 'hidden' }}>
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400;1,600;1,700&family=Outfit:wght@300;400;500;600;700&display=swap');
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
         :root {
           --ink: #0A0A08;

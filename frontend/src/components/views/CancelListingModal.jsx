@@ -98,19 +98,7 @@ const CancelListingModal = ({
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
-        style={{
-          position: 'fixed',
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-          background: 'rgba(0, 0, 0, 0.6)',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          zIndex: 9999,
-          padding: 20
-        }}
+        className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/60 p-5"
         onClick={onClose}
       >
         <motion.div
@@ -118,106 +106,57 @@ const CancelListingModal = ({
           animate={{ scale: 1, opacity: 1 }}
           exit={{ scale: 0.9, opacity: 0 }}
           onClick={(e) => e.stopPropagation()}
-          style={{
-            background: '#fff',
-            borderRadius: 16,
-            width: '100%',
-            maxWidth: 600,
-            maxHeight: '90vh',
-            overflow: 'auto',
-            boxShadow: '0 20px 60px rgba(0,0,0,0.3)'
-          }}
+          className="max-h-[90vh] w-full max-w-[600px] overflow-auto rounded-2xl bg-white shadow-[0_20px_60px_rgba(0,0,0,0.3)]"
         >
-<div style={{
-            padding: '24px',
-            borderBottom: '1px solid #e5e7eb',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between'
-          }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+          <div className="flex items-center justify-between border-b border-gray-200 p-6">
+            <div className="flex items-center gap-3">
               <AlertTriangle size={24} color="#ef4444" />
-              <h2 style={{ margin: 0, fontSize: 20, fontWeight: 600 }}>
+              <h2 className="m-0 text-xl font-semibold">
                 Cancel Listing
               </h2>
             </div>
             <button
               onClick={onClose}
-              style={{
-                background: 'none',
-                border: 'none',
-                padding: 8,
-                cursor: 'pointer',
-                borderRadius: 8,
-                display: 'flex'
-              }}
+              className="flex rounded-lg p-2 transition-colors hover:bg-gray-100"
             >
               <X size={20} />
             </button>
           </div>
-<div style={{ padding: 24 }}>
-<div style={{
-              background: '#f9fafb',
-              padding: 16,
-              borderRadius: 12,
-              marginBottom: 20
-            }}>
-              <h3 style={{ margin: '0 0 8px 0', fontSize: 16 }}>
+          <div className="p-6">
+            <div className="mb-5 rounded-xl bg-gray-50 p-4">
+              <h3 className="mb-2 mt-0 text-base">
                 {listing?.title}
               </h3>
-              <p style={{ margin: 0, fontSize: 14, color: '#6b7280' }}>
+              <p className="m-0 text-sm text-gray-500">
                 {listing?.location || listing?.city}
               </p>
             </div>
 {affectedBookings.length > 0 && (
-              <div style={{
-                background: hasLastMinuteBookings ? '#fef2f2' : '#fffbeb',
-                border: `1px solid ${hasLastMinuteBookings ? '#fecaca' : '#fde68a'}`,
-                borderRadius: 12,
-                padding: 16,
-                marginBottom: 20
-              }}>
-                <div style={{ display: 'flex', alignItems: 'start', gap: 12 }}>
+              <div
+                className={`mb-5 rounded-xl border p-4 ${hasLastMinuteBookings ? 'border-red-200 bg-red-50' : 'border-amber-200 bg-amber-50'}`}
+              >
+                <div className="flex items-start gap-3">
                   <AlertTriangle
                     size={20}
                     color={hasLastMinuteBookings ? '#ef4444' : '#f59e0b'}
                   />
                   <div>
-                    <h4 style={{
-                      margin: '0 0 8px 0',
-                      fontSize: 14,
-                      fontWeight: 600,
-                      color: hasLastMinuteBookings ? '#991b1b' : '#92400e'
-                    }}>
+                    <h4
+                      className={`mb-2 mt-0 text-sm font-semibold ${hasLastMinuteBookings ? 'text-red-800' : 'text-amber-800'}`}
+                    >
                       {affectedBookings.length} Active Booking(s) Will Be Affected
                     </h4>
 
                     {lastMinuteBookings.length > 0 && (
-                      <p style={{
-                        margin: '0 0 8px 0',
-                        fontSize: 13,
-                        color: '#991b1b'
-                      }}>
-                        <Clock size={14} style={{
-                          display: 'inline',
-                          verticalAlign: 'middle',
-                          marginRight: 4
-                        }} />
+                      <p className="mb-2 mt-0 text-[13px] text-red-800">
+                        <Clock size={14} className="mr-1 inline align-middle" />
                         {lastMinuteBookings.length} booking(s) within 7 days (Last minute)
                       </p>
                     )}
 
                     {regularBookings.length > 0 && (
-                      <p style={{
-                        margin: 0,
-                        fontSize: 13,
-                        color: '#92400e'
-                      }}>
-                        <Calendar size={14} style={{
-                          display: 'inline',
-                          verticalAlign: 'middle',
-                          marginRight: 4
-                        }} />
+                      <p className="m-0 text-[13px] text-amber-800">
+                        <Calendar size={14} className="mr-1 inline align-middle" />
                         {regularBookings.length} booking(s) with advance notice
                       </p>
                     )}
@@ -225,151 +164,91 @@ const CancelListingModal = ({
                 </div>
               </div>
             )}
-<div style={{ marginBottom: 20 }}>
-              <label style={{
-                display: 'block',
-                fontSize: 14,
-                fontWeight: 600,
-                marginBottom: 8
-              }}>
+            <div className="mb-5">
+              <label className="mb-2 block text-sm font-semibold">
                 Cancellation Type
               </label>
-              <div style={{ display: 'flex', gap: 12 }}>
-                <label style={{
-                  flex: 1,
-                  padding: 12,
-                  border: `2px solid ${cancelType === 'permanent' ? '#0d9488' : '#e5e7eb'}`,
-                  borderRadius: 8,
-                  cursor: 'pointer',
-                  background: cancelType === 'permanent' ? '#f0fdfa' : '#fff'
-                }}>
+              <div className="flex gap-3">
+                <label
+                  className={`flex-1 cursor-pointer rounded-lg border-2 p-3 ${cancelType === 'permanent' ? 'border-teal-600 bg-teal-50' : 'border-gray-200 bg-white'}`}
+                >
                   <input
                     type="radio"
                     value="permanent"
                     checked={cancelType === 'permanent'}
                     onChange={(e) => setCancelType(e.target.value)}
-                    style={{ marginRight: 8 }}
+                    className="mr-2"
                   />
-                  <span style={{ fontSize: 14, fontWeight: 500 }}>
+                  <span className="text-sm font-medium">
                     Permanent (Remove listing)
                   </span>
                 </label>
 
-                <label style={{
-                  flex: 1,
-                  padding: 12,
-                  border: `2px solid ${cancelType === 'temporary' ? '#0d9488' : '#e5e7eb'}`,
-                  borderRadius: 8,
-                  cursor: 'pointer',
-                  background: cancelType === 'temporary' ? '#f0fdfa' : '#fff'
-                }}>
+                <label
+                  className={`flex-1 cursor-pointer rounded-lg border-2 p-3 ${cancelType === 'temporary' ? 'border-teal-600 bg-teal-50' : 'border-gray-200 bg-white'}`}
+                >
                   <input
                     type="radio"
                     value="temporary"
                     checked={cancelType === 'temporary'}
                     onChange={(e) => setCancelType(e.target.value)}
-                    style={{ marginRight: 8 }}
+                    className="mr-2"
                   />
-                  <span style={{ fontSize: 14, fontWeight: 500 }}>
+                  <span className="text-sm font-medium">
                     Temporary (Just bookings)
                   </span>
                 </label>
               </div>
             </div>
-<div style={{ marginBottom: 20 }}>
-              <label style={{
-                display: 'block',
-                fontSize: 14,
-                fontWeight: 600,
-                marginBottom: 8
-              }}>
+            <div className="mb-5">
+              <label className="mb-2 block text-sm font-semibold">
                 Reason for Cancellation *
               </label>
               <textarea
                 value={reason}
                 onChange={(e) => setReason(e.target.value)}
                 placeholder="Please explain why you need to cancel. This will be shared with affected guests..."
-                style={{
-                  width: '100%',
-                  minHeight: 100,
-                  padding: 12,
-                  border: '1px solid #d1d5db',
-                  borderRadius: 8,
-                  fontSize: 14,
-                  fontFamily: 'inherit',
-                  resize: 'vertical'
-                }}
+                className="min-h-[100px] w-full resize-y rounded-lg border border-gray-300 p-3 text-sm"
                 maxLength={500}
               />
-              <p style={{
-                margin: '4px 0 0 0',
-                fontSize: 12,
-                color: '#6b7280',
-                textAlign: 'right'
-              }}>
+              <p className="mb-0 mt-1 text-right text-xs text-gray-500">
                 {reason.length}/500
               </p>
             </div>
 {affectedBookings.length > 0 && (
-              <div style={{
-                marginBottom: 20,
-                padding: 16,
-                background: '#f9fafb',
-                borderRadius: 8
-              }}>
-                <label style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: 8,
-                  marginBottom: 12,
-                  cursor: 'pointer'
-                }}>
+              <div className="mb-5 rounded-lg bg-gray-50 p-4">
+                <label className="mb-3 flex cursor-pointer items-center gap-2">
                   <input
                     type="checkbox"
                     checked={sendNotification}
                     onChange={(e) => setSendNotification(e.target.checked)}
-                    style={{ width: 16, height: 16 }}
+                    className="h-4 w-4"
                   />
-                  <span style={{ fontSize: 14 }}>
+                  <span className="text-sm">
                     Send email & SMS notifications to affected guests
                   </span>
                 </label>
 
                 {hasLastMinuteBookings && (
-                  <label style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: 8,
-                    cursor: 'pointer'
-                  }}>
+                  <label className="flex cursor-pointer items-center gap-2">
                     <input
                       type="checkbox"
                       checked={autoRebook}
                       onChange={(e) => setAutoRebook(e.target.checked)}
-                      style={{ width: 16, height: 16 }}
+                      className="h-4 w-4"
                     />
-                    <span style={{ fontSize: 14 }}>
+                    <span className="text-sm">
                       Automatically find alternative listings for last-minute bookings
                     </span>
                   </label>
                 )}
               </div>
             )}
-<div style={{ display: 'flex', gap: 12 }}>
+            <div className="flex gap-3">
               <button
                 onClick={onClose}
                 disabled={cancelling}
-                style={{
-                  flex: 1,
-                  padding: '12px 24px',
-                  border: '1px solid #d1d5db',
-                  borderRadius: 8,
-                  background: '#fff',
-                  fontSize: 14,
-                  fontWeight: 600,
-                  cursor: cancelling ? 'not-allowed' : 'pointer',
-                  opacity: cancelling ? 0.5 : 1
-                }}
+                className="flex-1 rounded-lg border border-gray-300 bg-white px-6 py-3 text-sm font-semibold disabled:cursor-not-allowed disabled:opacity-50"
               >
                 Keep Listing
               </button>
@@ -377,25 +256,11 @@ const CancelListingModal = ({
               <button
                 onClick={handleCancel}
                 disabled={cancelling || !reason.trim()}
-                style={{
-                  flex: 1,
-                  padding: '12px 24px',
-                  border: 'none',
-                  borderRadius: 8,
-                  background: cancelling || !reason.trim() ? '#d1d5db' : '#ef4444',
-                  color: '#fff',
-                  fontSize: 14,
-                  fontWeight: 600,
-                  cursor: cancelling || !reason.trim() ? 'not-allowed' : 'pointer',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  gap: 8
-                }}
+                className={`flex flex-1 items-center justify-center gap-2 rounded-lg px-6 py-3 text-sm font-semibold text-white ${cancelling || !reason.trim() ? 'cursor-not-allowed bg-gray-300' : 'bg-red-500 hover:bg-red-600'}`}
               >
                 {cancelling ? (
                   <>
-                    <Loader2 size={16} style={{ animation: 'spin 1s linear infinite' }} />
+                    <Loader2 size={16} className="animate-spin" />
                     Cancelling...
                   </>
                 ) : (

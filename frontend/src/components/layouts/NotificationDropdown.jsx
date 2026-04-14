@@ -5,6 +5,29 @@ import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import userApi, { getAuthToken } from "../lib/userApi";
 
+const TYPE_COLOR_CLASSES = {
+  booking_confirmed: {
+    iconWrap: "bg-emerald-50",
+    iconColor: "text-emerald-700",
+  },
+  booking_cancelled: {
+    iconWrap: "bg-red-50",
+    iconColor: "text-red-700",
+  },
+  message: {
+    iconWrap: "bg-blue-50",
+    iconColor: "text-blue-600",
+  },
+  review: {
+    iconWrap: "bg-amber-50",
+    iconColor: "text-amber-700",
+  },
+  default: {
+    iconWrap: "bg-stone-100",
+    iconColor: "text-stone-500",
+  },
+};
+
 const NotificationDropdown = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [notifications, setNotifications] = useState([]);
@@ -96,18 +119,7 @@ const NotificationDropdown = () => {
   };
 
   const getNotificationColor = (type) => {
-    switch (type) {
-      case "booking_confirmed":
-        return { bg: "#edf7f1", color: "#2d7a4f" };
-      case "booking_cancelled":
-        return { bg: "#fdf0ef", color: "#c0392b" };
-      case "message":
-        return { bg: "#eff6ff", color: "#2563eb" };
-      case "review":
-        return { bg: "#fef9ec", color: "#b07d10" };
-      default:
-        return { bg: "#f3f0ea", color: "#7c7060" };
-    }
+    return TYPE_COLOR_CLASSES[type] || TYPE_COLOR_CLASSES.default;
   };
 
   const handleNotificationClick = (notification) => {
@@ -139,100 +151,38 @@ const NotificationDropdown = () => {
   };
 
   return (
-    <div ref={dropdownRef} style={{ position: "relative" }}>
-<button
+    <div ref={dropdownRef} className="relative">
+      <button
         onClick={() => {
           setIsOpen(!isOpen);
           if (!isOpen) setLoading(true);
           fetchNotifications().finally(() => setLoading(false));
         }}
-        style={{
-          position: "relative",
-          width: 40,
-          height: 40,
-          borderRadius: "50%",
-          border: "none",
-          background: isOpen ? "#f3f0ea" : "transparent",
-          color: "#1a1207",
-          cursor: "pointer",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          transition: "all .2s",
-        }}
-        onMouseEnter={(e) => e.currentTarget.style.background = "#f3f0ea"}
-        onMouseLeave={(e) => e.currentTarget.style.background = isOpen ? "#f3f0ea" : "transparent"}
+        className={`relative flex h-10 w-10 items-center justify-center rounded-full border-none text-stone-900 transition-all hover:bg-stone-100 ${isOpen ? "bg-stone-100" : "bg-transparent"}`}
       >
         <Bell size={20} />
         {unreadCount > 0 && (
-          <span style={{
-            position: "absolute",
-            top: 6,
-            right: 6,
-            minWidth: 18,
-            height: 18,
-            borderRadius: "50%",
-            background: "#c2633a",
-            color: "#fff",
-            fontSize: 10,
-            fontWeight: 700,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            padding: "0 4px",
-            boxShadow: "0 2px 6px rgba(194,99,58,0.4)",
-          }}>
+          <span className="absolute right-1.5 top-1.5 flex h-[18px] min-w-[18px] items-center justify-center rounded-full bg-red-600 px-1 text-[10px] font-bold text-white shadow-[0_2px_6px_rgba(194,99,58,0.4)]">
             {unreadCount > 9 ? "9+" : unreadCount}
           </span>
         )}
       </button>
-<AnimatePresence>
+      <AnimatePresence>
         {isOpen && (
           <motion.div
             initial={{ opacity: 0, y: -10, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -10, scale: 0.95 }}
             transition={{ duration: 0.15 }}
-            style={{
-              position: "absolute",
-              top: 50,
-              right: 0,
-              width: 380,
-              maxHeight: 500,
-              background: "#fff",
-              borderRadius: 16,
-              boxShadow: "0 12px 40px rgba(0,0,0,0.12)",
-              border: "1px solid rgba(0,0,0,0.06)",
-              overflow: "hidden",
-              zIndex: 1000,
-            }}
+            className="absolute right-0 top-[50px] z-[1000] w-[380px] max-h-[500px] overflow-hidden rounded-2xl border border-black/10 bg-white shadow-[0_12px_40px_rgba(0,0,0,0.12)]"
           >
-<div style={{
-              padding: "16px 20px",
-              borderBottom: "1px solid rgba(0,0,0,0.06)",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "space-between",
-              background: "#faf8f4",
-            }}>
-              <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                <h3 style={{
-                  margin: 0,
-                  fontSize: 16,
-                  fontWeight: 600,
-                  color: "#1a1207",
-                }}>
+            <div className="flex items-center justify-between border-b border-black/10 bg-stone-50 px-5 py-4">
+              <div className="flex items-center gap-2">
+                <h3 className="m-0 text-base font-semibold text-stone-900">
                   Notifications
                 </h3>
                 {unreadCount > 0 && (
-                  <span style={{
-                    padding: "2px 8px",
-                    borderRadius: 100,
-                    background: "#c2633a",
-                    color: "#fff",
-                    fontSize: 11,
-                    fontWeight: 700,
-                  }}>
+                  <span className="rounded-full bg-red-600 px-2 py-0.5 text-[11px] font-bold text-white">
                     {unreadCount} new
                   </span>
                 )}
@@ -240,49 +190,23 @@ const NotificationDropdown = () => {
               {unreadCount > 0 && (
                 <button
                   onClick={markAllAsRead}
-                  style={{
-                    padding: "6px 12px",
-                    border: "none",
-                    borderRadius: 8,
-                    background: "transparent",
-                    color: "#c2633a",
-                    fontSize: 12,
-                    fontWeight: 500,
-                    cursor: "pointer",
-                    transition: "background .15s",
-                  }}
-                  onMouseEnter={(e) => e.currentTarget.style.background = "#fff0ea"}
-                  onMouseLeave={(e) => e.currentTarget.style.background = "transparent"}
+                  className="rounded-lg border-none bg-transparent px-3 py-1.5 text-xs font-medium text-red-600 transition-colors hover:bg-red-50"
                 >
                   Mark all read
                 </button>
               )}
             </div>
-<div style={{
-              maxHeight: 400,
-              overflowY: "auto",
-            }}>
+            <div className="max-h-[400px] overflow-y-auto">
               {loading ? (
-                <div style={{
-                  padding: 40,
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: "center",
-                  gap: 12,
-                  color: "#7c7060",
-                }}>
-                  <Loader2 size={32} style={{ animation: "spin 1s linear infinite" }} />
-                  <p style={{ margin: 0, fontSize: 14 }}>Loading notifications...</p>
+                <div className="flex flex-col items-center gap-3 p-10 text-stone-500">
+                  <Loader2 size={32} className="animate-spin" />
+                  <p className="m-0 text-sm">Loading notifications...</p>
                 </div>
               ) : notifications.length === 0 ? (
-                <div style={{
-                  padding: 40,
-                  textAlign: "center",
-                  color: "#7c7060",
-                }}>
-                  <Bell size={48} style={{ margin: "0 auto 16px", opacity: 0.3 }} />
-                  <p style={{ margin: 0, fontSize: 14, fontWeight: 500 }}>All caught up!</p>
-                  <p style={{ margin: "8px 0 0", fontSize: 13, opacity: 0.7 }}>You have no new notifications</p>
+                <div className="p-10 text-center text-stone-500">
+                  <Bell size={48} className="mx-auto mb-4 opacity-30" />
+                  <p className="m-0 text-sm font-medium">All caught up!</p>
+                  <p className="mt-2 text-[13px] opacity-70">You have no new notifications</p>
                 </div>
               ) : (
                 notifications.map((notification, index) => {
@@ -295,69 +219,24 @@ const NotificationDropdown = () => {
                       animate={{ opacity: 1, x: 0 }}
                       transition={{ delay: index * 0.05 }}
                       onClick={() => handleNotificationClick(notification)}
-                      style={{
-                        padding: "14px 20px",
-                        borderBottom: "1px solid rgba(0,0,0,0.04)",
-                        background: notification.isRead ? "#fff" : "#fff8f4",
-                        cursor: "pointer",
-                        display: "flex",
-                        gap: 12,
-                        transition: "background .15s",
-                      }}
-                      onMouseEnter={(e) => e.currentTarget.style.background = "#faf8f4"}
-                      onMouseLeave={(e) => e.currentTarget.style.background = notification.isRead ? "#fff" : "#fff8f4"}
+                      className={`flex cursor-pointer gap-3 border-b border-black/5 px-5 py-3.5 transition-colors hover:bg-stone-50 ${notification.isRead ? "bg-white" : "bg-amber-50/40"}`}
                     >
-                      <div style={{
-                        width: 36,
-                        height: 36,
-                        borderRadius: "50%",
-                        background: colors.bg,
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        flexShrink: 0,
-                      }}>
-                        <Icon size={16} style={{ color: colors.color }} />
+                      <div className={`flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full ${colors.iconWrap}`}>
+                        <Icon size={16} className={colors.iconColor} />
                       </div>
-                      <div style={{ flex: 1, minWidth: 0 }}>
-                        <div style={{
-                          display: "flex",
-                          alignItems: "flex-start",
-                          justifyContent: "space-between",
-                          gap: 8,
-                          marginBottom: 4,
-                        }}>
-                          <h4 style={{
-                            margin: 0,
-                            fontSize: 14,
-                            fontWeight: 600,
-                            color: "#1a1207",
-                          }}>
+                      <div className="min-w-0 flex-1">
+                        <div className="mb-1 flex items-start justify-between gap-2">
+                          <h4 className="m-0 text-sm font-semibold text-stone-900">
                             {notification.title}
                           </h4>
                           {!notification.isRead && (
-                            <div style={{
-                              width: 8,
-                              height: 8,
-                              borderRadius: "50%",
-                              background: "#c2633a",
-                              flexShrink: 0,
-                              marginTop: 4,
-                            }} />
+                            <div className="mt-1 h-2 w-2 flex-shrink-0 rounded-full bg-red-600" />
                           )}
                         </div>
-                        <p style={{
-                          margin: "0 0 6px",
-                          fontSize: 13,
-                          color: "#7c7060",
-                          lineHeight: 1.4,
-                        }}>
+                        <p className="mb-1.5 text-[13px] leading-[1.4] text-stone-500">
                           {notification.message}
                         </p>
-                        <span style={{
-                          fontSize: 11,
-                          color: "#b0a090",
-                        }}>
+                        <span className="text-[11px] text-stone-400">
                           {formatTime(notification.createdAt)}
                         </span>
                       </div>
@@ -366,31 +245,14 @@ const NotificationDropdown = () => {
                 })
               )}
             </div>
-{notifications.length > 0 && (
-              <div style={{
-                padding: "12px 20px",
-                borderTop: "1px solid rgba(0,0,0,0.06)",
-                textAlign: "center",
-                background: "#faf8f4",
-              }}>
+            {notifications.length > 0 && (
+              <div className="border-t border-black/10 bg-stone-50 px-5 py-3 text-center">
                 <button
                   onClick={() => {
                     navigate("/profile");
                     setIsOpen(false);
                   }}
-                  style={{
-                    padding: "8px 16px",
-                    border: "none",
-                    borderRadius: 8,
-                    background: "transparent",
-                    color: "#c2633a",
-                    fontSize: 13,
-                    fontWeight: 500,
-                    cursor: "pointer",
-                    transition: "background .15s",
-                  }}
-                  onMouseEnter={(e) => e.currentTarget.style.background = "#fff0ea"}
-                  onMouseLeave={(e) => e.currentTarget.style.background = "transparent"}
+                  className="rounded-lg border-none bg-transparent px-4 py-2 text-[13px] font-medium text-red-600 transition-colors hover:bg-red-50"
                 >
                   View all notifications
                 </button>
@@ -399,12 +261,6 @@ const NotificationDropdown = () => {
           </motion.div>
         )}
       </AnimatePresence>
-
-      <style>{`
-        @keyframes spin {
-          to { transform: rotate(360deg); }
-        }
-      `}</style>
     </div>
   );
 };

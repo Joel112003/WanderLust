@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import axios from "axios";
 import toast from "react-hot-toast";
 
-const BASE_URL = "http://localhost:8000";
+const API_URL = import.meta.env.VITE_APP_API_URL || "http://localhost:8000";
 
 const CancelBookingModal = ({ isOpen, onClose, booking, onCancelSuccess }) => {
   const [reason, setReason] = useState("");
@@ -41,7 +41,7 @@ const CancelBookingModal = ({ isOpen, onClose, booking, onCancelSuccess }) => {
       const token = localStorage.getItem("authToken");
 
       const response = await axios.post(
-        `${BASE_URL}/bookings/${booking._id}/cancel-by-owner`,
+        `${API_URL}/bookings/${booking._id}/cancel-by-owner`,
         {
           reason: reason.trim(),
           autoRebook,

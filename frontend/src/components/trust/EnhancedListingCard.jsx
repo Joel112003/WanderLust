@@ -77,55 +77,17 @@ const EnhancedListingCard = ({ listing }) => {
   return (
     <div
       onClick={() => navigate(`/listings/${listing._id}`)}
-      style={{
-        background: '#fff',
-        borderRadius: '16px',
-        overflow: 'hidden',
-        cursor: 'pointer',
-        transition: 'all 0.3s ease',
-        border: '1px solid rgba(0,0,0,0.06)',
-        boxShadow: '0 2px 8px rgba(0,0,0,0.06)',
-      }}
-      onMouseEnter={(e) => {
-        e.currentTarget.style.transform = 'translateY(-4px)';
-        e.currentTarget.style.boxShadow = '0 12px 28px rgba(0,0,0,0.12)';
-      }}
-      onMouseLeave={(e) => {
-        e.currentTarget.style.transform = 'translateY(0)';
-        e.currentTarget.style.boxShadow = '0 2px 8px rgba(0,0,0,0.06)';
-      }}
+      className="cursor-pointer overflow-hidden rounded-2xl border border-black/10 bg-white shadow-[0_2px_8px_rgba(0,0,0,0.06)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_12px_28px_rgba(0,0,0,0.12)]"
     >
-<div style={{ position: 'relative', paddingTop: '66.67%', background: '#f3f0ea' }}>
+      <div className="relative bg-[#f3f0ea] pt-[66.67%]">
         <img
           src={listing.image?.url || '/placeholder.jpg'}
           alt={listing.title}
-          style={{
-            position: 'absolute',
-            top: 0,
-            left: 0,
-            width: '100%',
-            height: '100%',
-            objectFit: 'cover',
-          }}
+          className="absolute left-0 top-0 h-full w-full object-cover"
         />
-<button
+        <button
           onClick={toggleWishlist}
-          style={{
-            position: 'absolute',
-            top: 12,
-            right: 12,
-            width: 36,
-            height: 36,
-            borderRadius: '50%',
-            background: isWishlisted ? '#FF6B6B' : 'rgba(255, 255, 255, 0.9)',
-            border: 'none',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            cursor: 'pointer',
-            transition: 'all 0.2s',
-            boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
-          }}
+          className={`absolute right-3 top-3 flex h-9 w-9 items-center justify-center rounded-full border-none shadow-[0_2px_8px_rgba(0,0,0,0.15)] transition-all ${isWishlisted ? 'bg-[#FF6B6B]' : 'bg-white/90'}`}
         >
           <Heart
             size={18}
@@ -134,7 +96,7 @@ const EnhancedListingCard = ({ listing }) => {
             strokeWidth={2}
           />
         </button>
-<div style={{ position: 'absolute', top: 12, left: 12, display: 'flex', flexDirection: 'column', gap: '6px' }}>
+        <div className="absolute left-3 top-3 flex flex-col gap-1.5">
           {trustMetrics?.host?.reliability?.overallScore >= 90 && (
             <TrustBadge type="host-reliability" value={trustMetrics.host.reliability.overallScore} size="sm" showLabel={false} />
           )}
@@ -146,86 +108,78 @@ const EnhancedListingCard = ({ listing }) => {
           )}
         </div>
       </div>
-<div style={{ padding: '16px' }}>
-<div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '8px' }}>
-          <div style={{ flex: 1, minWidth: 0 }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '4px' }}>
-              <MapPin size={14} style={{ color: '#c2633a', flexShrink: 0 }} />
-              <span style={{ fontSize: '13px', color: '#7c7060', fontWeight: 500, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+      <div className="p-4">
+        <div className="mb-2 flex items-start justify-between">
+          <div className="min-w-0 flex-1">
+            <div className="mb-1 flex items-center gap-1.5">
+              <MapPin size={14} className="shrink-0 text-[#c2633a]" />
+              <span className="truncate text-[13px] font-medium text-[#7c7060]">
                 {listing.location}, {listing.country}
               </span>
             </div>
             <h3
-              style={{
-                margin: '0 0 8px 0',
-                fontSize: '16px',
-                fontWeight: 700,
-                color: '#1a1207',
-                overflow: 'hidden',
-                textOverflow: 'ellipsis',
-                whiteSpace: 'nowrap',
-              }}
+              className="mb-2 truncate text-base font-bold text-[#1a1207]"
             >
               {listing.title}
             </h3>
           </div>
           {avgRating > 0 && (
-            <div style={{ display: 'flex', alignItems: 'center', gap: '4px', flexShrink: 0, marginLeft: '8px' }}>
+            <div className="ml-2 flex shrink-0 items-center gap-1">
               <Star size={14} fill="#FFD43B" stroke="#FFD43B" />
-              <span style={{ fontSize: '14px', fontWeight: 700, color: '#1a1207' }}>
+              <span className="text-sm font-bold text-[#1a1207]">
                 {avgRating.toFixed(1)}
               </span>
-              <span style={{ fontSize: '12px', color: '#7c7060' }}>
+              <span className="text-xs text-[#7c7060]">
                 ({reviewCount})
               </span>
             </div>
           )}
         </div>
-<div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '12px', flexWrap: 'wrap' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '13px', color: '#7c7060' }}>
+        <div className="mb-3 flex flex-wrap items-center gap-3">
+          <div className="flex items-center gap-1 text-[13px] text-[#7c7060]">
             <Users size={14} />
             <span>{listing.guests} guests</span>
           </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '13px', color: '#7c7060' }}>
+          <div className="flex items-center gap-1 text-[13px] text-[#7c7060]">
             <Bed size={14} />
             <span>{listing.bedrooms} beds</span>
           </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '13px', color: '#7c7060' }}>
+          <div className="flex items-center gap-1 text-[13px] text-[#7c7060]">
             <Bath size={14} />
             <span>{listing.baths} baths</span>
           </div>
         </div>
-<div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', marginBottom: '12px' }}>
+        <div className="mb-3 flex flex-wrap gap-1.5">
           {trustMetrics?.reviews?.verificationRate >= 80 && (
-            <div style={{ display: 'flex', alignItems: 'center', gap: '4px', padding: '4px 8px', background: '#D3F9D8', borderRadius: '6px', fontSize: '11px', fontWeight: 600, color: '#51CF66' }}>
+            <div className="flex items-center gap-1 rounded-md bg-[#D3F9D8] px-2 py-1 text-[11px] font-semibold text-[#51CF66]">
               <CheckCircle size={12} />
               <span>{trustMetrics.reviews.verificationRate}% Verified Reviews</span>
             </div>
           )}
           {listing.locationSafety?.safetyScore >= 80 && (
-            <div style={{ display: 'flex', alignItems: 'center', gap: '4px', padding: '4px 8px', background: '#D0EBFF', borderRadius: '6px', fontSize: '11px', fontWeight: 600, color: '#339AF0' }}>
+            <div className="flex items-center gap-1 rounded-md bg-[#D0EBFF] px-2 py-1 text-[11px] font-semibold text-[#339AF0]">
               <Shield size={12} />
               <span>Safe Area</span>
             </div>
           )}
         </div>
-<div style={{ paddingTop: '12px', borderTop: '1px solid rgba(0,0,0,0.06)' }}>
-          <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between' }}>
+        <div className="border-t border-black/10 pt-3">
+          <div className="flex items-baseline justify-between">
             <div>
-              <span style={{ fontSize: '20px', fontWeight: 800, color: '#1a1207' }}>
+              <span className="text-xl font-extrabold text-[#1a1207]">
                 ₹{pricingData ? pricingData.finalPrice.toLocaleString() : listing.price?.toLocaleString()}
               </span>
-              <span style={{ fontSize: '14px', color: '#7c7060', marginLeft: '4px' }}>/ night</span>
+              <span className="ml-1 text-sm text-[#7c7060]">/ night</span>
             </div>
             {pricingData && (
-              <div style={{ display: 'flex', alignItems: 'center', gap: '4px', padding: '4px 8px', background: '#D3F9D8', borderRadius: '6px' }}>
-                <CheckCircle size={12} style={{ color: '#51CF66' }} />
-                <span style={{ fontSize: '11px', fontWeight: 600, color: '#51CF66' }}>All-inclusive</span>
+              <div className="flex items-center gap-1 rounded-md bg-[#D3F9D8] px-2 py-1">
+                <CheckCircle size={12} className="text-[#51CF66]" />
+                <span className="text-[11px] font-semibold text-[#51CF66]">All-inclusive</span>
               </div>
             )}
           </div>
           {pricingData && (
-            <div style={{ fontSize: '11px', color: '#7c7060', marginTop: '4px' }}>
+            <div className="mt-1 text-[11px] text-[#7c7060]">
               No hidden fees · No service charges
             </div>
           )}

@@ -66,84 +66,63 @@ const ShareButton = ({ listing, buttonStyle = 'icon' }) => {
     }
   };
 
+  const shareOptions = [
+    {
+      key: 'email',
+      label: 'Email',
+      icon: <Mail size={20} />,
+      iconClass: 'bg-red-500 text-white',
+      onClick: handleEmailShare,
+    },
+    {
+      key: 'whatsapp',
+      label: 'WhatsApp',
+      icon: <MessageCircle size={20} />,
+      iconClass: 'bg-emerald-500 text-white',
+      onClick: handleWhatsAppShare,
+    },
+    {
+      key: 'twitter',
+      label: 'Twitter',
+      icon: <span className="text-xl font-bold">X</span>,
+      iconClass: 'bg-sky-500 text-white',
+      onClick: handleTwitterShare,
+    },
+    {
+      key: 'facebook',
+      label: 'Facebook',
+      icon: <span className="text-xl font-bold">f</span>,
+      iconClass: 'bg-blue-600 text-white',
+      onClick: handleFacebookShare,
+    },
+  ];
+
   return (
     <>
-{buttonStyle === 'icon' ? (
+      {buttonStyle === 'icon' ? (
         <button
           onClick={handleNativeShare}
-          style={{
-            width: 40,
-            height: 40,
-            borderRadius: '50%',
-            border: '1px solid #e5e7eb',
-            background: 'white',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            cursor: 'pointer',
-            transition: 'all 0.2s'
-          }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.background = '#f9fafb';
-            e.currentTarget.style.borderColor = '#c2633a';
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.background = 'white';
-            e.currentTarget.style.borderColor = '#e5e7eb';
-          }}
+          className="flex h-10 w-10 items-center justify-center rounded-full border border-gray-200 bg-white transition-all hover:border-red-400 hover:bg-gray-50"
           title="Share listing"
         >
-          <Share2 size={18} color="#1f2937" />
+          <Share2 size={18} className="text-gray-800" />
         </button>
       ) : (
         <button
           onClick={handleNativeShare}
-          style={{
-            padding: '12px 24px',
-            border: '1px solid #c2633a',
-            borderRadius: 8,
-            background: 'white',
-            color: '#c2633a',
-            fontSize: 15,
-            fontWeight: 600,
-            cursor: 'pointer',
-            display: 'flex',
-            alignItems: 'center',
-            gap: 8,
-            transition: 'all 0.2s'
-          }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.background = '#c2633a';
-            e.currentTarget.style.color = 'white';
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.background = 'white';
-            e.currentTarget.style.color = '#c2633a';
-          }}
+          className="flex items-center gap-2 rounded-lg border border-[#c2633a] bg-white px-6 py-3 text-[15px] font-semibold text-[#c2633a] transition-all hover:bg-[#c2633a] hover:text-white"
         >
           <Share2 size={18} />
           Share
         </button>
       )}
-<AnimatePresence>
+      <AnimatePresence>
         {showModal && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            style={{
-              position: 'fixed',
-              top: 0,
-              left: 0,
-              right: 0,
-              bottom: 0,
-              background: 'rgba(0, 0, 0, 0.5)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              zIndex: 9999,
-              padding: 20
-            }}
+            className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/50 p-5"
             onClick={() => setShowModal(false)}
           >
             <motion.div
@@ -151,104 +130,37 @@ const ShareButton = ({ listing, buttonStyle = 'icon' }) => {
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.9, opacity: 0 }}
               onClick={(e) => e.stopPropagation()}
-              style={{
-                background: 'white',
-                borderRadius: 20,
-                padding: 32,
-                maxWidth: 480,
-                width: '100%',
-                boxShadow: '0 20px 60px rgba(0,0,0,0.3)'
-              }}
+              className="w-full max-w-[480px] rounded-[20px] bg-white p-8 shadow-[0_20px_60px_rgba(0,0,0,0.3)]"
             >
-<div style={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-                marginBottom: 24
-              }}>
-                <h2 style={{
-                  margin: 0,
-                  fontSize: 24,
-                  fontWeight: 700,
-                  color: '#1a1207'
-                }}>
+              <div className="mb-6 flex items-center justify-between">
+                <h2 className="m-0 text-2xl font-bold text-[#1a1207]">
                   Share Listing
                 </h2>
                 <button
                   onClick={() => setShowModal(false)}
-                  style={{
-                    width: 36,
-                    height: 36,
-                    borderRadius: '50%',
-                    border: 'none',
-                    background: '#f3f4f6',
-                    cursor: 'pointer',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center'
-                  }}
+                  className="flex h-9 w-9 items-center justify-center rounded-full border-none bg-gray-100"
                 >
                   <X size={20} />
                 </button>
               </div>
-<div style={{
-                padding: 16,
-                background: '#f9fafb',
-                borderRadius: 12,
-                marginBottom: 24
-              }}>
-                <h3 style={{
-                  margin: '0 0 8px',
-                  fontSize: 16,
-                  fontWeight: 600,
-                  color: '#1a1207'
-                }}>
+              <div className="mb-6 rounded-xl bg-gray-50 p-4">
+                <h3 className="mb-2 text-base font-semibold text-[#1a1207]">
                   {listing.title}
                 </h3>
-                <p style={{
-                  margin: 0,
-                  fontSize: 14,
-                  color: '#7c7060',
-                  lineHeight: 1.5
-                }}>
+                <p className="text-sm leading-[1.5] text-[#7c7060]">
                   {listing.description?.substring(0, 120)}...
                 </p>
               </div>
-<div style={{
-                display: 'flex',
-                gap: 12,
-                marginBottom: 24
-              }}>
+              <div className="mb-6 flex gap-3">
                 <input
                   type="text"
                   value={shareUrl}
                   readOnly
-                  style={{
-                    flex: 1,
-                    padding: '12px 16px',
-                    border: '1px solid #e5e7eb',
-                    borderRadius: 8,
-                    fontSize: 14,
-                    color: '#7c7060',
-                    background: '#faf8f4'
-                  }}
+                  className="flex-1 rounded-lg border border-gray-200 bg-[#faf8f4] px-4 py-3 text-sm text-[#7c7060]"
                 />
                 <button
                   onClick={handleCopyLink}
-                  style={{
-                    padding: '12px 20px',
-                    border: 'none',
-                    borderRadius: 8,
-                    background: copied ? '#10b981' : 'linear-gradient(135deg, #c2633a, #e8a430)',
-                    color: 'white',
-                    fontSize: 14,
-                    fontWeight: 600,
-                    cursor: 'pointer',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: 8,
-                    transition: 'all 0.2s'
-                  }}
+                  className={`flex items-center gap-2 rounded-lg border-none px-5 py-3 text-sm font-semibold text-white transition-all ${copied ? 'bg-emerald-500' : 'bg-gradient-to-br from-[#c2633a] to-[#e8a430]'}`}
                 >
                   {copied ? (
                     <>
@@ -263,167 +175,19 @@ const ShareButton = ({ listing, buttonStyle = 'icon' }) => {
                   )}
                 </button>
               </div>
-<div style={{
-                display: 'grid',
-                gridTemplateColumns: 'repeat(2, 1fr)',
-                gap: 12
-              }}>
-<button
-                  onClick={handleEmailShare}
-                  style={{
-                    padding: '14px 20px',
-                    border: '1px solid #e5e7eb',
-                    borderRadius: 12,
-                    background: 'white',
-                    cursor: 'pointer',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: 12,
-                    transition: 'all 0.2s'
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.background = '#f9fafb';
-                    e.currentTarget.style.borderColor = '#c2633a';
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.background = 'white';
-                    e.currentTarget.style.borderColor = '#e5e7eb';
-                  }}
-                >
-                  <div style={{
-                    width: 40,
-                    height: 40,
-                    borderRadius: '50%',
-                    background: '#ea4335',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    color: 'white'
-                  }}>
-                    <Mail size={20} />
-                  </div>
-                  <span style={{ fontSize: 15, fontWeight: 500, color: '#1f2937' }}>
-                    Email
-                  </span>
-                </button>
-<button
-                  onClick={handleWhatsAppShare}
-                  style={{
-                    padding: '14px 20px',
-                    border: '1px solid #e5e7eb',
-                    borderRadius: 12,
-                    background: 'white',
-                    cursor: 'pointer',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: 12,
-                    transition: 'all 0.2s'
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.background = '#f9fafb';
-                    e.currentTarget.style.borderColor = '#c2633a';
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.background = 'white';
-                    e.currentTarget.style.borderColor = '#e5e7eb';
-                  }}
-                >
-                  <div style={{
-                    width: 40,
-                    height: 40,
-                    borderRadius: '50%',
-                    background: '#25d366',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    color: 'white'
-                  }}>
-                    <MessageCircle size={20} />
-                  </div>
-                  <span style={{ fontSize: 15, fontWeight: 500, color: '#1f2937' }}>
-                    WhatsApp
-                  </span>
-                </button>
-<button
-                  onClick={handleTwitterShare}
-                  style={{
-                    padding: '14px 20px',
-                    border: '1px solid #e5e7eb',
-                    borderRadius: 12,
-                    background: 'white',
-                    cursor: 'pointer',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: 12,
-                    transition: 'all 0.2s'
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.background = '#f9fafb';
-                    e.currentTarget.style.borderColor = '#c2633a';
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.background = 'white';
-                    e.currentTarget.style.borderColor = '#e5e7eb';
-                  }}
-                >
-                  <div style={{
-                    width: 40,
-                    height: 40,
-                    borderRadius: '50%',
-                    background: '#1da1f2',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    color: 'white',
-                    fontSize: 20,
-                    fontWeight: 700
-                  }}>
-                    𝕏
-                  </div>
-                  <span style={{ fontSize: 15, fontWeight: 500, color: '#1f2937' }}>
-                    Twitter
-                  </span>
-                </button>
-<button
-                  onClick={handleFacebookShare}
-                  style={{
-                    padding: '14px 20px',
-                    border: '1px solid #e5e7eb',
-                    borderRadius: 12,
-                    background: 'white',
-                    cursor: 'pointer',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: 12,
-                    transition: 'all 0.2s'
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.background = '#f9fafb';
-                    e.currentTarget.style.borderColor = '#c2633a';
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.background = 'white';
-                    e.currentTarget.style.borderColor = '#e5e7eb';
-                  }}
-                >
-                  <div style={{
-                    width: 40,
-                    height: 40,
-                    borderRadius: '50%',
-                    background: '#1877f2',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    color: 'white',
-                    fontSize: 20,
-                    fontWeight: 700
-                  }}>
-                    f
-                  </div>
-                  <span style={{ fontSize: 15, fontWeight: 500, color: '#1f2937' }}>
-                    Facebook
-                  </span>
-                </button>
+              <div className="grid grid-cols-2 gap-3">
+                {shareOptions.map((opt) => (
+                  <button
+                    key={opt.key}
+                    onClick={opt.onClick}
+                    className="flex items-center gap-3 rounded-xl border border-gray-200 bg-white px-5 py-3.5 transition-all hover:border-[#c2633a] hover:bg-gray-50"
+                  >
+                    <div className={`flex h-10 w-10 items-center justify-center rounded-full ${opt.iconClass}`}>
+                      {opt.icon}
+                    </div>
+                    <span className="text-[15px] font-medium text-gray-800">{opt.label}</span>
+                  </button>
+                ))}
               </div>
             </motion.div>
           </motion.div>

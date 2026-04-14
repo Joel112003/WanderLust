@@ -18,6 +18,8 @@ const normalise = (listing) => ({
   image: listing.image ?? { url: "/default-image.jpg" },
 });
 
+const DELAY_CLASSES = ['delay-0', 'delay-75', 'delay-100', 'delay-150', 'delay-200', 'delay-300'];
+
 const Toast = ({ message, onClose }) => (
   <div
     className="mb-6 flex items-center gap-2.5 rounded-xl border border-[#ffc5c5] border-l-4 border-l-[#e03030] bg-[#fff3f3] px-[18px] py-[14px] text-sm text-[#c12a2a]"
@@ -36,7 +38,7 @@ const Toast = ({ message, onClose }) => (
 );
 
 const Skeleton = ({ index }) => (
-  <div className="animate-in fade-in rounded-[18px] border border-black/10 bg-white duration-300" style={{ animationDelay: `${index * 50}ms` }}>
+  <div className={`animate-in fade-in rounded-[18px] border border-black/10 bg-white duration-300 ${DELAY_CLASSES[index % DELAY_CLASSES.length]}`}>
     <div className="aspect-[4/3] w-full animate-pulse bg-gradient-to-r from-[#f0e8e8] via-[#e6dcdc] to-[#f0e8e8]" />
     <div className="px-5 pb-[22px] pt-[18px]">
       <div className="mb-2.5 h-[13px] w-[72%] animate-pulse rounded-md bg-gradient-to-r from-[#f0e8e8] via-[#e6dcdc] to-[#f0e8e8]" />
@@ -59,8 +61,7 @@ const ListingCard = ({ listing, index }) => {
       aria-label={listing.title || "View listing"}
     >
       <article
-        className="group relative cursor-pointer overflow-hidden rounded-[18px] border border-black/10 bg-white shadow-[0_2px_8px_rgba(0,0,0,0.05),0_1px_2px_rgba(0,0,0,0.04)] transition-all duration-300 hover:-translate-y-1.5 hover:scale-[1.01] hover:shadow-[0_20px_40px_rgba(0,0,0,0.11),0_6px_12px_rgba(0,0,0,0.06)]"
-        style={{ animationDelay: `${index * 55}ms` }}
+        className={`group relative cursor-pointer overflow-hidden rounded-[18px] border border-black/10 bg-white shadow-[0_2px_8px_rgba(0,0,0,0.05),0_1px_2px_rgba(0,0,0,0.04)] transition-all duration-300 hover:-translate-y-1.5 hover:scale-[1.01] hover:shadow-[0_20px_40px_rgba(0,0,0,0.11),0_6px_12px_rgba(0,0,0,0.06)] ${DELAY_CLASSES[index % DELAY_CLASSES.length]}`}
       >
         <div className="relative aspect-[4/3] w-full overflow-hidden bg-[#f0eaea]">
           {!loaded && <div className="absolute inset-0 animate-pulse bg-gradient-to-r from-[#f0e8e8] via-[#e6dcdc] to-[#f0e8e8]" />}

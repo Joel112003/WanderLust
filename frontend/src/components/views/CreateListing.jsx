@@ -56,6 +56,7 @@ const UploadIcon = () => (
 );
 const ChevLeft = () => <Icon d="M15 19l-7-7 7-7" size={20} />;
 const ChevRight = () => <Icon d="M9 5l7 7-7 7" size={20} />;
+const ChevDown = () => <Icon d="M19 9l-7 7-7-7" size={16} />;
 const PlusIcon = () => <Icon d="M12 6v6m0 0v6m0-6h6m-6 0H6" size={18} />;
 const MinusIcon = () => <Icon d="M20 12H4" size={18} />;
 const SparkleIcon = () => (
@@ -172,12 +173,17 @@ const Select = ({
   ...p
 }) => (
   <Field label={label} error={error} helper={helper} required={required}>
-    <select
-      className={`${inputBase(error)} cursor-pointer ${className}`}
-      {...p}
-    >
-      {children}
-    </select>
+    <div className="relative">
+      <select
+        className={`${inputBase(error)} cursor-pointer appearance-none pr-10 ${className}`}
+        {...p}
+      >
+        {children}
+      </select>
+      <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-gray-400">
+        <ChevDown />
+      </span>
+    </div>
   </Field>
 );
 
@@ -256,9 +262,10 @@ const Toggle = ({ label, subLabel, checked, onChange }) => (
 
 const ProgressBar = ({ pct }) => (
   <div className="h-1.5 bg-gray-100 rounded-full overflow-hidden">
-    <div
-      className="h-full bg-gradient-to-r from-indigo-500 to-violet-500 rounded-full transition-all duration-500"
-      style={{ width: `${pct}%` }}
+    <progress
+      value={pct}
+      max={100}
+      className="h-full w-full appearance-none [&::-webkit-progress-bar]:bg-transparent [&::-webkit-progress-value]:rounded-full [&::-webkit-progress-value]:bg-gradient-to-r [&::-webkit-progress-value]:from-indigo-500 [&::-webkit-progress-value]:to-violet-500 [&::-moz-progress-bar]:rounded-full [&::-moz-progress-bar]:bg-gradient-to-r [&::-moz-progress-bar]:from-indigo-500 [&::-moz-progress-bar]:to-violet-500"
     />
   </div>
 );
@@ -836,13 +843,34 @@ const StepPricing = ({ data, errors, handleChange, setField }) => {
   );
 };
 
+const SUCCESS_STEPS = [
+  {
+    icon: "✓",
+    label: "Submitted",
+    done: true,
+    active: false,
+    delayClass: "delay-75",
+  },
+  {
+    icon: "⏳",
+    label: "Under review",
+    done: false,
+    active: true,
+    delayClass: "delay-150",
+  },
+  {
+    icon: "🌍",
+    label: "Goes live",
+    done: false,
+    active: false,
+    delayClass: "delay-200",
+  },
+];
+
 const SuccessOverlay = () => (
   <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-sm flex items-center justify-center p-4">
-    <div
-      className="bg-white rounded-3xl p-10 shadow-2xl text-center max-w-sm w-full"
-      style={{ animation: "bounceIn 0.5s cubic-bezier(.34,1.56,.64,1) both" }}
-    >
-<div className="relative w-20 h-20 mx-auto mb-6">
+    <div className="bg-white rounded-3xl p-10 shadow-2xl text-center max-w-sm w-full transition-all duration-300">
+      <div className="relative w-20 h-20 mx-auto mb-6">
         <div className="w-20 h-20 bg-amber-50 rounded-full flex items-center justify-center">
           <svg
             width="40"
@@ -853,21 +881,13 @@ const SuccessOverlay = () => (
             strokeWidth="1.8"
             strokeLinecap="round"
             strokeLinejoin="round"
-            style={{
-              animation: "spinOnce 0.7s cubic-bezier(.34,1.56,.64,1) 0.3s both",
-            }}
+            className="animate-spin"
           >
             <circle cx="12" cy="12" r="10" />
             <polyline points="12 6 12 12 16 14" />
           </svg>
         </div>
-<div
-          className="absolute -top-1 -right-1 w-7 h-7 bg-green-500 rounded-full flex items-center justify-center shadow-lg"
-          style={{
-            animation: "popIn 0.4s cubic-bezier(.34,1.56,.64,1) 0.7s both",
-            opacity: 0,
-          }}
-        >
+        <div className="absolute -top-1 -right-1 w-7 h-7 bg-green-500 rounded-full flex items-center justify-center shadow-lg transition-opacity duration-300 opacity-100">
           <svg
             width="14"
             height="14"
@@ -894,19 +914,11 @@ const SuccessOverlay = () => (
         . Once an admin reviews it, it will appear publicly on the listings
         page.
       </p>
-<div className="flex items-center justify-center gap-1">
-        {[
-          { icon: "✓", label: "Submitted", done: true, active: false },
-          { icon: "⏳", label: "Under review", done: false, active: true },
-          { icon: "🌍", label: "Goes live", done: false, active: false },
-        ].map((s, i) => (
+      <div className="flex items-center justify-center gap-1">
+        {SUCCESS_STEPS.map((s, i) => (
           <React.Fragment key={i}>
             <div
-              className="flex flex-col items-center gap-1.5"
-              style={{
-                animation: `popIn 0.4s cubic-bezier(.34,1.56,.64,1) ${0.9 + i * 0.12}s both`,
-                opacity: 0,
-              }}
+              className={`flex flex-col items-center gap-1.5 opacity-0 animate-fadeIn ${s.delayClass}`}
             >
               <div
                 className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold transition-all
@@ -928,13 +940,7 @@ const SuccessOverlay = () => (
               </span>
             </div>
             {i < 2 && (
-              <div
-                className="w-8 h-px bg-gray-200 mb-4 mx-1"
-                style={{
-                  animation: `fadeIn 0.3s ease ${1.0 + i * 0.12}s both`,
-                  opacity: 0,
-                }}
-              />
+              <div className="w-8 h-px bg-gray-200 mb-4 mx-1 opacity-100" />
             )}
           </React.Fragment>
         ))}
@@ -953,19 +959,6 @@ export default function CreateListing() {
   const [submitting, setSubmitting] = useState(false);
   const [success, setSuccess] = useState(false);
   const contentRef = useRef(null);
-
-  useEffect(() => {
-    const el = contentRef.current;
-    if (!el) return;
-    el.style.opacity = "0";
-    el.style.transform = "translateY(12px)";
-    const t = setTimeout(() => {
-      el.style.transition = "opacity 0.25s ease, transform 0.25s ease";
-      el.style.opacity = "1";
-      el.style.transform = "translateY(0)";
-    }, 20);
-    return () => clearTimeout(t);
-  }, [step]);
 
   const handleUpload = useCallback(
     (files) => {
@@ -1111,10 +1104,10 @@ export default function CreateListing() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-indigo-50/30 to-violet-50/40 py-10 px-4">
-{success && <SuccessOverlay />}
+      {success && <SuccessOverlay />}
 
       <div className="max-w-2xl mx-auto space-y-5">
-<div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 mt-12">
+        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 mt-12">
           <div className="flex items-center justify-between mb-5">
             <div>
               <h1 className="text-2xl font-bold text-gray-900">
@@ -1154,7 +1147,7 @@ export default function CreateListing() {
             ))}
           </div>
         </div>
-<div className="bg-white rounded-2xl shadow-sm border border-gray-100">
+        <div className="bg-white rounded-2xl shadow-sm border border-gray-100">
           <div className="p-6 sm:p-8" ref={contentRef}>
             {step === 0 && <StepBasics {...stepProps} />}
             {step === 1 && <StepLocation {...stepProps} />}
@@ -1204,41 +1197,17 @@ export default function CreateListing() {
           usually takes under 24 hours.
         </p>
       </div>
-{toast && (
+      {toast && (
         <div
           key={toast.id}
           className={`fixed bottom-6 right-6 z-50 flex items-center gap-3 px-5 py-3.5 rounded-2xl shadow-xl
           text-sm font-medium max-w-xs border
           ${toast.type === "error" ? "bg-rose-50 border-rose-200 text-rose-700" : "bg-emerald-50 border-emerald-200 text-emerald-700"}`}
-          style={{ animation: "slideUp 0.25s ease both" }}
         >
           {toast.type === "error" ? <XIcon /> : <CheckIcon />}
           {toast.message}
         </div>
       )}
-
-      <style>{`
-        @keyframes bounceIn {
-          from { opacity: 0; transform: scale(0.6); }
-          to   { opacity: 1; transform: scale(1); }
-        }
-        @keyframes spinOnce {
-          from { opacity: 0; transform: rotate(-180deg) scale(0.5); }
-          to   { opacity: 1; transform: rotate(0deg) scale(1); }
-        }
-        @keyframes popIn {
-          from { opacity: 0; transform: scale(0); }
-          to   { opacity: 1; transform: scale(1); }
-        }
-        @keyframes fadeIn {
-          from { opacity: 0; }
-          to   { opacity: 1; }
-        }
-        @keyframes slideUp {
-          from { opacity: 0; transform: translateY(12px); }
-          to   { opacity: 1; transform: translateY(0); }
-        }
-      `}</style>
     </div>
   );
 }

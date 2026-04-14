@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState, useEffect, useCallback } from "react";
+import { Link } from "react-router-dom";
 import {
   Users,
   ListChecks,
@@ -12,8 +12,8 @@ import {
   ArrowRight,
   Activity,
   Sparkles,
-} from 'lucide-react';
-import toast from 'react-hot-toast';
+} from "lucide-react";
+import toast from "react-hot-toast";
 import {
   AreaChart,
   Area,
@@ -22,94 +22,143 @@ import {
   CartesianGrid,
   Tooltip,
   ResponsiveContainer,
-} from 'recharts';
-import api from '../lib/api';
+} from "recharts";
+import api from "../lib/api";
+import AdminSelect from "./AdminSelect";
 
 const CARD_META = {
   totalUsers: {
-    label: 'Total Users',
+    label: "Total Users",
     icon: Users,
-    iconWrap: 'bg-cyan-100 text-cyan-700',
-    cardTone: 'from-cyan-500/15 to-cyan-500/5',
-    link: '/admin/users',
+    stripClass: "bg-red-500",
+    glowClass: "bg-red-500",
+    iconWrapClass: "bg-red-50 text-red-600",
+    link: "/admin/users",
   },
   totalListings: {
-    label: 'Total Listings',
+    label: "Total Listings",
     icon: ListChecks,
-    iconWrap: 'bg-emerald-100 text-emerald-700',
-    cardTone: 'from-emerald-500/15 to-emerald-500/5',
-    link: '/admin/listings',
+    stripClass: "bg-red-400",
+    glowClass: "bg-red-400",
+    iconWrapClass: "bg-red-50 text-red-500",
+    link: "/admin/listings",
   },
   totalReviews: {
-    label: 'Total Reviews',
+    label: "Total Reviews",
     icon: MessageSquare,
-    iconWrap: 'bg-violet-100 text-violet-700',
-    cardTone: 'from-violet-500/15 to-violet-500/5',
-    link: '/admin/reviews',
+    stripClass: "bg-red-300",
+    glowClass: "bg-red-300",
+    iconWrapClass: "bg-red-50 text-red-400",
+    link: "/admin/reviews",
   },
   pendingListings: {
-    label: 'Pending Listings',
+    label: "Pending Listings",
     icon: Clock,
-    iconWrap: 'bg-amber-100 text-amber-700',
-    cardTone: 'from-amber-500/15 to-amber-500/5',
-    link: '/admin/listings',
+    stripClass: "bg-red-700",
+    glowClass: "bg-red-700",
+    iconWrapClass: "bg-red-100 text-red-700",
+    link: "/admin/listings",
   },
+};
+
+const trends = {
+  totalUsers: { trend: "up", value: 12 },
+  totalListings: { trend: "up", value: 8 },
+  totalReviews: { trend: "up", value: 15 },
+  pendingListings: { trend: "down", value: 5 },
 };
 
 const quickActions = [
   {
-    label: 'Manage Users',
-    hint: 'Roles and account controls',
+    label: "Manage Users",
+    hint: "Roles and account controls",
     icon: Users,
-    iconWrap: 'bg-cyan-100 text-cyan-700',
-    link: '/admin/users',
+    iconWrapClass: "bg-red-50 text-red-600",
+    link: "/admin/users",
   },
   {
-    label: 'Review Listings',
-    hint: 'Approve or reject submissions',
+    label: "Review Listings",
+    hint: "Approve or reject submissions",
     icon: ListChecks,
-    iconWrap: 'bg-emerald-100 text-emerald-700',
-    link: '/admin/listings',
+    iconWrapClass: "bg-red-50 text-red-500",
+    link: "/admin/listings",
   },
   {
-    label: 'Moderate Reviews',
-    hint: 'Keep community trust healthy',
+    label: "Moderate Reviews",
+    hint: "Keep community trust healthy",
     icon: MessageSquare,
-    iconWrap: 'bg-violet-100 text-violet-700',
-    link: '/admin/reviews',
+    iconWrapClass: "bg-red-50 text-red-400",
+    link: "/admin/reviews",
   },
 ];
 
-const trends = {
-  totalUsers: { trend: 'up', value: 12 },
-  totalListings: { trend: 'up', value: 8 },
-  totalReviews: { trend: 'up', value: 15 },
-  pendingListings: { trend: 'down', value: 5 },
+const CARD_DELAY_CLASSES = ["delay-0", "delay-75", "delay-100", "delay-150"];
+const ACTION_DELAY_CLASSES = ["delay-0", "delay-75", "delay-100"];
+const ROW_DELAY_CLASSES = [
+  "delay-0",
+  "delay-75",
+  "delay-100",
+  "delay-150",
+  "delay-200",
+];
+
+const getSeriesColorClasses = (dataKey) => {
+  if (dataKey === "Users") return "bg-red-600 text-red-600";
+  return "bg-red-400 text-red-400";
 };
 
-const selectCls =
-  'rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 shadow-sm transition-all focus:border-slate-400 focus:outline-none';
+const REPORT_TYPE_OPTIONS = [
+  { value: "all", label: "All Data" },
+  { value: "users", label: "Users" },
+  { value: "listings", label: "Listings" },
+  { value: "reviews", label: "Reviews" },
+];
 
-const StatCard = ({ dataKey, value }) => {
+const DATE_RANGE_OPTIONS = [
+  { value: "week", label: "Last Week" },
+  { value: "month", label: "Last Month" },
+  { value: "quarter", label: "Last 3 Months" },
+  { value: "year", label: "Last Year" },
+  { value: "all", label: "All Time" },
+];
+
+/* ── Stat Card ── */
+const StatCard = ({ dataKey, value, index }) => {
   const meta = CARD_META[dataKey];
   const Icon = meta.icon;
-  const cardTrend = trends[dataKey];
+  const t = trends[dataKey];
+  const up = t.trend === "up";
 
   return (
-    <Link to={meta.link} className="group block">
-      <div className={`relative overflow-hidden rounded-2xl border border-slate-200 bg-gradient-to-br ${meta.cardTone} p-5 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-xl`}>
-        <div className="absolute right-0 top-0 h-24 w-24 rounded-full bg-white/30 blur-2xl" />
+    <Link
+      to={meta.link}
+      className={`group block transition-all duration-300 motion-safe:animate-fade-in ${CARD_DELAY_CLASSES[index] || "delay-0"}`}
+    >
+      <div className="relative overflow-hidden rounded-2xl border border-gray-100 bg-white p-5 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-gray-200/60">
+        {/* Accent strip */}
+        <div className={`absolute left-0 top-0 h-full w-1 rounded-l-2xl ${meta.stripClass}`} />
+        {/* Glow */}
+        <div className={`absolute -right-4 -top-4 h-24 w-24 rounded-full blur-2xl opacity-20 ${meta.glowClass}`} />
+
         <div className="relative flex items-start justify-between gap-4">
           <div>
-            <p className="text-xs font-bold uppercase tracking-[0.16em] text-slate-500">{meta.label}</p>
-            <p className="mt-3 text-4xl font-black tracking-tight text-slate-900">{Number(value || 0).toLocaleString()}</p>
-            <div className={`mt-3 inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-bold ${cardTrend.trend === 'up' ? 'bg-emerald-100 text-emerald-700' : 'bg-rose-100 text-rose-700'}`}>
-              {cardTrend.trend === 'up' ? <TrendingUp size={13} /> : <TrendingDown size={13} />}
-              {cardTrend.value}% vs last week
+            <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-gray-400">
+              {meta.label}
+            </p>
+            <p className="mt-2.5 text-4xl font-black tracking-tight text-gray-900">
+              {Number(value || 0).toLocaleString()}
+            </p>
+            <div
+              className={`mt-3 inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[11px] font-bold ${up ? "bg-emerald-50 text-emerald-600" : "bg-red-50 text-red-500"}`}
+            >
+              {up ? <TrendingUp size={12} /> : <TrendingDown size={12} />}
+              {t.value}% vs last week
             </div>
           </div>
-          <div className={`flex h-12 w-12 items-center justify-center rounded-xl ${meta.iconWrap}`}>
-            <Icon size={21} />
+          <div
+            className={`flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-xl transition-transform duration-300 group-hover:scale-110 ${meta.iconWrapClass}`}
+          >
+            <Icon size={20} />
           </div>
         </div>
       </div>
@@ -117,82 +166,103 @@ const StatCard = ({ dataKey, value }) => {
   );
 };
 
+/* ── Tooltip ── */
 const CustomTooltip = ({ active, payload, label }) => {
   if (!active || !payload?.length) return null;
-
   return (
-    <div className="rounded-xl border border-slate-200 bg-white px-4 py-3 shadow-xl">
-      <p className="mb-2 text-xs font-bold uppercase tracking-[0.14em] text-slate-500">{label}</p>
+    <div className="rounded-2xl border border-gray-100 bg-white px-4 py-3 shadow-2xl shadow-gray-200/80">
+      <p className="mb-2 text-[10px] font-bold uppercase tracking-[0.14em] text-gray-400">
+        {label}
+      </p>
       {payload.map((entry) => (
-        <div key={entry.dataKey} className="mb-1 flex items-center gap-2 text-sm last:mb-0">
-          <span className="inline-block h-2.5 w-2.5 rounded-full" style={{ backgroundColor: entry.color }} />
-          <span className="font-semibold text-slate-600">{entry.name}:</span>
-          <span className="font-bold" style={{ color: entry.color }}>{entry.value}</span>
+        <div
+          key={entry.dataKey}
+          className="mb-1 flex items-center gap-2 text-sm last:mb-0"
+        >
+          <span
+            className={`inline-block h-2 w-2 rounded-full ${getSeriesColorClasses(entry.dataKey).split(" ")[0]}`}
+          />
+          <span className="font-medium text-gray-500">{entry.name}:</span>
+          <span
+            className={`font-bold ${getSeriesColorClasses(entry.dataKey).split(" ")[1]}`}
+          >
+            {entry.value}
+          </span>
         </div>
       ))}
     </div>
   );
 };
 
-const ActivityList = ({ title, icon: Icon, items, type, link, emptyText }) => {
-  return (
-    <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
-      <div className="flex items-center justify-between border-b border-slate-100 px-5 py-4">
-        <div className="flex items-center gap-3">
-          <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-slate-900 text-white">
-            <Icon size={17} />
-          </div>
-          <h3 className="text-base font-bold text-slate-900">{title}</h3>
+/* ── Activity List ── */
+const ActivityList = ({ title, icon: Icon, items, type, link, emptyText }) => (
+  <div className="overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-sm">
+    <div className="flex items-center justify-between border-b border-gray-50 px-5 py-4">
+      <div className="flex items-center gap-3">
+        <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-red-600 text-white">
+          <Icon size={15} />
         </div>
-        <Link to={link} className="inline-flex items-center gap-1 text-sm font-semibold text-slate-600 transition-colors hover:text-slate-900">
-          View all
-          <ArrowRight size={14} />
-        </Link>
+        <h3 className="display text-sm font-extrabold text-gray-900">
+          {title}
+        </h3>
       </div>
-
-      <div className="p-3">
-        {items.length === 0 ? (
-          <div className="rounded-xl border border-dashed border-slate-200 px-4 py-8 text-center text-sm font-medium text-slate-400">
-            {emptyText}
-          </div>
-        ) : (
-          items.slice(0, 5).map((item) => (
-            <div key={item._id} className="mb-2 flex items-center gap-3 rounded-xl px-3 py-2.5 transition-colors hover:bg-slate-50 last:mb-0">
-              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-slate-100 text-slate-700">
-                {type === 'users' ? item.username?.[0]?.toUpperCase() : <ListChecks size={16} />}
-              </div>
-              <div className="min-w-0 flex-1">
-                <p className="truncate text-sm font-semibold text-slate-900">
-                  {type === 'users' ? item.username : item.title}
-                </p>
-                <p className="text-xs text-slate-500">
-                  {new Date(item.createdAt).toLocaleDateString('en-US', {
-                    month: 'short',
-                    day: 'numeric',
-                    year: 'numeric',
-                    hour: '2-digit',
-                    minute: '2-digit',
-                  })}
-                </p>
-              </div>
+      <Link
+        to={link}
+        className="inline-flex items-center gap-1 text-[11px] font-bold text-red-600 hover:text-red-700 transition-colors"
+      >
+        View all <ArrowRight size={12} />
+      </Link>
+    </div>
+    <div className="p-3">
+      {items.length === 0 ? (
+        <div className="rounded-xl border border-dashed border-gray-200 px-4 py-8 text-center text-sm font-medium text-gray-400">
+          {emptyText}
+        </div>
+      ) : (
+        items.slice(0, 5).map((item, i) => (
+          <div
+            key={item._id}
+            className={`mb-1.5 flex items-center gap-3 rounded-xl px-3 py-2.5 transition-colors last:mb-0 hover:bg-gray-50 motion-safe:animate-fade-in ${ROW_DELAY_CLASSES[i] || "delay-0"}`}
+          >
+            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-red-50 text-red-600 text-sm font-bold flex-shrink-0">
+              {type === "users" ? (
+                item.username?.[0]?.toUpperCase()
+              ) : (
+                <ListChecks size={14} />
+              )}
             </div>
-          ))
-        )}
-      </div>
+            <div className="min-w-0 flex-1">
+              <p className="truncate text-sm font-semibold text-gray-900">
+                {type === "users" ? item.username : item.title}
+              </p>
+              <p className="text-[11px] text-gray-400">
+                {new Date(item.createdAt).toLocaleDateString("en-US", {
+                  month: "short",
+                  day: "numeric",
+                  year: "numeric",
+                })}
+              </p>
+            </div>
+          </div>
+        ))
+      )}
     </div>
-  );
-};
-
-const LoadingSkeleton = () => (
-  <div className="mx-auto max-w-7xl animate-pulse space-y-6">
-    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
-      {[1, 2, 3, 4].map((i) => (
-        <div key={i} className="h-36 rounded-2xl border border-slate-200 bg-white" />
-      ))}
-    </div>
-    <div className="h-80 rounded-2xl border border-slate-200 bg-white" />
   </div>
 );
+
+
+const LoadingSkeleton = () => (
+  <div className="mx-auto max-w-7xl space-y-6 animate-pulse">
+    <div className="h-28 rounded-3xl bg-gray-100" />
+    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
+      {[1, 2, 3, 4].map((i) => (
+        <div key={i} className="h-36 rounded-2xl bg-gray-100" />
+      ))}
+    </div>
+    <div className="h-80 rounded-2xl bg-gray-100" />
+  </div>
+);
+
 
 const Dashboard = () => {
   const [stats, setStats] = useState({
@@ -204,36 +274,33 @@ const Dashboard = () => {
     recentListings: [],
     chartData: [],
   });
-  const [reportType, setReportType] = useState('all');
-  const [dateRange, setDateRange] = useState('week');
+  const [reportType, setReportType] = useState("all");
+  const [dateRange, setDateRange] = useState("week");
   const [generating, setGenerating] = useState(false);
   const [loading, setLoading] = useState(true);
 
   const fetchStats = useCallback(async () => {
     try {
-      const { data } = await api.get('/admin/dashboard');
+      const { data } = await api.get("/admin/dashboard");
       const today = new Date();
-
-      const chartData = Array.from({ length: 7 }, (_, index) => {
-        const date = new Date(today);
-        date.setDate(date.getDate() - (6 - index));
-
+      const chartData = Array.from({ length: 7 }, (_, i) => {
+        const d = new Date(today);
+        d.setDate(d.getDate() - (6 - i));
         return {
-          name: date.toLocaleDateString('en-US', { weekday: 'short' }),
+          name: d.toLocaleDateString("en-US", { weekday: "short" }),
           Users:
             data.recentUsers?.filter(
-              (user) => new Date(user.createdAt).toDateString() === date.toDateString()
+              (u) => new Date(u.createdAt).toDateString() === d.toDateString(),
             ).length || 0,
           Listings:
             data.recentListings?.filter(
-              (listing) => new Date(listing.createdAt).toDateString() === date.toDateString()
+              (l) => new Date(l.createdAt).toDateString() === d.toDateString(),
             ).length || 0,
         };
       });
-
       setStats({ ...data, chartData });
     } catch {
-      toast.error('Failed to load dashboard data');
+      toast.error("Failed to load dashboard data");
     } finally {
       setLoading(false);
     }
@@ -241,32 +308,29 @@ const Dashboard = () => {
 
   useEffect(() => {
     fetchStats();
-    const refreshInterval = setInterval(fetchStats, 60000);
-    return () => clearInterval(refreshInterval);
+    const t = setInterval(fetchStats, 60000);
+    return () => clearInterval(t);
   }, [fetchStats]);
 
   const generateReport = async () => {
     setGenerating(true);
-
     try {
-      const { data } = await api.get('/admin/reports/generate', {
+      const { data } = await api.get("/admin/reports/generate", {
         params: { type: reportType, dateRange },
-        responseType: 'blob',
+        responseType: "blob",
       });
-
-      const downloadUrl = URL.createObjectURL(new Blob([data]));
-      const downloadLink = Object.assign(document.createElement('a'), {
-        href: downloadUrl,
-        download: `wanderlust_${reportType}_${new Date().toISOString().split('T')[0]}.pdf`,
+      const url = URL.createObjectURL(new Blob([data]));
+      const a = Object.assign(document.createElement("a"), {
+        href: url,
+        download: `wanderlust_${reportType}_${new Date().toISOString().split("T")[0]}.pdf`,
       });
-
-      document.body.appendChild(downloadLink);
-      downloadLink.click();
-      downloadLink.remove();
-      URL.revokeObjectURL(downloadUrl);
-      toast.success('Report downloaded successfully');
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+      toast.success("Report downloaded");
     } catch {
-      toast.error('Failed to generate report');
+      toast.error("Failed to generate report");
     } finally {
       setGenerating(false);
     }
@@ -276,126 +340,182 @@ const Dashboard = () => {
 
   return (
     <div className="mx-auto max-w-7xl space-y-6">
-      <section className="rounded-3xl border border-slate-200 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 px-6 py-7 text-white shadow-2xl">
-        <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
-          <div>
-            <div className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-3 py-1 text-xs font-semibold uppercase tracking-[0.16em] text-cyan-100">
-              <Sparkles size={14} />
-              Admin Intelligence
-            </div>
-            <h2 className="mt-3 text-3xl font-black tracking-tight">Dashboard Overview</h2>
-            <p className="mt-1 text-sm text-slate-200">
-              Live moderation pulse and business health in one place.
-            </p>
-          </div>
-
-          <div className="flex flex-wrap items-center gap-2">
-            <select value={reportType} onChange={(e) => setReportType(e.target.value)} className={selectCls}>
-              <option value="all">All Data</option>
-              <option value="users">Users</option>
-              <option value="listings">Listings</option>
-              <option value="reviews">Reviews</option>
-            </select>
-            <select value={dateRange} onChange={(e) => setDateRange(e.target.value)} className={selectCls}>
-              <option value="week">Last Week</option>
-              <option value="month">Last Month</option>
-              <option value="quarter">Last 3 Months</option>
-              <option value="year">Last Year</option>
-              <option value="all">All Time</option>
-            </select>
-            <button
-              onClick={generateReport}
-              disabled={generating}
-              className="inline-flex items-center gap-2 rounded-xl bg-white px-4 py-2.5 text-sm font-bold text-slate-900 transition-all hover:-translate-y-0.5 hover:shadow-lg disabled:opacity-60"
-            >
-              {generating ? <Loader2 size={16} className="animate-spin" /> : <Download size={16} />}
-              {generating ? 'Generating...' : 'Export PDF'}
-            </button>
-          </div>
-        </div>
-      </section>
-
-      <section className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
-        {Object.keys(CARD_META).map((key) => (
-          <StatCard key={key} dataKey={key} value={stats[key]} />
-        ))}
-      </section>
-
-      <section className="grid grid-cols-1 gap-4 lg:grid-cols-3">
-        {quickActions.map(({ label, hint, icon: Icon, iconWrap, link }) => (
-          <Link
-            key={link}
-            to={link}
-            className="group rounded-2xl border border-slate-200 bg-white p-4 shadow-sm transition-all hover:-translate-y-1 hover:shadow-lg"
-          >
-            <div className="flex items-center justify-between">
-              <div className={`flex h-10 w-10 items-center justify-center rounded-xl ${iconWrap}`}>
-                <Icon size={18} />
+      
+        <section className="rounded-2xl border border-red-100 bg-red-600 px-6 py-6 shadow-xl shadow-red-200/40 motion-safe:animate-fade-in">
+          <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+            <div>
+              <div className="inline-flex items-center gap-2 rounded-full border border-white/25 bg-white/15 px-3 py-1 text-[11px] font-bold uppercase tracking-[0.16em] text-white/90">
+                <Sparkles size={12} />
+                Admin Intelligence
               </div>
-              <ArrowRight size={16} className="text-slate-300 transition-colors group-hover:text-slate-700" />
+              <h2 className="mt-3 text-2xl font-black tracking-tight text-white">
+                Dashboard Overview
+              </h2>
+              <p className="mt-1 text-sm text-white/70">
+                Live moderation pulse and business health in one place.
+              </p>
             </div>
-            <p className="mt-4 text-base font-bold text-slate-900">{label}</p>
-            <p className="mt-1 text-sm text-slate-500">{hint}</p>
-          </Link>
-        ))}
-      </section>
 
-      <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-        <div className="mb-4 flex items-center justify-between">
-          <div>
-            <h3 className="text-lg font-bold text-slate-900">Activity Trends</h3>
-            <p className="text-sm text-slate-500">Last 7 days</p>
+            <div className="flex flex-wrap items-center gap-2">
+              <AdminSelect
+                value={reportType}
+                onChange={setReportType}
+                options={REPORT_TYPE_OPTIONS}
+                className="min-w-[150px]"
+              />
+
+              <AdminSelect
+                value={dateRange}
+                onChange={setDateRange}
+                options={DATE_RANGE_OPTIONS}
+                className="min-w-[160px]"
+              />
+
+              <button
+                onClick={generateReport}
+                disabled={generating}
+                className="inline-flex items-center gap-2 rounded-xl bg-white px-4 py-2.5 text-sm font-bold text-red-600 shadow-lg transition-all hover:-translate-y-0.5 hover:shadow-xl disabled:opacity-60"
+              >
+                {generating ? (
+                  <Loader2 size={15} className="animate-spin" />
+                ) : (
+                  <Download size={15} />
+                )}
+                {generating ? "Generating…" : "Export PDF"}
+              </button>
+            </div>
           </div>
-          <div className="inline-flex items-center gap-2 rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-600">
-            <Activity size={14} />
-            Real-time refresh every minute
+        </section>
+
+        <section className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
+          {Object.keys(CARD_META).map((key, i) => (
+            <StatCard key={key} dataKey={key} value={stats[key]} index={i} />
+          ))}
+        </section>
+
+        {/* Quick actions */}
+        <section className="grid grid-cols-1 gap-3 lg:grid-cols-3">
+          {quickActions.map(
+            ({ label, hint, icon: Icon, iconWrapClass, link }, i) => (
+              <Link
+                key={link}
+                to={link}
+                className={`group rounded-2xl border border-gray-100 bg-white p-4 shadow-sm transition-all duration-200 hover:-translate-y-1 hover:shadow-lg motion-safe:animate-fade-in ${ACTION_DELAY_CLASSES[i] || "delay-0"}`}
+              >
+                <div className="flex items-center justify-between">
+                  <div
+                    className={`flex h-10 w-10 items-center justify-center rounded-xl transition-transform duration-200 group-hover:scale-110 ${iconWrapClass}`}
+                  >
+                    <Icon size={18} />
+                  </div>
+                  <ArrowRight
+                    size={15}
+                    className="text-gray-300 transition-all group-hover:text-gray-700 group-hover:translate-x-1"
+                  />
+                </div>
+                <p className="mt-4 text-sm font-extrabold text-gray-900">
+                  {label}
+                </p>
+                <p className="mt-0.5 text-[12px] text-gray-500">{hint}</p>
+              </Link>
+            ),
+          )}
+        </section>
+
+       
+        <section className="rounded-2xl border border-gray-100 bg-white p-5 shadow-sm">
+          <div className="mb-5 flex items-center justify-between">
+            <div>
+              <h3 className="text-base font-extrabold text-gray-900">
+                Activity Trends
+              </h3>
+              <p className="text-[11px] text-gray-400 mt-0.5">Last 7 days</p>
+            </div>
+            <div className="inline-flex items-center gap-1.5 rounded-full border border-gray-100 bg-gray-50 px-3 py-1.5 text-[11px] font-bold text-gray-500">
+              <Activity size={12} />
+              Auto-refresh every minute
+            </div>
           </div>
-        </div>
 
-        <div className="h-80">
-          <ResponsiveContainer width="100%" height="100%">
-            <AreaChart data={stats.chartData} margin={{ top: 8, right: 8, left: -20, bottom: 0 }}>
-              <defs>
-                <linearGradient id="usersGradient" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#06b6d4" stopOpacity={0.3} />
-                  <stop offset="95%" stopColor="#06b6d4" stopOpacity={0} />
-                </linearGradient>
-                <linearGradient id="listingsGradient" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#8b5cf6" stopOpacity={0.28} />
-                  <stop offset="95%" stopColor="#8b5cf6" stopOpacity={0} />
-                </linearGradient>
-              </defs>
+          <div className="h-72">
+            <ResponsiveContainer width="100%" height="100%">
+              <AreaChart
+                data={stats.chartData}
+                margin={{ top: 8, right: 8, left: -24, bottom: 0 }}
+              >
+                <defs>
+                  <linearGradient id="gUsers" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="#dc2626" stopOpacity={0.18} />
+                    <stop offset="95%" stopColor="#dc2626" stopOpacity={0} />
+                  </linearGradient>
+                  <linearGradient id="gListings" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="#8b5cf6" stopOpacity={0.18} />
+                    <stop offset="95%" stopColor="#8b5cf6" stopOpacity={0} />
+                  </linearGradient>
+                </defs>
+                <CartesianGrid
+                  strokeDasharray="4 4"
+                  stroke="#f1f5f9"
+                  vertical={false}
+                />
+                <XAxis
+                  dataKey="name"
+                  tick={{ fontSize: 11, fill: "#94a3b8", fontWeight: 700 }}
+                  axisLine={false}
+                  tickLine={false}
+                />
+                <YAxis
+                  tick={{ fontSize: 11, fill: "#94a3b8", fontWeight: 700 }}
+                  axisLine={false}
+                  tickLine={false}
+                />
+                <Tooltip
+                  content={<CustomTooltip />}
+                  cursor={{ stroke: "#e2e8f0", strokeWidth: 2 }}
+                />
+                <Area
+                  type="monotone"
+                  dataKey="Users"
+                  stroke="#dc2626"
+                  strokeWidth={2.5}
+                  fill="url(#gUsers)"
+                  dot={false}
+                  activeDot={{ r: 5, fill: "#dc2626" }}
+                />
+                <Area
+                  type="monotone"
+                  dataKey="Listings"
+                  stroke="#8b5cf6"
+                  strokeWidth={2.5}
+                  fill="url(#gListings)"
+                  dot={false}
+                  activeDot={{ r: 5, fill: "#8b5cf6" }}
+                />
+              </AreaChart>
+            </ResponsiveContainer>
+          </div>
+        </section>
 
-              <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" vertical={false} />
-              <XAxis dataKey="name" tick={{ fontSize: 12, fill: '#64748b', fontWeight: 700 }} axisLine={false} tickLine={false} />
-              <YAxis tick={{ fontSize: 12, fill: '#64748b', fontWeight: 700 }} axisLine={false} tickLine={false} />
-              <Tooltip content={<CustomTooltip />} cursor={{ stroke: '#cbd5e1', strokeWidth: 2 }} />
-              <Area type="monotone" dataKey="Users" stroke="#06b6d4" strokeWidth={3} fill="url(#usersGradient)" />
-              <Area type="monotone" dataKey="Listings" stroke="#8b5cf6" strokeWidth={3} fill="url(#listingsGradient)" />
-            </AreaChart>
-          </ResponsiveContainer>
-        </div>
-      </section>
-
-      <section className="grid grid-cols-1 gap-4 xl:grid-cols-2">
-        <ActivityList
-          title="Recent Users"
-          icon={Users}
-          items={stats.recentUsers}
-          type="users"
-          link="/admin/users"
-          emptyText="No recent users"
-        />
-        <ActivityList
-          title="Recent Listings"
-          icon={ListChecks}
-          items={stats.recentListings}
-          type="listings"
-          link="/admin/listings"
-          emptyText="No recent listings"
-        />
-      </section>
-    </div>
+      
+        <section className="grid grid-cols-1 gap-4 xl:grid-cols-2">
+          <ActivityList
+            title="Recent Users"
+            icon={Users}
+            items={stats.recentUsers}
+            type="users"
+            link="/admin/users"
+            emptyText="No recent users"
+          />
+          <ActivityList
+            title="Recent Listings"
+            icon={ListChecks}
+            items={stats.recentListings}
+            type="listings"
+            link="/admin/listings"
+            emptyText="No recent listings"
+          />
+        </section>
+      </div>
   );
 };
 

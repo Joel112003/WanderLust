@@ -249,11 +249,11 @@ const BookingPage = () => {
           </div>
           <div className="mb-[18px] rounded-2xl border border-[#e5e7eb] bg-white px-6 py-[22px] max-[640px]:px-3.5 max-[640px]:py-3.5">
             <button
-              className="mb-4 flex w-full items-center justify-between border-none bg-transparent p-0 text-left font-sans text-base font-bold text-[#111827]"
+              className="mb-3.5 flex w-full items-center justify-between rounded-lg border border-[#f3f4f6] bg-[#fafafa] px-3 py-2 text-left font-sans text-base font-bold text-[#111827]"
               onClick={() => setShowBreakdown((s) => !s)}
             >
-              Price breakdown
-              {showBreakdown ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+              <span>Price breakdown</span>
+              <span className="text-[#6b7280]">{showBreakdown ? <ChevronUp size={16} /> : <ChevronDown size={16} />}</span>
             </button>
 
             <AnimatePresence initial={false}>
@@ -263,7 +263,7 @@ const BookingPage = () => {
                   animate={{ opacity: 1, height: "auto" }}
                   exit={{ opacity: 0, height: 0 }}
                   transition={{ duration: 0.25 }}
-                  style={{ overflow: "hidden" }}
+                  className="overflow-hidden rounded-lg border border-[#f3f4f6] px-3 py-2"
                 >
                   <PriceRow
                     label={`₹${fmt(basePrice)} × ${nights} night${nights > 1 ? "s" : ""}`}
@@ -295,33 +295,14 @@ const BookingPage = () => {
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0 }}
               >
-                <div style={{ display: "flex", alignItems: "flex-start", gap: "8px", width: "100%" }}>
-                  <AlertTriangle size={16} style={{ flexShrink: 0, marginTop: "2px" }} />
-                  <div style={{ flex: 1 }}>
+                <div className="flex w-full items-start gap-2">
+                  <AlertTriangle size={16} className="mt-0.5 shrink-0" />
+                  <div className="flex-1">
                     <div>{errorMsg}</div>
                     {errorMsg.includes("already booked") && (
                       <button
                         onClick={() => navigate(`/listings/${id}`, { replace: true })}
-                        style={{
-                          marginTop: "12px",
-                          padding: "8px 16px",
-                          background: "#fff",
-                          color: "#dc2626",
-                          border: "2px solid #dc2626",
-                          borderRadius: "8px",
-                          fontWeight: 600,
-                          fontSize: "13px",
-                          cursor: "pointer",
-                          transition: "all 0.2s"
-                        }}
-                        onMouseEnter={(e) => {
-                          e.target.style.background = "#dc2626";
-                          e.target.style.color = "#fff";
-                        }}
-                        onMouseLeave={(e) => {
-                          e.target.style.background = "#fff";
-                          e.target.style.color = "#dc2626";
-                        }}
+                        className="mt-3 rounded-lg border-2 border-[#dc2626] bg-white px-4 py-2 text-[13px] font-semibold text-[#dc2626] transition-all hover:bg-[#dc2626] hover:text-white"
                       >
                         ← Go back and select new dates
                       </button>
@@ -334,8 +315,8 @@ const BookingPage = () => {
 <motion.button
             className={`flex w-full items-center justify-center gap-2.5 rounded-[14px] border-none px-4 py-4 font-sans text-base font-bold tracking-[-0.2px] text-white shadow-[0_4px_18px_rgba(225,29,72,0.35)] transition-all disabled:cursor-not-allowed disabled:opacity-75 disabled:shadow-none max-[640px]:py-3.5 max-[640px]:text-[15px] ${
               status === "loading"
-                ? "bg-gradient-to-br from-[#9f1239] to-[#881337]"
-                : "bg-gradient-to-br from-[#e11d48] to-[#be123c]"
+                ? "bg-[#991b1b]"
+                : "bg-[#dc2626] hover:bg-[#b91c1c]"
             }`}
             onClick={handlePay}
             disabled={status === "loading"}

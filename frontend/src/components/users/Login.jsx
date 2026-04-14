@@ -57,17 +57,17 @@ const Login = () => {
   };
 
   return (
-    <div className="relative flex min-h-screen items-center justify-center overflow-hidden bg-gradient-to-br from-amber-50 via-orange-50 to-white px-4 py-16">
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_20%_15%,rgba(194,65,12,0.13),transparent_36%),radial-gradient(circle_at_85%_12%,rgba(225,29,72,0.12),transparent_34%),radial-gradient(circle_at_75%_85%,rgba(217,119,6,0.12),transparent_30%)]" />
-      <div className="pointer-events-none absolute -left-24 top-14 h-72 w-72 rounded-full bg-amber-300/30 blur-3xl" />
-      <div className="pointer-events-none absolute -bottom-16 -right-16 h-72 w-72 rounded-full bg-rose-300/25 blur-3xl" />
+    <div className="relative flex min-h-screen items-center justify-center overflow-hidden bg-gradient-to-br from-white-50 via-white-50 to-white px-4 py-16">
+      <div className="pointer-events-none absolute inset-0 " />
+      <div className="pointer-events-none absolute -left-24 top-14 h-72 w-72 rounded-full bg-white-300/30 blur-3xl" />
+      <div className="pointer-events-none absolute -bottom-16 -right-16 h-72 w-72 rounded-full bg-white-300/25 blur-3xl" />
 
-      <div className="relative z-10 w-full max-w-md rounded-3xl border border-amber-200/80 bg-white/90 p-8 shadow-[0_24px_64px_rgba(124,45,18,0.18)] backdrop-blur">
+      <div className="relative z-10 w-full max-w-md rounded-3xl border border-red-200/80 bg-white/90 p-8 shadow-[0_24px_64px_rgba(124,45,18,0.18)] backdrop-blur">
         <div className="mb-8 text-center">
-          <p className="mb-3 inline-flex items-center rounded-full border border-amber-200 bg-amber-100/70 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.18em] text-amber-800">
+          <p className="mb-3 inline-flex items-center rounded-full border border-red-200 bg-red-100/70 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.18em] text-red-800">
             Welcome Back
           </p>
-          <h1 className="bg-gradient-to-r from-rose-700 to-amber-700 bg-clip-text text-4xl font-extrabold text-transparent">
+          <h1 className="bg-gradient-to-r from-red-700 to-red-700 bg-clip-text text-4xl font-extrabold text-transparent">
             Sign In
           </h1>
           <p className="mt-2 text-sm text-stone-500">Continue your travel planning on WanderLust</p>
@@ -87,7 +87,7 @@ const Login = () => {
               name="email"
               value={email}
               onChange={handleOnChange}
-              className="w-full rounded-xl border border-amber-200 bg-white px-4 py-3 text-[15px] text-stone-900 outline-none transition focus:border-rose-500 focus:ring-4 focus:ring-rose-100"
+              className="w-full rounded-xl border border-red-200 bg-white px-4 py-3 text-[15px] text-stone-900 outline-none transition focus:border-rose-500 focus:ring-4 focus:ring-rose-100"
               placeholder="you@example.com"
               required
               disabled={loading}
@@ -102,7 +102,7 @@ const Login = () => {
                 name="password"
                 value={password}
                 onChange={handleOnChange}
-                className="w-full rounded-xl border border-amber-200 bg-white px-4 py-3 pr-11 text-[15px] text-stone-900 outline-none transition focus:border-rose-500 focus:ring-4 focus:ring-rose-100"
+                className="w-full rounded-xl border border-red-200 bg-white px-4 py-3 pr-11 text-[15px] text-stone-900 outline-none transition focus:border-rose-500 focus:ring-4 focus:ring-rose-100"
                 placeholder="Enter password"
                 required
                 disabled={loading}
@@ -121,7 +121,7 @@ const Login = () => {
           <button
             type="submit"
             disabled={loading}
-            className="flex w-full items-center justify-center rounded-xl bg-gradient-to-r from-rose-700 to-amber-600 px-4 py-3 text-sm font-semibold text-white shadow-[0_8px_24px_rgba(190,24,93,0.3)] transition hover:-translate-y-0.5 hover:from-rose-800 hover:to-amber-700 disabled:cursor-not-allowed disabled:opacity-60"
+            className="flex w-full items-center justify-center rounded-xl bg-gradient-to-r from-red-700 to-red-600 px-4 py-3 text-sm font-semibold text-white shadow-[0_8px_24px_rgba(190,24,93,0.3)] transition hover:-translate-y-0.5 hover:from-red-800 hover:to-red-700 disabled:cursor-not-allowed disabled:opacity-60"
           >
             {loading ? (
               <span className="h-5 w-5 animate-spin rounded-full border-2 border-white/30 border-t-white" />

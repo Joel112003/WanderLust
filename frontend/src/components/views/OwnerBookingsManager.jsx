@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import CancelBookingModal from "./CancelBookingModal";
 import AlternativeAccommodationModal from "./AlternativeAccommodationModal";
 
-const BASE_URL = "http://localhost:8000";
+const API_URL = import.meta.env.VITE_APP_API_URL || "http://localhost:8000";
 
 const OwnerBookingsManager = () => {
   const [bookings, setBookings] = useState([]);
@@ -23,7 +23,7 @@ const OwnerBookingsManager = () => {
     try {
       setLoading(true);
       const token = localStorage.getItem("authToken");
-      const response = await axios.get(`${BASE_URL}/bookings/owner/listings`, {
+      const response = await axios.get(`${API_URL}/bookings/owner/listings`, {
         headers: { Authorization: `Bearer ${token}` },
       });
 

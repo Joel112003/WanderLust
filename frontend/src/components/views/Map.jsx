@@ -30,6 +30,13 @@ const getLocationLabel = (listing) => {
   return listing.location || listing.country || "";
 };
 
+const getMapHeightClass = (height) => {
+  if (height === "100%") return "h-full";
+  if (height === "400px") return "h-[400px]";
+  if (height === "600px") return "h-[600px]";
+  return "h-[500px]";
+};
+
 const Map = React.forwardRef((
   {
     listings          = [],
@@ -381,7 +388,7 @@ const Map = React.forwardRef((
   }));
 
   return (
-    <div className="relative w-full overflow-hidden rounded-[18px] shadow-[0_4px_32px_rgba(0,0,0,0.12)]" style={{ height }}>
+    <div className={`relative w-full overflow-hidden rounded-[18px] shadow-[0_4px_32px_rgba(0,0,0,0.12)] ${getMapHeightClass(height)}`}>
       <div ref={containerRef} className="h-full w-full" />
 {isLoading && (
         <div className="absolute inset-0 flex flex-col items-center justify-center gap-3.5 bg-gradient-to-br from-slate-50 to-blue-50">

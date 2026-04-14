@@ -111,88 +111,40 @@ const AlternativeAccommodationModal = ({
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          style={{
-            position: 'fixed',
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            background: 'rgba(0, 0, 0, 0.7)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            zIndex: 10000,
-            padding: 20
-          }}
+          className="fixed inset-0 z-[10000] flex items-center justify-center bg-black/70 p-5"
         >
-        <motion.div
-          initial={{ scale: 0.9, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-          exit={{ scale: 0.9, opacity: 0 }}
-          style={{
-            background: '#fff',
-            borderRadius: 20,
-            width: '100%',
-            maxWidth: 900,
-            maxHeight: '90vh',
-            overflow: 'hidden',
-            boxShadow: '0 25px 80px rgba(0,0,0,0.4)'
-          }}
-        >
-<div style={{
-            background: 'linear-gradient(135deg, #0d9488 0%, #14b8a6 100%)',
-            padding: 30,
-            color: '#fff'
-          }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start' }}>
+          <motion.div
+            initial={{ scale: 0.9, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            exit={{ scale: 0.9, opacity: 0 }}
+            className="w-full max-w-[900px] max-h-[90vh] overflow-hidden rounded-[20px] bg-white shadow-[0_25px_80px_rgba(0,0,0,0.4)]"
+          >
+            <div className="bg-gradient-to-br from-teal-600 to-teal-500 p-7.5 text-white">
+              <div className="flex items-start justify-between gap-4">
               <div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 8 }}>
+                  <div className="mb-2 flex items-center gap-3">
                   <CheckCircle size={32} />
-                  <h2 style={{ margin: 0, fontSize: 24, fontWeight: 700 }}>
+                    <h2 className="m-0 text-2xl font-bold">
                     We've Found You Alternative Accommodation
                   </h2>
                 </div>
-                <p style={{ margin: 0, fontSize: 15, opacity: 0.9 }}>
+                  <p className="m-0 text-[15px] opacity-90">
                   Your original booking was cancelled: "{reason}"
                 </p>
               </div>
               <button
                 onClick={onClose}
-                style={{
-                  background: 'rgba(255, 255, 255, 0.2)',
-                  border: 'none',
-                  padding: 10,
-                  borderRadius: 10,
-                  cursor: 'pointer',
-                  display: 'flex',
-                  color: '#fff'
-                }}
+                  className="flex rounded-[10px] bg-white/20 p-2.5 text-white transition-colors hover:bg-white/30"
               >
                 <X size={22} />
               </button>
             </div>
           </div>
 
-          <div style={{
-            display: 'grid',
-            gridTemplateColumns: '300px 1fr',
-            height: 'calc(90vh - 220px)',
-            maxHeight: 600
-          }}>
+            <div className="grid h-[calc(90vh-220px)] max-h-[600px] grid-cols-[300px_1fr]">
             {/* Alternatives List */}
-            <div style={{
-              borderRight: '1px solid #e5e7eb',
-              overflowY: 'auto',
-              padding: 16
-            }}>
-              <h3 style={{
-                margin: '0 0 12px 0',
-                fontSize: 14,
-                fontWeight: 600,
-                color: '#6b7280',
-                textTransform: 'uppercase',
-                letterSpacing: '0.5px'
-              }}>
+              <div className="overflow-y-auto border-r border-gray-200 p-4">
+                <h3 className="mb-3 mt-0 text-sm font-semibold uppercase tracking-[0.5px] text-gray-500">
                 Available Options ({alternatives.length})
               </h3>
 
@@ -205,64 +157,31 @@ const AlternativeAccommodationModal = ({
                     key={alt._id}
                     whileHover={{ scale: 1.02 }}
                     onClick={() => setSelectedAlternative(alt)}
-                    style={{
-                      padding: 12,
-                      borderRadius: 12,
-                      border: `2px solid ${isSelected ? '#0d9488' : '#e5e7eb'}`,
-                      background: isSelected ? '#f0fdfa' : '#fff',
-                      marginBottom: 12,
-                      cursor: 'pointer',
-                      transition: 'all 0.2s'
-                    }}
+                    className={`mb-3 cursor-pointer rounded-xl border-2 p-3 transition-all ${isSelected ? 'border-teal-600 bg-teal-50' : 'border-gray-200 bg-white'}`}
                   >
-                    <div style={{ display: 'flex', gap: 10 }}>
+                      <div className="flex gap-2.5">
                       <img
                         src={getListingImage(alt)}
                         alt={alt.title}
-                        style={{
-                          width: 60,
-                          height: 60,
-                          borderRadius: 8,
-                          objectFit: 'cover'
-                        }}
+                          className="h-[60px] w-[60px] rounded-lg object-cover"
                       />
-                      <div style={{ flex: 1, minWidth: 0 }}>
-                        <h4 style={{
-                          margin: '0 0 4px 0',
-                          fontSize: 13,
-                          fontWeight: 600,
-                          whiteSpace: 'nowrap',
-                          overflow: 'hidden',
-                          textOverflow: 'ellipsis'
-                        }}>
+                        <div className="min-w-0 flex-1">
+                          <h4 className="mb-1 mt-0 truncate text-[13px] font-semibold">
                           {alt.title}
                         </h4>
-                        <div style={{
-                          display: 'flex',
-                          alignItems: 'center',
-                          gap: 6,
-                          fontSize: 12,
-                          color: '#6b7280',
-                          marginBottom: 6
-                        }}>
-                          <Star size={12} fill="#fbbf24" color="#fbbf24" />
+                          <div className="mb-1.5 flex items-center gap-1.5 text-xs text-gray-500">
+                            <Star size={12} fill="#fbbf24" color="#fbbf24" />
                           <span>{alt.rating?.toFixed(1) || '4.5'}</span>
-                          <span style={{ opacity: 0.5 }}>•</span>
+                            <span className="opacity-50">•</span>
                           <span>{formatPrice(alt.price)}</span>
                         </div>
-                        <div style={{
-                          background: score >= 80 ? '#dcfce7' : score >= 60 ? '#fef3c7' : '#fee2e2',
-                          color: score >= 80 ? '#166534' : score >= 60 ? '#92400e' : '#991b1b',
-                          padding: '2px 8px',
-                          borderRadius: 6,
-                          fontSize: 11,
-                          fontWeight: 600,
-                          display: 'inline-block'
-                        }}>
-                          {score}% Match
+                          <div
+                            className={`inline-block rounded-md px-2 py-0.5 text-[11px] font-semibold ${score >= 80 ? 'bg-green-100 text-green-800' : score >= 60 ? 'bg-amber-100 text-amber-800' : 'bg-red-100 text-red-800'}`}
+                          >
+                            {score}% Match
+                          </div>
                         </div>
                       </div>
-                    </div>
                   </motion.div>
                 );
               })}
@@ -270,105 +189,69 @@ const AlternativeAccommodationModal = ({
 
             {/* Selected Alternative Details */}
             {selectedAlternative && (
-              <div style={{ overflowY: 'auto', padding: 24 }}>
-                <div style={{
-                  position: 'relative',
-                  width: '100%',
-                  height: 250,
-                  borderRadius: 16,
-                  overflow: 'hidden',
-                  marginBottom: 20
-                }}>
+                <div className="overflow-y-auto p-6">
+                  <div className="relative mb-5 h-[250px] w-full overflow-hidden rounded-2xl">
                   <img
                     src={getListingImage(selectedAlternative)}
                     alt={selectedAlternative.title}
-                    style={{
-                      width: '100%',
-                      height: '100%',
-                      objectFit: 'cover'
-                    }}
+                      className="h-full w-full object-cover"
                   />
-                  <div style={{
-                    position: 'absolute',
-                    top: 16,
-                    right: 16,
-                    background: similarityScore >= 80 ? '#10b981' : '#f59e0b',
-                    color: '#fff',
-                    padding: '8px 16px',
-                    borderRadius: 10,
-                    fontSize: 14,
-                    fontWeight: 700,
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: 6,
-                    boxShadow: '0 4px 12px rgba(0,0,0,0.2)'
-                  }}>
+                    <div
+                      className={`absolute right-4 top-4 flex items-center gap-1.5 rounded-[10px] px-4 py-2 text-sm font-bold text-white shadow-[0_4px_12px_rgba(0,0,0,0.2)] ${similarityScore >= 80 ? 'bg-emerald-500' : 'bg-amber-500'}`}
+                    >
                     <TrendingUp size={16} />
                     {similarityScore}% Match
                   </div>
                 </div>
 
-                <h2 style={{ margin: '0 0 8px 0', fontSize: 22, fontWeight: 700 }}>
+                  <h2 className="mb-2 mt-0 text-[22px] font-bold">
                   {selectedAlternative.title}
                 </h2>
 
-                <div style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: 16,
-                  marginBottom: 20
-                }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                  <div className="mb-5 flex items-center gap-4">
+                    <div className="flex items-center gap-1.5">
                     <MapPin size={16} color="#6b7280" />
-                    <span style={{ fontSize: 14, color: '#6b7280' }}>
+                      <span className="text-sm text-gray-500">
                       {selectedAlternative.location || selectedAlternative.city}
                     </span>
                   </div>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                    <div className="flex items-center gap-1.5">
                     <Star size={16} fill="#fbbf24" color="#fbbf24" />
-                    <span style={{ fontSize: 14, fontWeight: 600 }}>
+                      <span className="text-sm font-semibold">
                       {selectedAlternative.rating?.toFixed(1) || '4.5'}
                     </span>
-                    <span style={{ fontSize: 14, color: '#6b7280' }}>
+                      <span className="text-sm text-gray-500">
                       ({selectedAlternative.reviewCount || 0} reviews)
                     </span>
                   </div>
                 </div>
 
                 {/* Price Comparison */}
-                <div style={{
-                  background: priceDifference > 0 ? '#fef3c7' : priceDifference < 0 ? '#dcfce7' : '#f3f4f6',
-                  padding: 16,
-                  borderRadius: 12,
-                  marginBottom: 20
-                }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <div
+                    className={`mb-5 rounded-xl p-4 ${priceDifference > 0 ? 'bg-amber-100' : priceDifference < 0 ? 'bg-green-100' : 'bg-gray-100'}`}
+                  >
+                    <div className="flex items-center justify-between">
                     <div>
-                      <p style={{ margin: '0 0 4px 0', fontSize: 13, color: '#6b7280' }}>
+                        <p className="mb-1 mt-0 text-[13px] text-gray-500">
                         Original Price
                       </p>
-                      <p style={{ margin: 0, fontSize: 18, fontWeight: 600, textDecoration: 'line-through', opacity: 0.6 }}>
+                        <p className="m-0 text-lg font-semibold opacity-60 line-through">
                         {formatPrice(originalBooking.totalPrice || originalBooking.price)}
                       </p>
                     </div>
-                    <div style={{ textAlign: 'right' }}>
-                      <p style={{ margin: '0 0 4px 0', fontSize: 13, color: '#6b7280' }}>
+                      <div className="text-right">
+                        <p className="mb-1 mt-0 text-[13px] text-gray-500">
                         New Price
                       </p>
-                      <p style={{ margin: 0, fontSize: 22, fontWeight: 700, color: '#0d9488' }}>
+                        <p className="m-0 text-[22px] font-bold text-teal-600">
                         {formatPrice(selectedAlternative.price)}
                       </p>
                     </div>
                   </div>
                   {priceDifference !== 0 && (
-                    <div style={{
-                      marginTop: 12,
-                      paddingTop: 12,
-                      borderTop: '1px solid rgba(0,0,0,0.1)',
-                      fontSize: 13,
-                      fontWeight: 600,
-                      color: priceDifference > 0 ? '#92400e' : '#166534'
-                    }}>
+                      <div
+                        className={`mt-3 border-t border-black/10 pt-3 text-[13px] font-semibold ${priceDifference > 0 ? 'text-amber-800' : 'text-green-800'}`}
+                      >
                       {priceDifference > 0 ? '💰 ' : '🎉 '}
                       {priceDifference > 0
                         ? `Price difference of ${formatPrice(Math.abs(priceDifference))} will be covered by us`
@@ -380,24 +263,15 @@ const AlternativeAccommodationModal = ({
 
                 {/* Amenities */}
                 {selectedAlternative.amenities && selectedAlternative.amenities.length > 0 && (
-                  <div style={{ marginBottom: 20 }}>
-                    <h4 style={{ margin: '0 0 12px 0', fontSize: 14, fontWeight: 600 }}>
+                    <div className="mb-5">
+                      <h4 className="mb-3 mt-0 text-sm font-semibold">
                       Amenities
                     </h4>
-                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
+                      <div className="flex flex-wrap gap-2">
                       {selectedAlternative.amenities.slice(0, 6).map((amenity, i) => (
                         <div
                           key={i}
-                          style={{
-                            padding: '6px 12px',
-                            background: '#f3f4f6',
-                            borderRadius: 8,
-                            fontSize: 12,
-                            fontWeight: 500,
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: 6
-                          }}
+                            className="flex items-center gap-1.5 rounded-lg bg-gray-100 px-3 py-1.5 text-xs font-medium"
                         >
                           <Check size={14} color="#10b981" />
                           {amenity}
@@ -408,29 +282,15 @@ const AlternativeAccommodationModal = ({
                 )}
 
                 {/* Action Buttons */}
-                <div style={{ display: 'flex', gap: 12, marginTop: 24 }}>
+                  <div className="mt-6 flex gap-3">
                   <button
                     onClick={handleReject}
                     disabled={rejecting || accepting}
-                    style={{
-                      flex: 1,
-                      padding: '14px 24px',
-                      border: '2px solid #e5e7eb',
-                      borderRadius: 12,
-                      background: '#fff',
-                      fontSize: 15,
-                      fontWeight: 600,
-                      cursor: rejecting || accepting ? 'not-allowed' : 'pointer',
-                      opacity: rejecting || accepting ? 0.5 : 1,
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      gap: 8
-                    }}
+                      className="flex flex-1 items-center justify-center gap-2 rounded-xl border-2 border-gray-200 bg-white px-6 py-3.5 text-[15px] font-semibold disabled:cursor-not-allowed disabled:opacity-50"
                   >
                     {rejecting ? (
                       <>
-                        <Loader2 size={18} style={{ animation: 'spin 1s linear infinite' }} />
+                          <Loader2 size={18} className="animate-spin" />
                         Processing...
                       </>
                     ) : (
@@ -444,28 +304,11 @@ const AlternativeAccommodationModal = ({
                   <button
                     onClick={handleAccept}
                     disabled={accepting || rejecting}
-                    style={{
-                      flex: 2,
-                      padding: '14px 24px',
-                      border: 'none',
-                      borderRadius: 12,
-                      background: accepting || rejecting
-                        ? '#d1d5db'
-                        : 'linear-gradient(135deg, #0d9488 0%, #14b8a6 100%)',
-                      color: '#fff',
-                      fontSize: 15,
-                      fontWeight: 700,
-                      cursor: accepting || rejecting ? 'not-allowed' : 'pointer',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      gap: 8,
-                      boxShadow: '0 4px 16px rgba(13, 148, 136, 0.4)'
-                    }}
+                      className={`flex flex-[2] items-center justify-center gap-2 rounded-xl px-6 py-3.5 text-[15px] font-bold text-white shadow-[0_4px_16px_rgba(13,148,136,0.4)] ${accepting || rejecting ? 'cursor-not-allowed bg-gray-300' : 'bg-gradient-to-br from-teal-600 to-teal-500'}`}
                   >
                     {accepting ? (
                       <>
-                        <Loader2 size={20} style={{ animation: 'spin 1s linear infinite' }} />
+                          <Loader2 size={20} className="animate-spin" />
                         Confirming Booking...
                       </>
                     ) : (
@@ -477,19 +320,14 @@ const AlternativeAccommodationModal = ({
                   </button>
                 </div>
 
-                <p style={{
-                  margin: '16px 0 0 0',
-                  fontSize: 12,
-                  color: '#6b7280',
-                  textAlign: 'center'
-                }}>
+                  <p className="mb-0 mt-4 text-center text-xs text-gray-500">
                   ✨ Same dates • Same guests • Premium support included
                 </p>
               </div>
             )}
           </div>
+          </motion.div>
         </motion.div>
-      </motion.div>
       )}
     </AnimatePresence>
   );

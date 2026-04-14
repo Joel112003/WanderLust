@@ -10,27 +10,30 @@ import {
 const fmt = (n) =>
   (n ?? 0).toLocaleString("en-IN", { minimumFractionDigits: 0, maximumFractionDigits: 0 });
 
+const CONFETTI_POSITIONS = [
+  "left-[3%]", "left-[7%]", "left-[11%]", "left-[15%]", "left-[19%]", "left-[23%]", "left-[27%]",
+  "left-[31%]", "left-[35%]", "left-[39%]", "left-[43%]", "left-[47%]", "left-[51%]", "left-[55%]",
+  "left-[59%]", "left-[63%]", "left-[67%]", "left-[71%]", "left-[75%]", "left-[79%]", "left-[83%]",
+  "left-[87%]", "left-[91%]", "left-[95%]", "left-[9%]", "left-[29%]", "left-[49%]", "left-[69%]",
+];
+const CONFETTI_COLORS = ["bg-red-600", "bg-red-300", "bg-gray-200", "bg-red-50"];
+const CONFETTI_SIZES = ["h-2 w-2", "h-2.5 w-2.5", "h-3 w-3"];
+const CONFETTI_DELAYS = [0.02, 0.06, 0.1, 0.14, 0.18, 0.22, 0.26, 0.3];
+const CONFETTI_DURATIONS = [0.95, 1.05, 1.15, 1.25, 1.35];
+
 const Confetti = () => {
-  const colors  = ["#e11d48", "#f59e0b", "#10b981", "#3b82f6", "#8b5cf6", "#f97316"];
-  const pieces  = Array.from({ length: 48 }, (_, i) => i);
+  const pieces  = Array.from({ length: 28 }, (_, i) => i);
   return (
     <div className="pointer-events-none fixed inset-0 z-0 overflow-hidden" aria-hidden>
       {pieces.map((i) => (
         <motion.div
           key={i}
-          className="absolute -top-5 opacity-85"
-          style={{
-            left:            `${Math.random() * 100}%`,
-            background:      colors[i % colors.length],
-            width:           `${6 + Math.random() * 6}px`,
-            height:          `${6 + Math.random() * 6}px`,
-            borderRadius:    Math.random() > 0.5 ? "50%" : "2px",
-          }}
+          className={`absolute -top-5 opacity-85 ${CONFETTI_POSITIONS[i]} ${CONFETTI_COLORS[i % CONFETTI_COLORS.length]} ${CONFETTI_SIZES[i % CONFETTI_SIZES.length]} ${i % 2 === 0 ? "rounded-full" : "rounded-sm"}`}
           initial={{ y: -20, rotate: 0, opacity: 1 }}
           animate={{ y: "110vh", rotate: 540, opacity: 0 }}
           transition={{
-            duration: 0.8 + Math.random() * 0.8,
-            delay: Math.random() * 0.8,
+            duration: CONFETTI_DURATIONS[i % CONFETTI_DURATIONS.length],
+            delay: CONFETTI_DELAYS[i % CONFETTI_DELAYS.length],
             ease: "easeOut",
           }}
         />
@@ -84,7 +87,7 @@ const BookingConfirmation = () => {
   const handlePrint = () => window.print();
 
   return (
-    <div className="relative min-h-screen overflow-hidden bg-gradient-to-br from-[#fff5f7] via-[#fafaf9] to-[#f0fdf4] px-5 pb-20 pt-10 font-sans max-[480px]:px-3 max-[480px]:pb-14" ref={printRef}>
+    <div className="relative min-h-screen overflow-hidden bg-white px-5 pb-20 pt-10 font-sans max-[480px]:px-3 max-[480px]:pb-14" ref={printRef}>
       <Confetti />
 
       <div className="relative z-[1] mx-auto max-w-[680px]">
@@ -95,7 +98,7 @@ const BookingConfirmation = () => {
           transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
         >
           <motion.div
-            className="mb-5 inline-flex h-[88px] w-[88px] items-center justify-center rounded-full bg-gradient-to-br from-[#dcfce7] to-[#bbf7d0] text-[#16a34a] shadow-[0_8px_32px_rgba(22,163,74,0.2)]"
+            className="mb-5 inline-flex h-[88px] w-[88px] items-center justify-center rounded-full bg-[#dcfce7] text-[#16a34a] shadow-[0_8px_32px_rgba(22,163,74,0.2)]"
             initial={{ scale: 0, rotate: -45 }}
             animate={{ scale: 1, rotate: 0 }}
             transition={{ delay: 0.2, duration: 0.5, type: "spring", stiffness: 200 }}
@@ -133,7 +136,7 @@ const BookingConfirmation = () => {
           <div className="relative h-[200px] overflow-hidden">
             {listing.image?.url
               ? <img src={listing.image.url} alt={listing.title} className="block h-full w-full object-cover" />
-              : <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-[#fef2f2] to-[#ffe4e6] text-[56px]">🏠</div>
+              : <div className="flex h-full w-full items-center justify-center bg-[#fef2f2] text-[56px]">🏠</div>
             }
             <div className="absolute inset-0 flex flex-col justify-end bg-gradient-to-t from-black/70 to-transparent px-[22px] py-5">
               <p className="mb-1 text-[11px] font-bold uppercase tracking-[0.1em] text-[#fca5a5]">{listing.category || "Entire home"}</p>
@@ -215,7 +218,7 @@ const BookingConfirmation = () => {
 
           <Link
             to="/listings"
-            className="inline-flex flex-1 items-center justify-center gap-1.5 rounded-xl bg-gradient-to-br from-[#e11d48] to-[#be123c] px-5 py-3 text-sm font-semibold text-white no-underline shadow-[0_3px_14px_rgba(225,29,72,0.3)] transition-all hover:-translate-y-px hover:opacity-90 max-[480px]:w-full"
+            className="inline-flex flex-1 items-center justify-center gap-1.5 rounded-xl bg-[#dc2626] px-5 py-3 text-sm font-semibold text-white no-underline shadow-[0_3px_14px_rgba(225,29,72,0.3)] transition-all hover:-translate-y-px hover:bg-[#b91c1c] max-[480px]:w-full"
           >
             <Home size={16} />
             Explore more
@@ -236,7 +239,7 @@ const BookingConfirmation = () => {
               { n: "3", text: "Arrive after 2:00 PM on your check-in date. Self check-in via smart lock." },
             ].map(({ n, text }) => (
               <div key={n} className="flex items-start gap-3.5">
-                <span className="flex h-[26px] w-[26px] shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-[#e11d48] to-[#be123c] font-sans text-xs font-bold text-white">
+                <span className="flex h-[26px] w-[26px] shrink-0 items-center justify-center rounded-full bg-[#dc2626] font-sans text-xs font-bold text-white">
                   {n}
                 </span>
                 <p className="m-0 pt-[3px] text-sm leading-[1.55] text-[#4b5563]">{text}</p>

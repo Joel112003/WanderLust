@@ -48,7 +48,7 @@ const ConversationsPage = () => {
     "bg-red-700",
     "bg-stone-700",
     "bg-orange-700",
-    "bg-amber-700",
+    "bg-white-700",
     "bg-rose-800",
   ];
 
@@ -237,7 +237,6 @@ const ConversationsPage = () => {
           fetchConversations();
           return;
         } catch {
-          // fall back to REST API
         }
       }
 
@@ -305,11 +304,11 @@ const ConversationsPage = () => {
   const totalUnread = conversations.reduce((sum, c) => sum + (c.unreadCount || 0), 0);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-amber-50 via-orange-50 to-white px-5 pb-10 pt-24">
+    <div className="min-h-screen bg-gradient-to-br from-white-50 via-white-50 to-white px-5 pb-10 pt-24">
       <div className="mx-auto max-w-7xl">
         <div className="mb-7 flex items-center gap-4">
           <button
-            className="flex h-10 w-10 items-center justify-center rounded-xl border border-stone-300 bg-white text-stone-600 transition hover:border-rose-300 hover:bg-rose-50 hover:text-rose-700"
+            className="flex h-10 w-10 items-center justify-center rounded-xl border border-orawhitenge-300 bg-white text-stone-600 transition hover:border-rose-300 hover:bg-rose-50 hover:text-rose-700"
             onClick={() => navigate(-1)}
           >
             <ArrowLeft size={17} />
@@ -328,12 +327,12 @@ const ConversationsPage = () => {
         </div>
 
         <div className={`grid gap-4 ${selectedConversation ? "grid-cols-[350px_1fr]" : "max-w-[440px]"}`}>
-          <div className="overflow-hidden rounded-2xl border border-amber-200 bg-white">
-            <div className="border-b border-amber-100 p-4">
+          <div className="overflow-hidden rounded-2xl border border-white-200 bg-white">
+            <div className="border-b border-white-100 p-4">
               <div className="relative">
                 <Search size={15} className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-stone-400" />
                 <input
-                  className="w-full rounded-xl border border-amber-200 bg-amber-50 px-10 py-2.5 text-sm text-stone-900 outline-none transition focus:border-rose-500 focus:bg-white"
+                  className="w-full rounded-xl border border-white-200 bg-white-50 px-10 py-2.5 text-sm text-stone-900 outline-none transition focus:border-rose-500 focus:bg-white"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder="Search conversations..."
@@ -359,7 +358,7 @@ const ConversationsPage = () => {
                     initial={{ opacity: 0, x: -6 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: i * 0.03 }}
-                    className={`cursor-pointer border-b border-amber-50 p-3 transition hover:bg-amber-50 ${
+                    className={`cursor-pointer border-b border-white-50 p-3 transition hover:bg-white-50 ${
                       selectedConversation?.listing._id === conv.listing._id ? "bg-rose-50" : ""
                     }`}
                     onClick={() => handleSelectConversation(conv)}
@@ -395,13 +394,13 @@ const ConversationsPage = () => {
             {selectedConversation ? (
               <motion.div
                 key={selectedConversation.listing._id}
-                className="flex h-[65vh] flex-col overflow-hidden rounded-2xl border border-amber-200 bg-white"
+                className="flex h-[65vh] flex-col overflow-hidden rounded-2xl border border-ambewhiter-200 bg-white"
                 initial={{ opacity: 0, x: 12 }}
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.2 }}
               >
-                <div className="flex items-center justify-between border-b border-amber-100 px-4 py-3">
+                <div className="flex items-center justify-between border-b border-white-100 px-4 py-3">
                   <div className="flex items-center gap-3">
                     <div className={`flex h-10 w-10 items-center justify-center rounded-xl text-sm font-bold text-white ${getAvatarClass(selectedConversation.otherUser.username || selectedConversation.otherUser.email)}`}>
                       {getInitials(selectedConversation.otherUser)}
@@ -418,7 +417,7 @@ const ConversationsPage = () => {
                       {isConnected ? "Live" : "Offline"}
                     </span>
                     <button
-                      className="inline-flex items-center gap-1 rounded-lg border border-amber-200 bg-white px-2.5 py-1.5 text-xs font-medium text-stone-600 transition hover:border-rose-300 hover:text-rose-700"
+                      className="inline-flex items-center gap-1 rounded-lg border border-white-200 bg-white px-2.5 py-1.5 text-xs font-medium text-stone-600 transition hover:border-rose-300 hover:text-rose-700"
                       onClick={() => navigate(`/listings/${selectedConversation.listing._id}`)}
                     >
                       <ExternalLink size={12} /> View listing
@@ -467,7 +466,7 @@ const ConversationsPage = () => {
                                   className={`inline-block rounded-2xl px-3 py-2 text-sm leading-relaxed ${
                                     isOwn
                                       ? "rounded-br-md bg-rose-700 text-white"
-                                      : "rounded-bl-md bg-white text-stone-900 border border-amber-100"
+                                      : "rounded-bl-md bg-white text-stone-900 border border-white-100"
                                   }`}
                                 >
                                   {msg.message}
@@ -486,10 +485,10 @@ const ConversationsPage = () => {
                   <div ref={messagesEndRef} />
                 </div>
 
-                <form className="flex items-center gap-2 border-t border-amber-100 p-3" onSubmit={handleSendMessage}>
+                <form className="flex items-center gap-2 border-t border-white-100 p-3" onSubmit={handleSendMessage}>
                   <input
                     ref={inputRef}
-                    className="flex-1 rounded-xl border border-amber-200 bg-amber-50 px-4 py-2.5 text-sm text-stone-900 outline-none transition focus:border-rose-500 focus:bg-white"
+                    className="flex-1 rounded-xl border border-white-200 bg-ambewhiter-50 px-4 py-2.5 text-sm text-stone-900 outline-none transition focus:border-rose-500 focus:bg-white"
                     type="text"
                     value={newMessage}
                     onChange={(e) => setNewMessage(e.target.value)}
@@ -510,7 +509,7 @@ const ConversationsPage = () => {
                 key="empty"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                className="flex h-[65vh] items-center justify-center rounded-2xl border border-amber-200 bg-white"
+                className="flex h-[65vh] items-center justify-center rounded-2xl border border-white-200 bg-white"
               >
                 <div className="text-center">
                   <MessageCircle size={44} className="mx-auto mb-3 text-stone-300" />
